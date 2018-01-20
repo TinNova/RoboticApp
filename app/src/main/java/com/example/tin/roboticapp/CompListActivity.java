@@ -227,7 +227,7 @@ public class CompListActivity extends AppCompatActivity implements CompanyAdapte
         Intent intent = new Intent(this, CompanyDetailActivity.class);
 
 
-        // Company Name for the Title of the Activity
+        // Company Name is needed for the Title of the Activity
         // Ticker is needed for Articles Feed and Title of The Activity
 
         Bundle companyListBundle = new Bundle();
