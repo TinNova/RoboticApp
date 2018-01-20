@@ -1,5 +1,6 @@
 package com.example.tin.roboticapp;
 
+import android.app.ActionBar;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -45,6 +46,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "CompanyDetailActivity";
 
+    ActionBar actionBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
