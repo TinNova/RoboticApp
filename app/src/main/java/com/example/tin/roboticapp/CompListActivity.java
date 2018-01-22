@@ -44,6 +44,7 @@ public class CompListActivity extends AppCompatActivity implements CompanyAdapte
 
     public static String CURRENT_COMPANY_NAME = "current_company_name";
     public static String CURRENT_COMPANY_TICKER = "current_company_ticker";
+    public static String CURRENT_COMPANY_ID = "current_company_id";
 
     /** Needed for Login & Cookie Authorisation */
     // RequestQueue is for the Volley Authentication
@@ -219,6 +220,7 @@ public class CompListActivity extends AppCompatActivity implements CompanyAdapte
         mRequestQueue.add(request);
     }
 
+    int mCompanyId;
 
     /** This Only Works If You Implement: implements CompanyAdapter.ListItemClickListener */
     @Override
@@ -226,13 +228,15 @@ public class CompListActivity extends AppCompatActivity implements CompanyAdapte
 
         Intent intent = new Intent(this, CompanyDetailActivity.class);
 
-
         // Company Name is needed for the Title of the Activity
         // Ticker is needed for Articles Feed and Title of The Activity
-
         Bundle companyListBundle = new Bundle();
         companyListBundle.putString(CURRENT_COMPANY_NAME, theCompanies.get(clickedItemIndex).getCompanyName());
         companyListBundle.putString(CURRENT_COMPANY_TICKER, theCompanies.get(clickedItemIndex).getCompanyticker());
+
+        // The company ID is not part of the recycler view, so we have to pass it through slightly differently
+        mCompanyId = theCompanies.get(clickedItemIndex).getCompanyId();
+        companyListBundle.putInt(CURRENT_COMPANY_ID, mCompanyId);
 
         intent.putExtras(companyListBundle);
 

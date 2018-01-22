@@ -30,6 +30,7 @@ public class FundamentalsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fundamentals, container, false);
 
+        Log.d(TAG, "FundFrag OnCreateView");
         return view;
     }
 

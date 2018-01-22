@@ -29,6 +29,7 @@ import com.example.tin.roboticapp.Fragments.QaFragment;
 import com.example.tin.roboticapp.Fragments.ReportsFragment;
 import com.example.tin.roboticapp.Fragments.SectionsPagerAdapter;
 
+import static com.example.tin.roboticapp.CompListActivity.CURRENT_COMPANY_ID;
 import static com.example.tin.roboticapp.CompListActivity.CURRENT_COMPANY_NAME;
 import static com.example.tin.roboticapp.CompListActivity.CURRENT_COMPANY_TICKER;
 
@@ -51,8 +52,9 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
     private String mCompanyName;
     private String mCompanyTicker;
+    private int mCompanyId;
 
-    private FundamentalsFragment mArticleFrag;
+    private ArticlesFragment mArticleFrag;
 
     private static final String TAG = "CompanyDetailActivity";
 
@@ -64,6 +66,16 @@ public class CompanyDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_company_detail);
 
         Log.d(TAG, "onCreate: Starting.");
+
+        /** Extracting Data From Intent */
+        // Extracting Data from the Intent that started this activity
+        Intent intentFromMainActivity = getIntent();
+
+        // Here we've taken the Extra containing the the "TheSteps" Model and put it in the variable mTheSteps
+        mCompanyName = intentFromMainActivity.getStringExtra(CURRENT_COMPANY_NAME);
+        mCompanyTicker = intentFromMainActivity.getStringExtra(CURRENT_COMPANY_TICKER);
+        mCompanyId = intentFromMainActivity.getIntExtra(CURRENT_COMPANY_ID, 0);
+
 
         // The Toolbar in the activity_company_detail.xml
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -93,53 +105,39 @@ public class CompanyDetailActivity extends AppCompatActivity {
             }
         });
 
-        /** Extracting Data From Intent */
-        // Extracting Data from the Intent that started this activity
-        Intent intentFromMainActivity = getIntent();
-
-        // Here we've taken the Extra containing the the "TheSteps" Model and put it in the variable mTheSteps
-        mCompanyName = intentFromMainActivity.getStringExtra(CURRENT_COMPANY_NAME);
-        mCompanyTicker = intentFromMainActivity.getStringExtra(CURRENT_COMPANY_TICKER);
-
-        inflateArticlesFragment();
     }
 
-    // Company Name and Ticker Data Needs To Be Sent To The ArticlesFragment
-    private void inflateArticlesFragment() {
-        // Creating a Bundle to hold the companyName & companyTicker
-        Bundle argsForArticleFrag = new Bundle();
-        argsForArticleFrag.putString(CURRENT_COMPANY_NAME, mCompanyName);
-        argsForArticleFrag.putString(CURRENT_COMPANY_TICKER, mCompanyTicker);
-
-        // If we have successfully saved the data in the bundle, begin the
-        // transaction to start the StepsFragment
-        if (mCompanyName != null && mCompanyTicker != null) {
-
-            // Create the mArticlesFrag
-            mArticleFrag = new FundamentalsFragment();
-            // Placing the Bundle Arguments into the mArticlesFrag
-            mArticleFrag.setArguments(argsForArticleFrag);
-
-            // Start inflate the mArticlesFrag
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.article_container, mArticleFrag)
-                    .commit();
-        } else {
-            Toast.makeText(this, "Unable To Launch Fragment Transaction", Toast.LENGTH_SHORT).show();
-        }
-    }
+    //TODO: Do all network calls in the Activity, the Fragments should only recieve the values needed as they will
+    // be created and destroyed as the user swipes through them, so we don't want to constantly connect to the internet
+    // to download data, it should only be done once.
+    //TODO: Do the Articles JSON Feed Call Here Ideally via another Class, and pass in an ArrayList of Article to the ArticlesFragment
 
 
-
-
+//TODO: THIS IS WHERE THE FRAGMENTS ARE BEING ADDED, SO TRY "setArguments()" HERE!!!
+    // THE REASON WE WANT TO DO THIS IS BECAUSE OnCreateView Is Often Restarted Mutliple Times When Swiping Between Fragments
+    // So It Is Not Able To Persist Data, But The .getItem() Method Is Only Called Once, So By Adding The Arguments Here, They
+    // Will Be Passed To The Adapter and To The .getItem()
 
     // Uses the addFragment method within the SectionsPagerAdapter class to add the Fragments and
     // tab titles, then sets the SectionsPagerAdapter to the viewPager
     private void setupViewPager(ViewPager viewPager) {
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+
+        // Creating a Bundle to hold the companyName & companyTicker
+        Bundle argsForArticleFrag = new Bundle();
+        argsForArticleFrag.putString(CURRENT_COMPANY_NAME, mCompanyName);
+        argsForArticleFrag.putString(CURRENT_COMPANY_TICKER, mCompanyTicker);
+
+        // Create the mArticlesFrag
+        mArticleFrag = new ArticlesFragment();
+        // Placing the Bundle Arguments into the mArticlesFrag
+        mArticleFrag.setArguments(argsForArticleFrag);
+
+
         adapter.addFragment(new FundamentalsFragment(), getString(R.string.tab_text_1));
         adapter.addFragment(new QaFragment(), getString(R.string.tab_text_2));
-        adapter.addFragment(new ArticlesFragment(), getString(R.string.tab_text_3));
+        adapter.addFragment(mArticleFrag, getString(R.string.tab_text_3));
         adapter.addFragment(new ReportsFragment(), getString(R.string.tab_text_4));
         viewPager.setAdapter(adapter);
     }

@@ -32,19 +32,33 @@ public class ArticlesFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_articles, container, false);
-
         Log.d(TAG, "ARTILCES FRAGMENT onCreate Started");
-        // Extracting the data from the Bundle
-        Bundle getExtras = getArguments();
-        mCompanyName = getExtras.getString(CURRENT_COMPANY_NAME);
-        mCompanyTicker = getExtras.getString(CURRENT_COMPANY_TICKER);
 
-//        TextView tvCompanyName = (TextView) view.findViewById(R.id.tvCompanyName);
-//        tvCompanyName.setText(mCompanyName);
+            Bundle getExtras = getArguments();
+            mCompanyName = getExtras.getString(CURRENT_COMPANY_NAME);
+            mCompanyTicker = getExtras.getString(CURRENT_COMPANY_TICKER);
+
+        TextView tvCompanyName = (TextView) view.findViewById(R.id.tvCompanyName);
+        tvCompanyName.setText(mCompanyName);
 
         return view;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        Log.d(TAG, "onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        Log.d(TAG, "onStop");
+    }
 }

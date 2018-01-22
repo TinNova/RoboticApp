@@ -23,7 +23,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     private final List<Fragment> mFragmentList = new ArrayList<>();
     private final List<String> mFragmentTitleList = new ArrayList<>();
 
-    // This method will be used in the CompListActivity to add Fragments to the
+    // This method will be used in the CompanyDetailActivity to add Fragments to the
     // mFragmentList and the Fragment Title mFragmentTitleList
     public void addFragment(Fragment fragment, String title) {
         mFragmentList.add(fragment);
