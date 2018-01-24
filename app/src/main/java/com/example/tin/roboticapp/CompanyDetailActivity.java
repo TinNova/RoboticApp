@@ -2,38 +2,48 @@ package com.example.tin.roboticapp;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.tin.roboticapp.Fragments.ArticlesFragment;
 import com.example.tin.roboticapp.Fragments.FundamentalsFragment;
 import com.example.tin.roboticapp.Fragments.QaFragment;
 import com.example.tin.roboticapp.Fragments.ReportsFragment;
 import com.example.tin.roboticapp.Fragments.SectionsPagerAdapter;
+import com.example.tin.roboticapp.Models.Article;
+import com.example.tin.roboticapp.Models.TheCompany;
+import com.example.tin.roboticapp.NetworkUtils.NetworkConnection;
+import com.example.tin.roboticapp.NetworkUtils.UrlUtils;
 
-import static com.example.tin.roboticapp.CompListActivity.CURRENT_COMPANY_ID;
-import static com.example.tin.roboticapp.CompListActivity.CURRENT_COMPANY_NAME;
-import static com.example.tin.roboticapp.CompListActivity.CURRENT_COMPANY_TICKER;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.tin.roboticapp.CompanyMainActivity.CURRENT_COMPANY_ID;
+import static com.example.tin.roboticapp.CompanyMainActivity.CURRENT_COMPANY_NAME;
+import static com.example.tin.roboticapp.CompanyMainActivity.CURRENT_COMPANY_TICKER;
+import static com.example.tin.roboticapp.NetworkUtils.UrlUtils.ARTICLES_TICKER_FILTER;
+import static com.example.tin.roboticapp.NetworkUtils.UrlUtils.buildArticleURL;
 
 public class CompanyDetailActivity extends AppCompatActivity {
+
+    private static final String TAG = "CompanyDetailActivity";
+
+    public static final String ARTICLES_LIST = "articles_List";
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -56,7 +66,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
     private ArticlesFragment mArticleFrag;
 
-    private static final String TAG = "CompanyDetailActivity";
+    private List<Article> mArticles;
 
     ActionBar actionBar;
 
@@ -68,14 +78,13 @@ public class CompanyDetailActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: Starting.");
 
         /** Extracting Data From Intent */
-        // Extracting Data from the Intent that started this activity
         Intent intentFromMainActivity = getIntent();
-
         // Here we've taken the Extra containing the the "TheSteps" Model and put it in the variable mTheSteps
         mCompanyName = intentFromMainActivity.getStringExtra(CURRENT_COMPANY_NAME);
         mCompanyTicker = intentFromMainActivity.getStringExtra(CURRENT_COMPANY_TICKER);
         mCompanyId = intentFromMainActivity.getIntExtra(CURRENT_COMPANY_ID, 0);
 
+        downloadArticlesFeed();
 
         // The Toolbar in the activity_company_detail.xml
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -105,15 +114,11 @@ public class CompanyDetailActivity extends AppCompatActivity {
             }
         });
 
+
+
     }
 
-    //TODO: Do all network calls in the Activity, the Fragments should only recieve the values needed as they will
-    // be created and destroyed as the user swipes through them, so we don't want to constantly connect to the internet
-    // to download data, it should only be done once.
-    //TODO: Do the Articles JSON Feed Call Here Ideally via another Class, and pass in an ArrayList of Article to the ArticlesFragment
-
-
-//TODO: THIS IS WHERE THE FRAGMENTS ARE BEING ADDED, SO TRY "setArguments()" HERE!!!
+    /** THIS IS WHERE THE FRAGMENTS ARE BEING ADDED, SO TRY "setArguments()" HERE!!! */
     // THE REASON WE WANT TO DO THIS IS BECAUSE OnCreateView Is Often Restarted Mutliple Times When Swiping Between Fragments
     // So It Is Not Able To Persist Data, But The .getItem() Method Is Only Called Once, So By Adding The Arguments Here, They
     // Will Be Passed To The Adapter and To The .getItem()
@@ -126,8 +131,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
         // Creating a Bundle to hold the companyName & companyTicker
         Bundle argsForArticleFrag = new Bundle();
-        argsForArticleFrag.putString(CURRENT_COMPANY_NAME, mCompanyName);
-        argsForArticleFrag.putString(CURRENT_COMPANY_TICKER, mCompanyTicker);
+        argsForArticleFrag.putParcelableArrayList(ARTICLES_LIST, (ArrayList<? extends Parcelable>) mArticles);
 
         // Create the mArticlesFrag
         mArticleFrag = new ArticlesFragment();
@@ -163,6 +167,18 @@ public class CompanyDetailActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /** Downloading Articles Feed */
+    private void downloadArticlesFeed() {
+//        // Building the Articles URL
+//        URL ArticledUrl = UrlUtils.buildArticleURL(mCompanyTicker);
+//        // Converting the URL to a String
+//        String ArticleUrlString = ArticledUrl.toString();
+        // Creating an instance of the NetworkConnection Class
+        NetworkConnection nC = new NetworkConnection(this);
+        // Passing the ArticleUrlString to the NetworkConnection and getting mArticles returned
+        nC.RequestArticlesFeed("http://127.0.0.1:8000/rest-api/articles/rest-api/articles/?format=json&is_useful=yes&mode=company&ticker="+ mCompanyTicker);
     }
 
 }

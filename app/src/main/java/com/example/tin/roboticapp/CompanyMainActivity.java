@@ -2,16 +2,12 @@ package com.example.tin.roboticapp;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -21,13 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tin.roboticapp.Adapters.CompanyAdapter;
-import com.example.tin.roboticapp.Fragments.ArticlesFragment;
-import com.example.tin.roboticapp.Fragments.SectionsPagerAdapter;
-import com.example.tin.roboticapp.Fragments.FundamentalsFragment;
-import com.example.tin.roboticapp.Fragments.QaFragment;
-import com.example.tin.roboticapp.Fragments.ReportsFragment;
 import com.example.tin.roboticapp.Models.TheCompany;
-import com.example.tin.roboticapp.NetworkUtils.NetworkConnection;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,10 +28,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CompListActivity extends AppCompatActivity implements CompanyAdapter.ListItemClickListener {
+public class CompanyMainActivity extends AppCompatActivity implements CompanyAdapter.ListItemClickListener {
 
-    private static final String TAG = "CompListActivity";
+    private static final String TAG = "CompanyMainActivity";
 
+    /** Needed for Intent */
     public static String CURRENT_COMPANY_NAME = "current_company_name";
     public static String CURRENT_COMPANY_TICKER = "current_company_ticker";
     public static String CURRENT_COMPANY_ID = "current_company_id";
@@ -50,17 +41,20 @@ public class CompListActivity extends AppCompatActivity implements CompanyAdapte
     // RequestQueue is for the Volley Authentication
     private RequestQueue mRequestQueue;
     // SharePreferences, the Cookie will be stored here
-    public SharedPreferences mSharedPrefs;
+    public static SharedPreferences mSharedPrefs;
 
     /** Needed for the RecyclerView */
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter adapter;
     private List<TheCompany> theCompanies;
 
+    // int to hold companyId of the company the user clicked on from the RecyclerView
+    int mCompanyId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_comp_list);
+        setContentView(R.layout.activity_company_main);
 
         // Creating an instance of SharedPreferences & the RequestQueue
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -181,7 +175,7 @@ public class CompListActivity extends AppCompatActivity implements CompanyAdapte
 
                     }
 
-                    adapter = new CompanyAdapter(theCompanies, getApplicationContext(), CompListActivity.this);
+                    adapter = new CompanyAdapter(theCompanies, getApplicationContext(), CompanyMainActivity.this);
                     mRecyclerView.setAdapter(adapter);
 
                 } catch (JSONException e) {
@@ -220,7 +214,7 @@ public class CompListActivity extends AppCompatActivity implements CompanyAdapte
         mRequestQueue.add(request);
     }
 
-    int mCompanyId;
+
 
     /** This Only Works If You Implement: implements CompanyAdapter.ListItemClickListener */
     @Override

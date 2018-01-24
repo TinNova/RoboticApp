@@ -7,12 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.tin.roboticapp.R;
-
-import static com.example.tin.roboticapp.CompListActivity.CURRENT_COMPANY_NAME;
-import static com.example.tin.roboticapp.CompListActivity.CURRENT_COMPANY_TICKER;
 
 /**
  * Created by Tin on 09/01/2018.

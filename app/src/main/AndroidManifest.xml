@@ -16,7 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CompListActivity">
+        <activity android:name=".CompanyMainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,11 +26,11 @@
         <activity
             android:name=".CompanyDetailActivity"
             android:label="@string/title_activity_company_detail"
-            android:parentActivityName=".CompListActivity"
+            android:parentActivityName=".CompanyMainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.tin.roboticapp.CompListActivity" />
+                android:value="com.example.tin.roboticapp.CompanyMainActivity" />
         </activity>
         <activity
             android:name=".LoginActivity"
