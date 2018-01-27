@@ -25,4 +25,9 @@
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="16dp" />
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rV_articleList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </LinearLayout>

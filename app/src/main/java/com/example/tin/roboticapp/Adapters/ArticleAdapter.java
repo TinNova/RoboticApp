@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.example.tin.roboticapp.Models.Article;
 import com.example.tin.roboticapp.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ import java.util.List;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHolder> {
 
-    private final List<Article> mArticles;
+    private final ArrayList<Article> mArticles;
     private final Context context;
 
     private final ArticleAdapter.ListItemClickListener mOnClickListener;
@@ -28,7 +29,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     }
 
 
-    public ArticleAdapter(List<Article> mArticles, Context context, ArticleAdapter.ListItemClickListener listener) {
+    public ArticleAdapter(ArrayList<Article> mArticles, Context context, ArticleAdapter.ListItemClickListener listener) {
         this.mArticles = mArticles;
         this.context = context;
         mOnClickListener = listener;

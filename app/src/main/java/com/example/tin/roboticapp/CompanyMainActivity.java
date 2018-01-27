@@ -62,7 +62,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
 
         /** Creating The RecyclerView */
         // This will be used to attach the RecyclerView to the MovieAdapter
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView_companyList);
+        mRecyclerView = (RecyclerView) findViewById(R.id.rV_companyList);
         // This will improve performance by stating that changes in the content will not change
         // the child layout size in the RecyclerView
         mRecyclerView.setHasFixedSize(true);
@@ -148,7 +148,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
         final Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(final String response) {
-                Log.i("CompaniesFeed Response:", response);
+                Log.i(TAG, "CompaniesFeed Response: " + response);
 
                 /** Parsing JSON */
 

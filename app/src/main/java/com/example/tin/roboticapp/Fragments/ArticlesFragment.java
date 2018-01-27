@@ -37,8 +37,10 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
      * Needed for the RecyclerView
      */
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter adapter;
-    private List<Article> mArticleList;
+    private ArticleAdapter adapter;
+    private ArrayList<Article> mArticleList;
+    private LinearLayoutManager mLayoutManager;
+
 
 
     @Nullable
@@ -53,27 +55,30 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
         Bundle getExtras = getArguments();
         mArticleList = getExtras.getParcelableArrayList(ARTICLES_LIST);
 
-
-        /** Creating The RecyclerView */
-        // This will be used to attach the RecyclerView to the MovieAdapter
+        mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rV_articleList);
-        // This will improve performance by stating that changes in the content will not change
-        // the child layout size in the RecyclerView
-        mRecyclerView.setHasFixedSize(true);
-        /*
-         * A LayoutManager is responsible for measuring and positioning item views within a
-         * RecyclerView as well as determining the policy for when to recycle item views that
-         * are no longer visible to the user.
-         */
-        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        // Set the mRecyclerView to the layoutManager so it can handle the positioning of the items
-        mRecyclerView.setLayoutManager(mLinearLayoutManager);
-
-        adapter = new ArticleAdapter(mArticleList, getContext(), (ArticleAdapter.ListItemClickListener) getActivity());
+        //mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        adapter = new ArticleAdapter(mArticleList, getContext(), this);
         mRecyclerView.setAdapter(adapter);
 
-
-
+//        /** Creating The RecyclerView */
+//        // This will be used to attach the RecyclerView to the MovieAdapter
+//        mRecyclerView = (RecyclerView) view.findViewById(R.id.rV_articleList);
+//        // This will improve performance by stating that changes in the content will not change
+//        // the child layout size in the RecyclerView
+//        mRecyclerView.setHasFixedSize(true);
+//        /*
+//         * A LayoutManager is responsible for measuring and positioning item views within a
+//         * RecyclerView as well as determining the policy for when to recycle item views that
+//         * are no longer visible to the user.
+//         */
+//        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+//        // Set the mRecyclerView to the layoutManager so it can handle the positioning of the items
+//        mRecyclerView.setLayoutManager(mLinearLayoutManager);
+//
+//        adapter = new ArticleAdapter(mArticleList, getContext(), (ArticleAdapter.ListItemClickListener) getActivity());
+//        mRecyclerView.setAdapter(adapter);
 
         return view;
     }

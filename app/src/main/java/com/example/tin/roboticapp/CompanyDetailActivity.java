@@ -66,7 +66,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
     private ArticlesFragment mArticleFrag;
 
-    private List<Article> mArticles;
+    private ArrayList mArticles;
 
     ActionBar actionBar;
 
@@ -131,7 +131,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
         // Creating a Bundle to hold the companyName & companyTicker
         Bundle argsForArticleFrag = new Bundle();
-        argsForArticleFrag.putParcelableArrayList(ARTICLES_LIST, (ArrayList<? extends Parcelable>) mArticles);
+        argsForArticleFrag.putParcelableArrayList(ARTICLES_LIST, mArticles);
 
         // Create the mArticlesFrag
         mArticleFrag = new ArticlesFragment();
@@ -171,14 +171,16 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
     /** Downloading Articles Feed */
     private void downloadArticlesFeed() {
+        Log.i(TAG, "downloadArticlesFeed Triggered");
 //        // Building the Articles URL
 //        URL ArticledUrl = UrlUtils.buildArticleURL(mCompanyTicker);
 //        // Converting the URL to a String
 //        String ArticleUrlString = ArticledUrl.toString();
         // Creating an instance of the NetworkConnection Class
         NetworkConnection nC = new NetworkConnection(this);
+        /** WE ARE DEFAULTING TO THE EASYJET ARTICLES AS THOSE ARE THE ONLY ONES THAT EXIST*/
         // Passing the ArticleUrlString to the NetworkConnection and getting mArticles returned
-        nC.RequestArticlesFeed("http://127.0.0.1:8000/rest-api/articles/rest-api/articles/?format=json&is_useful=yes&mode=company&ticker="+ mCompanyTicker);
+        mArticles = (ArrayList) nC.RequestArticlesFeed("http://10.0.2.2:8000/rest-api/articles/?format=json&is_useful=yes&mode=company&ticker=EZJ"); //+ mCompanyTicker);
     }
 
 }
