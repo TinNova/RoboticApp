@@ -2,13 +2,10 @@ package com.example.tin.roboticapp;
 
 import android.app.ActionBar;
 import android.content.Intent;
-import android.os.Parcelable;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.FragmentPagerAdapter;
@@ -19,25 +16,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.android.volley.RequestQueue;
 import com.example.tin.roboticapp.Fragments.ArticlesFragment;
 import com.example.tin.roboticapp.Fragments.FundamentalsFragment;
 import com.example.tin.roboticapp.Fragments.QaFragment;
 import com.example.tin.roboticapp.Fragments.ReportsFragment;
 import com.example.tin.roboticapp.Fragments.SectionsPagerAdapter;
-import com.example.tin.roboticapp.Models.Article;
-import com.example.tin.roboticapp.Models.TheCompany;
-import com.example.tin.roboticapp.NetworkUtils.NetworkConnection;
-import com.example.tin.roboticapp.NetworkUtils.UrlUtils;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.example.tin.roboticapp.CompanyMainActivity.CURRENT_COMPANY_ID;
 import static com.example.tin.roboticapp.CompanyMainActivity.CURRENT_COMPANY_NAME;
 import static com.example.tin.roboticapp.CompanyMainActivity.CURRENT_COMPANY_TICKER;
-import static com.example.tin.roboticapp.NetworkUtils.UrlUtils.ARTICLES_TICKER_FILTER;
-import static com.example.tin.roboticapp.NetworkUtils.UrlUtils.buildArticleURL;
 
 public class CompanyDetailActivity extends AppCompatActivity {
 
@@ -66,7 +54,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
     private ArticlesFragment mArticleFrag;
 
-    private ArrayList mArticles;
+
 
     ActionBar actionBar;
 
@@ -77,14 +65,13 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate: Starting.");
 
+
         /** Extracting Data From Intent */
         Intent intentFromMainActivity = getIntent();
         // Here we've taken the Extra containing the the "TheSteps" Model and put it in the variable mTheSteps
         mCompanyName = intentFromMainActivity.getStringExtra(CURRENT_COMPANY_NAME);
         mCompanyTicker = intentFromMainActivity.getStringExtra(CURRENT_COMPANY_TICKER);
         mCompanyId = intentFromMainActivity.getIntExtra(CURRENT_COMPANY_ID, 0);
-
-        downloadArticlesFeed();
 
         // The Toolbar in the activity_company_detail.xml
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -114,11 +101,11 @@ public class CompanyDetailActivity extends AppCompatActivity {
             }
         });
 
-
-
     }
 
-    /** THIS IS WHERE THE FRAGMENTS ARE BEING ADDED, SO TRY "setArguments()" HERE!!! */
+    /**
+     * THIS IS WHERE THE FRAGMENTS ARE BEING ADDED, SO TRY "setArguments()" HERE!!!
+     */
     // THE REASON WE WANT TO DO THIS IS BECAUSE OnCreateView Is Often Restarted Mutliple Times When Swiping Between Fragments
     // So It Is Not Able To Persist Data, But The .getItem() Method Is Only Called Once, So By Adding The Arguments Here, They
     // Will Be Passed To The Adapter and To The .getItem()
@@ -128,16 +115,15 @@ public class CompanyDetailActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-
-        // Creating a Bundle to hold the companyName & companyTicker
         Bundle argsForArticleFrag = new Bundle();
-        argsForArticleFrag.putParcelableArrayList(ARTICLES_LIST, mArticles);
+
+        argsForArticleFrag.putString(CURRENT_COMPANY_NAME, mCompanyName);
+        argsForArticleFrag.putString(CURRENT_COMPANY_TICKER, mCompanyTicker);
 
         // Create the mArticlesFrag
         mArticleFrag = new ArticlesFragment();
         // Placing the Bundle Arguments into the mArticlesFrag
         mArticleFrag.setArguments(argsForArticleFrag);
-
 
         adapter.addFragment(new FundamentalsFragment(), getString(R.string.tab_text_1));
         adapter.addFragment(new QaFragment(), getString(R.string.tab_text_2));
@@ -167,20 +153,6 @@ public class CompanyDetailActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    /** Downloading Articles Feed */
-    private void downloadArticlesFeed() {
-        Log.i(TAG, "downloadArticlesFeed Triggered");
-//        // Building the Articles URL
-//        URL ArticledUrl = UrlUtils.buildArticleURL(mCompanyTicker);
-//        // Converting the URL to a String
-//        String ArticleUrlString = ArticledUrl.toString();
-        // Creating an instance of the NetworkConnection Class
-        NetworkConnection nC = new NetworkConnection(this);
-        /** WE ARE DEFAULTING TO THE EASYJET ARTICLES AS THOSE ARE THE ONLY ONES THAT EXIST*/
-        // Passing the ArticleUrlString to the NetworkConnection and getting mArticles returned
-        mArticles = (ArrayList) nC.RequestArticlesFeed("http://10.0.2.2:8000/rest-api/articles/?format=json&is_useful=yes&mode=company&ticker=EZJ"); //+ mCompanyTicker);
     }
 
 }

@@ -17,6 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tin.roboticapp.Adapters.CompanyAdapter;
+import com.example.tin.roboticapp.Models.Article;
 import com.example.tin.roboticapp.Models.TheCompany;
 
 import org.json.JSONArray;
@@ -36,6 +37,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
     public static String CURRENT_COMPANY_NAME = "current_company_name";
     public static String CURRENT_COMPANY_TICKER = "current_company_ticker";
     public static String CURRENT_COMPANY_ID = "current_company_id";
+    public static String CUURENT_COMPANY_ARTICLES = "current_company_articles";
 
     /** Needed for Login & Cookie Authorisation */
     // RequestQueue is for the Volley Authentication
@@ -49,7 +51,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
     private List<TheCompany> theCompanies;
 
     // int to hold companyId of the company the user clicked on from the RecyclerView
-    int mCompanyId;
+    private int mCompanyId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,7 +173,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
                         );
 
                         theCompanies.add(theCompany);
-                        Log.v(TAG, "Companies List: " + theCompany);
+                        //Log.v(TAG, "Companies List: " + theCompany);
 
                     }
 
@@ -222,14 +224,17 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
 
         Intent intent = new Intent(this, CompanyDetailActivity.class);
 
+        /** WE ARE DEFAULTING TO THE EASYJET ARTICLES AS THOSE ARE THE ONLY ONES THAT EXIST*/
+        // Passing the ArticleUrlString to the NetworkConnection and getting mArticles returned
+
+        // The company ID is not part of the recycler view, so we have to pass it through slightly differently
+        mCompanyId = theCompanies.get(clickedItemIndex).getCompanyId();
+
         // Company Name is needed for the Title of the Activity
         // Ticker is needed for Articles Feed and Title of The Activity
         Bundle companyListBundle = new Bundle();
         companyListBundle.putString(CURRENT_COMPANY_NAME, theCompanies.get(clickedItemIndex).getCompanyName());
         companyListBundle.putString(CURRENT_COMPANY_TICKER, theCompanies.get(clickedItemIndex).getCompanyticker());
-
-        // The company ID is not part of the recycler view, so we have to pass it through slightly differently
-        mCompanyId = theCompanies.get(clickedItemIndex).getCompanyId();
         companyListBundle.putInt(CURRENT_COMPANY_ID, mCompanyId);
 
         intent.putExtras(companyListBundle);
@@ -237,4 +242,5 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
         startActivity(intent);
 
     }
+
 }

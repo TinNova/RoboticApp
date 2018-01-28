@@ -37,7 +37,7 @@ public class NetworkConnection {
     }
 
     /** Request on Articles Json w/Cookie attached to request */
-    public ArrayList<Article> RequestArticlesFeed(String url) {
+    public void RequestArticlesFeed(String url) {
 
         Log.i(TAG, "RequestArticlesFeed");
         // Handler for the JSON response when server returns ok
@@ -113,8 +113,6 @@ public class NetworkConnection {
         };
 
         mRequestQueue.add(request);
-
-        return mArticles;
 
     }
 
