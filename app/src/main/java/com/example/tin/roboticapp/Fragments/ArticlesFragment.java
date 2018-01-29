@@ -43,47 +43,57 @@ import static com.example.tin.roboticapp.CompanyMainActivity.CURRENT_COMPANY_TIC
 public class ArticlesFragment extends Fragment implements ArticleAdapter.ListItemClickListener {
 
     private static final String TAG = "ArticlesFragment";
-
     private static final String ARTICLE_ARRAY = "article_array";
-
-
-    private String mCompanyName;
-    private String mCompanyTicker;
-
 
     /** Needed for Volley Network Connection */
     // RequestQueue is for the Volley Network Connection
     private RequestQueue mRequestQueue;
-    private ArrayList<Article> mArticles;
-
 
     /**
      * Needed for the RecyclerView
      */
-//    private RecyclerView mRecyclerView;
-//    private ArticleAdapter adapter;
-//    private ArrayList<Article> mArticleList;
-//    private LinearLayoutManager mLayoutManager;
+    private RecyclerView mRecyclerView;
+    private ArticleAdapter adapter;
+    private ArrayList<Article> mArticles;
 
-    Bundle mySavedInstanceState;
-
+    /**
+     * Needed to save the state of the Fragment when Fragment enter onDestroyView
+     * onSavedInstate state is not good enough as it only saves state when the Activty's View is Destroyed
+     */
+    Bundle fragSavedInstanceState;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_articles, container, false);
 
         Log.v(TAG, ">>>>>>>>>>>>>>>>ON CREATE VIEW<<<<<<<<<<<<<<<<");
 
-
         mArticles = new ArrayList<>();
 
-        if (mySavedInstanceState != null) {
+        /** Creating The RecyclerView */
+        // This will be used to attach the RecyclerView to the MovieAdapter
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.rV_articleList);
+        // This will improve performance by stating that changes in the content will not change
+        // the child layout size in the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+        /*
+         * A LayoutManager is responsible for measuring and positioning item views within a
+         * RecyclerView as well as determining the policy for when to recycle item views that
+         * are no longer visible to the user.
+         */
+        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        // Set the mRecyclerView to the layoutManager so it can handle the positioning of the items
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
-            mArticles = mySavedInstanceState.getParcelableArrayList(ARTICLE_ARRAY);
+        if (fragSavedInstanceState != null) {
+
+            mArticles = fragSavedInstanceState.getParcelableArrayList(ARTICLE_ARRAY);
             Log.v(TAG, "mySavedInstanceState: " + mArticles);
+
+            adapter = new ArticleAdapter(mArticles, getContext(), ArticlesFragment.this);
+            mRecyclerView.setAdapter(adapter);
+
         } else {
 
             // Creating a Request Queue for the Volley Network Connection
@@ -91,36 +101,10 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
             RequestArticlesFeed("http://10.0.2.2:8000/rest-api/articles/?format=json&is_useful=yes&mode=company&ticker=EZJ"); //+ mCompanyTicker);
 
         }
-//        Bundle getExtras = getArguments();
-//        mArticleList = getExtras.getParcelableArrayList(ARTICLES_LIST);
-//
-//        mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-//        mRecyclerView = (RecyclerView) view.findViewById(R.id.rV_articleList);
-//        //mRecyclerView.setHasFixedSize(true);
-//        mRecyclerView.setLayoutManager(mLayoutManager);
-//        adapter = new ArticleAdapter(mArticleList, getContext(), this);
-//        mRecyclerView.setAdapter(adapter);
-
-//        /** Creating The RecyclerView */
-//        // This will be used to attach the RecyclerView to the MovieAdapter
-//        mRecyclerView = (RecyclerView) view.findViewById(R.id.rV_articleList);
-//        // This will improve performance by stating that changes in the content will not change
-//        // the child layout size in the RecyclerView
-//        mRecyclerView.setHasFixedSize(true);
-//        /*
-//         * A LayoutManager is responsible for measuring and positioning item views within a
-//         * RecyclerView as well as determining the policy for when to recycle item views that
-//         * are no longer visible to the user.
-//         */
-//        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-//        // Set the mRecyclerView to the layoutManager so it can handle the positioning of the items
-//        mRecyclerView.setLayoutManager(mLinearLayoutManager);
-//
-//        adapter = new ArticleAdapter(mArticleList, getContext(), (ArticleAdapter.ListItemClickListener) getActivity());
-//        mRecyclerView.setAdapter(adapter);
 
         return view;
     }
+
 
     @Override
     public void onDestroyView() {
@@ -128,8 +112,12 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
 
         Log.v(TAG, ">>>>>>>>>>>>>>>>ON DESTROY VIEW<<<<<<<<<<<<<<<<");
 
-        mySavedInstanceState = new Bundle();
-        mySavedInstanceState.putParcelableArrayList(ARTICLE_ARRAY, mArticles);
+        /** Saving an instance of the Articles List, because as the user navigates through the tabs
+         * this Fragment will enter onDestroyView and there for the data will be lost unless saved
+         *  HOWEVER: The onSaveInstanceState only saves data when the ACTIVITY is destroyed, therefore
+         *  we need a fragSavedInstanceState to save state when the Fragments View is Destroyed. */
+        fragSavedInstanceState = new Bundle();
+        fragSavedInstanceState.putParcelableArrayList(ARTICLE_ARRAY, mArticles);
     }
 
 
@@ -140,6 +128,7 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
         //Get the Source_URL and launch an intent to the preferred web-browser
 
     }
+
 
     /**
      * Request on Articles Json w/Cookie attached to request
@@ -185,6 +174,9 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
                         //Log.v(TAG, "Article List: " + article);
 
                     }
+
+                    adapter = new ArticleAdapter(mArticles, getContext(), ArticlesFragment.this);
+                    mRecyclerView.setAdapter(adapter);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -232,7 +224,7 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
         Log.v(TAG, ">>>>>>>>>>>>>>>On SAVED INSTANCE STATE<<<<<<<<<<<<<<<<<<<<");
 
         outState.putParcelableArrayList(ARTICLE_ARRAY, mArticles);
-    }
 
+    }
 
 }

@@ -53,6 +53,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
     private int mCompanyId;
 
     private ArticlesFragment mArticleFrag;
+    private FundamentalsFragment mFundFrag;
 
 
 
@@ -116,16 +117,23 @@ public class CompanyDetailActivity extends AppCompatActivity {
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         Bundle argsForArticleFrag = new Bundle();
-
         argsForArticleFrag.putString(CURRENT_COMPANY_NAME, mCompanyName);
         argsForArticleFrag.putString(CURRENT_COMPANY_TICKER, mCompanyTicker);
+
+        Bundle argsForFundFrag = new Bundle();
+        argsForFundFrag.putString(CURRENT_COMPANY_NAME, mCompanyName);
+        argsForFundFrag.putString(CURRENT_COMPANY_TICKER, mCompanyTicker);
+        argsForFundFrag.putInt(CURRENT_COMPANY_ID, mCompanyId);
 
         // Create the mArticlesFrag
         mArticleFrag = new ArticlesFragment();
         // Placing the Bundle Arguments into the mArticlesFrag
         mArticleFrag.setArguments(argsForArticleFrag);
 
-        adapter.addFragment(new FundamentalsFragment(), getString(R.string.tab_text_1));
+        mFundFrag = new FundamentalsFragment();
+        mFundFrag.setArguments(argsForFundFrag);
+
+        adapter.addFragment(mFundFrag, getString(R.string.tab_text_1));
         adapter.addFragment(new QaFragment(), getString(R.string.tab_text_2));
         adapter.addFragment(mArticleFrag, getString(R.string.tab_text_3));
         adapter.addFragment(new ReportsFragment(), getString(R.string.tab_text_4));

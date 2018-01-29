@@ -37,7 +37,6 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
     public static String CURRENT_COMPANY_NAME = "current_company_name";
     public static String CURRENT_COMPANY_TICKER = "current_company_ticker";
     public static String CURRENT_COMPANY_ID = "current_company_id";
-    public static String CUURENT_COMPANY_ARTICLES = "current_company_articles";
 
     /** Needed for Login & Cookie Authorisation */
     // RequestQueue is for the Volley Authentication

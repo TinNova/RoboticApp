@@ -8,7 +8,7 @@
     tools:context="com.example.tin.roboticapp.CompanyDetailActivity$PlaceholderFragment">
 
     <TextView
-        android:id="@+id/fragtitle"
+        android:id="@+id/tv_price_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Fundamentals Fragment"
@@ -17,12 +17,14 @@
         tools:layout_editor_absoluteX="61dp"
         tools:layout_editor_absoluteY="93dp" />
 
-    <Button
-        android:id="@+id/btnTempFund"
+    <TextView
+        android:id="@+id/tv_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Test Button"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="16dp" />
+        android:text="Fundamentals Fragment"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        tools:layout_editor_absoluteX="61dp"
+        tools:layout_editor_absoluteY="93dp" />
 
 </LinearLayout>
