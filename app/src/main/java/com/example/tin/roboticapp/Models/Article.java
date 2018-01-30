@@ -15,6 +15,7 @@ public class Article implements Parcelable {
     private String summary;
     private String sourceUrl;
 
+    // Constructor
     public Article (int articleId, String publishDate, String headline, String summary, String sourceUrl) {
         this.articleId = articleId;
         this.publishDate = publishDate;

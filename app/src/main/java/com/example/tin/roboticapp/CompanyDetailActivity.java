@@ -16,11 +16,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.android.volley.RequestQueue;
 import com.example.tin.roboticapp.Fragments.ArticlesFragment;
+import com.example.tin.roboticapp.Fragments.CommentsFragment;
 import com.example.tin.roboticapp.Fragments.FundamentalsFragment;
 import com.example.tin.roboticapp.Fragments.QaFragment;
-import com.example.tin.roboticapp.Fragments.ReportsFragment;
 import com.example.tin.roboticapp.Fragments.SectionsPagerAdapter;
 
 import static com.example.tin.roboticapp.CompanyMainActivity.CURRENT_COMPANY_ID;
@@ -54,6 +53,8 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
     private ArticlesFragment mArticleFrag;
     private FundamentalsFragment mFundFrag;
+    private CommentsFragment mDiscussionFrag;
+    private QaFragment mQaFragment;
 
 
 
@@ -116,27 +117,32 @@ public class CompanyDetailActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        Bundle argsForArticleFrag = new Bundle();
-        argsForArticleFrag.putString(CURRENT_COMPANY_NAME, mCompanyName);
-        argsForArticleFrag.putString(CURRENT_COMPANY_TICKER, mCompanyTicker);
-
-        Bundle argsForFundFrag = new Bundle();
-        argsForFundFrag.putString(CURRENT_COMPANY_NAME, mCompanyName);
-        argsForFundFrag.putString(CURRENT_COMPANY_TICKER, mCompanyTicker);
-        argsForFundFrag.putInt(CURRENT_COMPANY_ID, mCompanyId);
+        // args are the same for every Fragment
+        Bundle argsForFrags = new Bundle();
+        argsForFrags.putString(CURRENT_COMPANY_NAME, mCompanyName);
+        argsForFrags.putString(CURRENT_COMPANY_TICKER, mCompanyTicker);
+        argsForFrags.putInt(CURRENT_COMPANY_ID, mCompanyId);
 
         // Create the mArticlesFrag
         mArticleFrag = new ArticlesFragment();
         // Placing the Bundle Arguments into the mArticlesFrag
-        mArticleFrag.setArguments(argsForArticleFrag);
+        mArticleFrag.setArguments(argsForFrags);
 
         mFundFrag = new FundamentalsFragment();
-        mFundFrag.setArguments(argsForFundFrag);
+        mFundFrag.setArguments(argsForFrags);
+
+        mDiscussionFrag = new CommentsFragment();
+        mDiscussionFrag.setArguments(argsForFrags);
+
+        mQaFragment = new QaFragment();
+        mQaFragment.setArguments(argsForFrags);
+
+
 
         adapter.addFragment(mFundFrag, getString(R.string.tab_text_1));
-        adapter.addFragment(new QaFragment(), getString(R.string.tab_text_2));
+        adapter.addFragment(mQaFragment, getString(R.string.tab_text_2));
         adapter.addFragment(mArticleFrag, getString(R.string.tab_text_3));
-        adapter.addFragment(new ReportsFragment(), getString(R.string.tab_text_4));
+        adapter.addFragment(mDiscussionFrag, getString(R.string.tab_text_4));
         viewPager.setAdapter(adapter);
     }
 

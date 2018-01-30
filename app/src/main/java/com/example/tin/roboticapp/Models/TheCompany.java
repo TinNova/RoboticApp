@@ -55,7 +55,7 @@ public class TheCompany implements Parcelable {
         parcel.writeInt(companySector);
     }
 
-    /** Getters & Setters */
+    /** Getters */
     public int getCompanyId() {
         return companyId;
     }

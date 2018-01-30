@@ -8,7 +8,7 @@
     tools:context="com.example.tin.roboticapp.CompanyDetailActivity$PlaceholderFragment">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rV_articleList"
+        android:id="@+id/rv_comments_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

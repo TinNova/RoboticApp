@@ -149,7 +149,6 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
         final Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(final String response) {
-                Log.i(TAG, "CompaniesFeed Response: " + response);
 
                 /** Parsing JSON */
 
@@ -222,9 +221,6 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
     public void onListItemClick(int clickedItemIndex) {
 
         Intent intent = new Intent(this, CompanyDetailActivity.class);
-
-        /** WE ARE DEFAULTING TO THE EASYJET ARTICLES AS THOSE ARE THE ONLY ONES THAT EXIST*/
-        // Passing the ArticleUrlString to the NetworkConnection and getting mArticles returned
 
         // The company ID is not part of the recycler view, so we have to pass it through slightly differently
         mCompanyId = theCompanies.get(clickedItemIndex).getCompanyId();
