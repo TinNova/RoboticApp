@@ -1,5 +1,6 @@
 package com.example.tin.roboticapp.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,7 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -17,9 +18,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.tin.roboticapp.CompanyMainActivity;
+import com.example.tin.roboticapp.Activities.CompanyMainActivity;
+import com.example.tin.roboticapp.Activities.QaDetailActivity;
 import com.example.tin.roboticapp.Models.Answer;
-import com.example.tin.roboticapp.Models.Fundamental;
 import com.example.tin.roboticapp.Models.Question;
 import com.example.tin.roboticapp.R;
 
@@ -39,17 +40,19 @@ public class QaFragment extends Fragment {
 
     private static final String TAG = "QAFragment";
 
-    private static final String QUESTION_01 = "question_01";
-    private static final String QUESTION_02 = "question_02";
-    private static final String QUESTION_03 = "question_03";
-    private static final String QUESTION_04 = "question_04";
-    private static final String QUESTION_05 = "question_05";
+    public static final String QUESTION_01 = "question_01";
+    public static final String QUESTION_02 = "question_02";
+    public static final String QUESTION_03 = "question_03";
+    public static final String QUESTION_04 = "question_04";
+    public static final String QUESTION_05 = "question_05";
 
-    private static final String ANSWER_01 = "answer_01";
-    private static final String ANSWER_02 = "answer_02";
-    private static final String ANSWER_03 = "answer_03";
-    private static final String ANSWER_04 = "answer_04";
-    private static final String ANSWER_05 = "answer_05";
+    public static final String ANSWER_01 = "answer_01";
+    public static final String ANSWER_02 = "answer_02";
+    public static final String ANSWER_03 = "answer_03";
+    public static final String ANSWER_04 = "answer_04";
+    public static final String ANSWER_05 = "answer_05";
+
+    public static final String NEW_ANSWER = "new_answer";
 
     String sQuestion01;
     String sQuestion02;
@@ -62,6 +65,7 @@ public class QaFragment extends Fragment {
 
     private TextView tvQuestion01, tvQuestion02, tvQuestion03, tvQuestion04, tvQuestion05;
     private TextView tvAnswer01, tvAnswer02, tvAnswer03, tvAnswer04, tvAnswer05;
+    private ImageView editIcon1, editIcon2, editIcon3, editIcon4, editIcon5;
 
     /**
      * Needed to save the state of the Fragment when Fragment enter onDestroyView
@@ -70,6 +74,7 @@ public class QaFragment extends Fragment {
     Bundle fragSavedInstanceState;
     ArrayList<Question> mQuestionArray;
     ArrayList<Answer> mAnswerArray;
+    Bundle onClickBundle;
 
     @Nullable
     @Override
@@ -117,8 +122,46 @@ public class QaFragment extends Fragment {
 
         }
 
+        editIcon1 = (ImageView) view.findViewById(R.id.qa_editIcon_1);
+        editIcon2 = (ImageView) view.findViewById(R.id.qa_editIcon_2);
+        editIcon3 = (ImageView) view.findViewById(R.id.qa_editIcon_3);
+        editIcon4 = (ImageView) view.findViewById(R.id.qa_editIcon_4);
+        editIcon5 = (ImageView) view.findViewById(R.id.qa_editIcon_5);
+
+        onClick();
+
         return view;
     }
+
+    private void onClick() {
+
+        editIcon1.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+
+                onClickBundle = new Bundle();
+                boolean newAnswer;
+                onClickBundle.putString(QUESTION_01, tvQuestion01.getText().toString());
+
+                // if is not "", then pass it to the bundle, else, don't pass it and mark the boolean
+                // as false (needed to know if this is a first time entry or an edit to an existing answer
+                if (tvAnswer01.getText().toString() != "") {
+                    newAnswer = false;
+                    onClickBundle.putString(ANSWER_01, tvAnswer01.getText().toString());
+                    onClickBundle.putBoolean(NEW_ANSWER, newAnswer);
+                } else {
+                    newAnswer = true;
+                    onClickBundle.putBoolean(NEW_ANSWER, newAnswer);
+                }
+
+                Intent intent = new Intent(getActivity(), QaDetailActivity.class);
+                intent.putExtras(onClickBundle);
+                startActivity(intent);
+            }
+        });
+    }
+
 
     /**
      * Request on Articles Json w/Cookie attached to request

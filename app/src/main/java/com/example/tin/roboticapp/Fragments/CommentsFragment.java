@@ -18,7 +18,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tin.roboticapp.Adapters.CommentAdapter;
-import com.example.tin.roboticapp.CompanyMainActivity;
+import com.example.tin.roboticapp.Activities.CompanyMainActivity;
 import com.example.tin.roboticapp.Models.Comment;
 import com.example.tin.roboticapp.R;
 

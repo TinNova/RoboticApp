@@ -1,4 +1,4 @@
-package com.example.tin.roboticapp;
+package com.example.tin.roboticapp.Activities;
 
 import android.app.ActionBar;
 import android.content.Intent;
@@ -15,16 +15,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.tin.roboticapp.Fragments.ArticlesFragment;
 import com.example.tin.roboticapp.Fragments.CommentsFragment;
 import com.example.tin.roboticapp.Fragments.FundamentalsFragment;
 import com.example.tin.roboticapp.Fragments.QaFragment;
 import com.example.tin.roboticapp.Fragments.SectionsPagerAdapter;
-
-import static com.example.tin.roboticapp.CompanyMainActivity.CURRENT_COMPANY_ID;
-import static com.example.tin.roboticapp.CompanyMainActivity.CURRENT_COMPANY_NAME;
-import static com.example.tin.roboticapp.CompanyMainActivity.CURRENT_COMPANY_TICKER;
+import com.example.tin.roboticapp.R;
 
 public class CompanyDetailActivity extends AppCompatActivity {
 
@@ -70,10 +68,18 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
         /** Extracting Data From Intent */
         Intent intentFromMainActivity = getIntent();
-        // Here we've taken the Extra containing the the "TheSteps" Model and put it in the variable mTheSteps
-        mCompanyName = intentFromMainActivity.getStringExtra(CURRENT_COMPANY_NAME);
-        mCompanyTicker = intentFromMainActivity.getStringExtra(CURRENT_COMPANY_TICKER);
-        mCompanyId = intentFromMainActivity.getIntExtra(CURRENT_COMPANY_ID, 0);
+        if (intentFromMainActivity.getExtras() != null) {
+
+            // Here we've taken the Extra containing the the "TheSteps" Model and put it in the variable mTheSteps
+            mCompanyName = intentFromMainActivity.getStringExtra(CompanyMainActivity.CURRENT_COMPANY_NAME);
+            mCompanyTicker = intentFromMainActivity.getStringExtra(CompanyMainActivity.CURRENT_COMPANY_TICKER);
+            mCompanyId = intentFromMainActivity.getIntExtra(CompanyMainActivity.CURRENT_COMPANY_ID, 0);
+
+        } else {
+
+            Toast.makeText(this, "ERROR: Data didn't load correctly", Toast.LENGTH_SHORT).show();
+
+        }
 
         // The Toolbar in the activity_company_detail.xml
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -119,9 +125,9 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
         // args are the same for every Fragment
         Bundle argsForFrags = new Bundle();
-        argsForFrags.putString(CURRENT_COMPANY_NAME, mCompanyName);
-        argsForFrags.putString(CURRENT_COMPANY_TICKER, mCompanyTicker);
-        argsForFrags.putInt(CURRENT_COMPANY_ID, mCompanyId);
+        argsForFrags.putString(CompanyMainActivity.CURRENT_COMPANY_NAME, mCompanyName);
+        argsForFrags.putString(CompanyMainActivity.CURRENT_COMPANY_TICKER, mCompanyTicker);
+        argsForFrags.putInt(CompanyMainActivity.CURRENT_COMPANY_ID, mCompanyId);
 
         // Create the mArticlesFrag
         mArticleFrag = new ArticlesFragment();

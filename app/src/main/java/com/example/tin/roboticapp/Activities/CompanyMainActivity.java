@@ -1,4 +1,4 @@
-package com.example.tin.roboticapp;
+package com.example.tin.roboticapp.Activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,8 +17,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tin.roboticapp.Adapters.CompanyAdapter;
-import com.example.tin.roboticapp.Models.Article;
 import com.example.tin.roboticapp.Models.TheCompany;
+import com.example.tin.roboticapp.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;

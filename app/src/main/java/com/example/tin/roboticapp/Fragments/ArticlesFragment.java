@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -19,7 +18,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tin.roboticapp.Adapters.ArticleAdapter;
-import com.example.tin.roboticapp.CompanyMainActivity;
+import com.example.tin.roboticapp.Activities.CompanyMainActivity;
 import com.example.tin.roboticapp.Models.Article;
 import com.example.tin.roboticapp.R;
 
@@ -29,12 +28,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import static com.example.tin.roboticapp.CompanyDetailActivity.ARTICLES_LIST;
-import static com.example.tin.roboticapp.CompanyMainActivity.CURRENT_COMPANY_NAME;
-import static com.example.tin.roboticapp.CompanyMainActivity.CURRENT_COMPANY_TICKER;
 
 /**
  * Created by Tin on 09/01/2018.

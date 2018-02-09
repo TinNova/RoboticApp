@@ -16,9 +16,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.tin.roboticapp.Adapters.ArticleAdapter;
-import com.example.tin.roboticapp.CompanyMainActivity;
-import com.example.tin.roboticapp.Models.Article;
+import com.example.tin.roboticapp.Activities.CompanyMainActivity;
 import com.example.tin.roboticapp.Models.Fundamental;
 import com.example.tin.roboticapp.R;
 
@@ -26,7 +24,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 

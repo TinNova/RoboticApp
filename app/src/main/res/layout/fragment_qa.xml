@@ -3,150 +3,246 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context="com.example.tin.roboticapp.CompanyDetailActivity$PlaceholderFragment">
+    tools:context="com.example.tin.roboticapp.Activities.CompanyDetailActivity$PlaceholderFragment">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tv_question_01"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:text="What Does The Business Do?"
-            android:textAlignment="textStart"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tv_answer_01"
-            android:layout_width="wrap_content"
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_gravity="center"
             android:layout_marginTop="8dp"
-            android:text="lorem ipsum"
-            android:textAlignment="center"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_question_01" />
+            card_view:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tv_question_02"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="24dp"
-            android:paddingTop="16dp"
-            android:text="What Does The Business Do?"
-            android:textAlignment="textStart"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_answer_01" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
 
-        <TextView
-            android:id="@+id/tv_answer_02"
-            android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/tv_question_01"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="What Does The Business Do?"
+                    android:textAlignment="textStart"
+                    android:textSize="@dimen/question_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_answer_01"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/answer_padding"
+                    tools:text="lorem ipsum"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/answer_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_question_01" />
+
+                <ImageView
+                    android:id="@+id/qa_editIcon_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:src="@drawable/ic_mode_edit_black_24dp" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view_2"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_gravity="center"
             android:layout_marginTop="8dp"
-            android:text="lorem ipsum"
-            android:textAlignment="center"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_question_02" />
+            card_view:layout_constraintTop_toBottomOf="@+id/card_view"
+            tools:layout_editor_absoluteX="0dp">
 
-        <TextView
-            android:id="@+id/tv_question_03"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:paddingTop="16dp"
-            android:text="What Does The Business Do?"
-            android:textAlignment="textStart"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_answer_02" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
 
-        <TextView
-            android:id="@+id/tv_answer_03"
-            android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/tv_question_02"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="What Does The Business Do?"
+                    android:textAlignment="textStart"
+                    android:textSize="@dimen/question_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_answer_01" />
+
+                <TextView
+                    android:id="@+id/tv_answer_02"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/answer_padding"
+                    tools:text="lorem ipsum"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/answer_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_question_02" />
+
+                <ImageView
+                    android:id="@+id/qa_editIcon_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:src="@drawable/ic_mode_edit_black_24dp" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view_3"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_gravity="center"
             android:layout_marginTop="8dp"
-            android:text="lorem ipsum"
-            android:textAlignment="center"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_question_03" />
+            card_view:layout_constraintTop_toBottomOf="@+id/card_view_2"
+            tools:layout_editor_absoluteX="0dp">
 
-        <TextView
-            android:id="@+id/tv_question_04"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:paddingTop="16dp"
-            android:text="What Does The Business Do?"
-            android:textAlignment="textStart"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_answer_03" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
 
-        <TextView
-            android:id="@+id/tv_answer_04"
-            android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/tv_question_03"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="What Does The Business Do?"
+                    android:textAlignment="textStart"
+                    android:textSize="@dimen/question_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_answer_02" />
+
+                <TextView
+                    android:id="@+id/tv_answer_03"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/answer_padding"
+                    tools:text="lorem ipsum"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/answer_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_question_03" />
+
+                <ImageView
+                    android:id="@+id/qa_editIcon_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:src="@drawable/ic_mode_edit_black_24dp" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view_4"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_gravity="center"
             android:layout_marginTop="8dp"
-            android:text="lorem ipsum"
-            android:textAlignment="center"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_question_04" />
+            card_view:layout_constraintTop_toBottomOf="@+id/card_view_3"
+            tools:layout_editor_absoluteX="0dp">
 
-        <TextView
-            android:id="@+id/tv_question_05"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:paddingTop="16dp"
-            android:text="What Does The Business Do?"
-            android:textAlignment="textStart"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_answer_04" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
 
-        <TextView
-            android:id="@+id/tv_answer_05"
-            android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/tv_question_04"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="What Does The Business Do?"
+                    android:textAlignment="textStart"
+                    android:textSize="@dimen/question_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_answer_03" />
+
+                <TextView
+                    android:id="@+id/tv_answer_04"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/answer_padding"
+                    tools:text="lorem ipsum"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/answer_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_question_04" />
+
+                <ImageView
+                    android:id="@+id/qa_editIcon_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:src="@drawable/ic_mode_edit_black_24dp" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view_5"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
-            android:paddingBottom="100dp"
-            android:text="lorem ipsum"
-            android:textAlignment="center"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_question_05" />
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/card_view_4"
+            tools:layout_editor_absoluteX="32dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/tv_question_05"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="What Does The Business Do?"
+                    android:textAlignment="textStart"
+                    android:textSize="@dimen/question_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_answer_04" />
+
+                <TextView
+                    android:id="@+id/tv_answer_05"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/answer_padding"
+                    tools:text="lorem ipsum"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/answer_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_question_05" />
+
+                <ImageView
+                    android:id="@+id/qa_editIcon_5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:src="@drawable/ic_mode_edit_black_24dp" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
 
     </android.support.constraint.ConstraintLayout>
-
 
 </ScrollView>
