@@ -92,19 +92,34 @@ public class QaDetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        String newAnswer = mAnswerView.getText().toString();
+        switch (item.getItemId()) {
+            // If UP button is clicked, it will call onBackPressed (Instead of an actual UP)
+            case android.R.id.home:
+                super.onBackPressed();
+                return true;
+            // If Save is clicked, it will launch the POST request
+            case R.id.menu_qa_detail_save:
+                String newAnswer = mAnswerView.getText().toString();
 
-        /** HERE INSERT THE POST FUNCTION USING THE NEW ANSWER */
+                /** HERE INSERT THE POST FUNCTION USING THE NEW ANSWER */
 
-        Toast.makeText(this, "Answer Saved.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Answer Saved.", Toast.LENGTH_SHORT).show();
+
+        }
 
         return super.onOptionsItemSelected(item);
     }
+
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case android.R.id.home:
+//                super.onBackPressed();
+//                return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
 
 

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">RoboticApp</string>
     <string name="title_activity_company_detail">CompanyDetailActivity</string>
+    <string name="title_activity_qa_detail">QaDetailActivity</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_login">Sign in</string>
