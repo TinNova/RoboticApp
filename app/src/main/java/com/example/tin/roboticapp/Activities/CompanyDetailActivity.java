@@ -143,8 +143,6 @@ public class CompanyDetailActivity extends AppCompatActivity {
         mQaFragment = new QaFragment();
         mQaFragment.setArguments(argsForFrags);
 
-
-
         adapter.addFragment(mFundFrag, getString(R.string.tab_text_1));
         adapter.addFragment(mQaFragment, getString(R.string.tab_text_2));
         adapter.addFragment(mArticleFrag, getString(R.string.tab_text_3));

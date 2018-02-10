@@ -25,4 +25,7 @@
     <string name="tab_text_4">Discuss</string>
 
     <!-- QA Fragment -->
+
+    <!-- QA Detail Menu -->
+    <string name="save_menu">SAVE</string>
 </resources>

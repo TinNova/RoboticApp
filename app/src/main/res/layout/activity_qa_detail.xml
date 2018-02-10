@@ -11,10 +11,12 @@
         android:id="@+id/qa_detailTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="What does the company do?"
         android:textSize="21sp"
+        app:layout_constraintBottom_toTopOf="@+id/answer_editText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -22,16 +24,19 @@
         android:id="@+id/shortTextLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:src="@drawable/ic_short_text_black_24dp"
+        app:layout_constraintEnd_toStartOf="@+id/answer_editText"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteY="52dp" />
 
     <EditText
+        android:id="@+id/answer_editText"
         android:layout_width="312dp"
         android:layout_height="62dp"
-        android:text="This is the answer to the question that can be edited at any point."
+        tools:text="This is the answer to the question that can be edited at any point."
         android:textSize="15sp"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="44dp"
