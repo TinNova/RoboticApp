@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -50,6 +52,10 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
     private CommentAdapter adapter;
     private ArrayList<Comment> mComments;
 
+    private ImageView sendIcon;
+    private EditText mCommentEditText;
+
+
     /**
      * Needed to save the state of the Fragment when Fragment enter onDestroyView
      * onSavedInstate state is not good enough as it only saves state when the Activty's View is Destroyed
@@ -62,6 +68,8 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
         View view = inflater.inflate(R.layout.fragment_comments, container, false);
 
         mComments = new ArrayList<>();
+
+        mCommentEditText = (EditText) view.findViewById(R.id.comment_editText);
 
         /** Creating The RecyclerView */
         // This will be used to attach the RecyclerView to the MovieAdapter
@@ -95,6 +103,23 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
         }
 
         return view;
+    }
+
+    private void onClick() {
+
+        sendIcon.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+
+                // This is the users comment placed into a String
+                String commentToPost = mCommentEditText.getText().toString();
+
+                /** SEND THE POST REQUEST */
+                /** Refresh the feed to see the new post OR figure out how FireBase Can Be Useful */
+
+            }
+        });
     }
 
 

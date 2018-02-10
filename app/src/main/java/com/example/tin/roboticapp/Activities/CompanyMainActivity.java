@@ -136,9 +136,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
             }
 
         };
-        // Making the Network Request and passing in the request we created
-        // TODO: DOES THE LOGIN REQUEST HAPPEN ASYCHRONOSLY??? DOES IT HAVE TO??? CHECK STACKOVERFLOW
-        // Research into the RequestQueue function to find out! And in general do Logins have to happen Asychronosly?
+
         mRequestQueue.add(request);
     }
 
