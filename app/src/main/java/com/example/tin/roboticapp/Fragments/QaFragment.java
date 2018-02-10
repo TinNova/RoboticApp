@@ -52,6 +52,8 @@ public class QaFragment extends Fragment {
     public static final String ANSWER_04 = "answer_04";
     public static final String ANSWER_05 = "answer_05";
 
+    public static final String QUESTION_ID_01 = "question_id_01";
+
     public static final String NEW_ANSWER = "new_answer";
 
     String sQuestion01;
@@ -142,7 +144,9 @@ public class QaFragment extends Fragment {
 
                 onClickBundle = new Bundle();
                 boolean newAnswer;
+                // The Question will always be passed as will the ID
                 onClickBundle.putString(QUESTION_01, tvQuestion01.getText().toString());
+                onClickBundle.putInt(QUESTION_ID_01, 1);
 
                 // if is not "", then pass it to the bundle, else, don't pass it and mark the boolean
                 // as false (needed to know if this is a first time entry or an edit to an existing answer

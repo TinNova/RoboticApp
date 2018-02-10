@@ -3,6 +3,7 @@ package com.example.tin.roboticapp.Activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -13,8 +14,11 @@ import com.example.tin.roboticapp.R;
 
 public class QaDetailActivity extends AppCompatActivity {
 
+    private static final String TAG = "QaDetailActivity";
+
     private String mQuestion;
     private String mAnswer;
+    private int mId;
 
     private EditText mAnswerView;
 
@@ -35,6 +39,8 @@ public class QaDetailActivity extends AppCompatActivity {
         if (intentFromQaFrag.getExtras() != null) {
 
             mQuestion = intentFromQaFrag.getStringExtra(QaFragment.QUESTION_01);
+            mId = intentFromQaFrag.getIntExtra(QaFragment.QUESTION_ID_01,0);
+            Log.v(TAG, "The ID of the Question/Answer is: " + mId);
 
             // if the answer is not null then extract it, then put the answer within the EditText
             // and mark the newAnswer as 1
@@ -79,7 +85,7 @@ public class QaDetailActivity extends AppCompatActivity {
 
 }
 
-// TODO: Add a save button that triggers the POST function
+// COMPLETED: Add a save button that triggers the POST function
 // COMMIT!
 // TODO: Pass the Answer ID to the qaDetailActivity
 // COMMIT!
