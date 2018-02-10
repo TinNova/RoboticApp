@@ -62,7 +62,7 @@ public class QaDetailActivity extends AppCompatActivity {
         if (intentFromQaFrag.getExtras() != null) {
 
             mQuestion = intentFromQaFrag.getStringExtra(QaFragment.QUESTION_01);
-            mId = intentFromQaFrag.getIntExtra(QaFragment.QUESTION_ID_01,0);
+            mId = intentFromQaFrag.getIntExtra(QaFragment.QUESTION_ID_01, 0);
             Log.v(TAG, "The ID of the Question/Answer is: " + mId);
 
             // if the answer is not null then extract it, then put the answer within the EditText
@@ -100,14 +100,23 @@ public class QaDetailActivity extends AppCompatActivity {
                 return true;
             // If Save is clicked, it will launch the POST request
             case R.id.menu_qa_detail_save:
-                String newAnswer = mAnswerView.getText().toString();
+                String answerString = mAnswerView.getText().toString();
 
                 /** HERE INSERT THE POST FUNCTION USING THE NEW ANSWER */
+                // If it's an unanswered quesiton create a new answer
+                if(newAnswer == 0) {
+                    addNewAnswer(answerString);
+                  // Else we are editing an existing answer
+                } else {
+                    //editAnswer(answerString);
+
+                }
 
                 Toast.makeText(this, "Answer Saved.", Toast.LENGTH_SHORT).show();
                 // Then it navigates back to the QaFragment
                 // However we need to reLaunch the Get Request in order to get the update list of
                 // answers upon return to the QaFragment.
+
                 super.onBackPressed();
 
         }
@@ -115,86 +124,68 @@ public class QaDetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case android.R.id.home:
-//                super.onBackPressed();
-//                return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
+
+    private void addNewAnswer(String answerET) {
+
+        /** Within this method, I'd like the POST request to happen */
+
+        JSONObject params = new JSONObject();
+        try {
+            JSONObject question = new JSONObject();
+            question.put("type","field");
+            question.put("required",false);
+            question.put("read_only",false);
+            question.put("label","Question");
+            JSONObject company = new JSONObject();
+            company.put("type","field");
+            company.put("required",false);
+            company.put("read_only",false);
+            company.put("label","Company");
+            JSONObject content = new JSONObject();
+            content.put("type","field");
+            content.put("required",false);
+            content.put("read_only",false);
+            content.put("label","Content");
+
+            int questionNumber = 1;
+            int companyID = 31; //EZY Jet
+
+            params.put("question", questionNumber);
+            params.put("company", companyID);
+            params.put("content", answerET);
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, "http://10.0.2.2:8000/rest-api/answers/", params, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Log.i("Response", response.toString());
 
 
+                }
+            }, new Response.ErrorListener(){
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        }){
+                // Headers for the POST request (Instead of Parameters as done in the Login Request,
+                // here we are are adding adding headers to the request
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<>();
+                    // Extracting the Cookie/Token from SharedPreferences
+                    String token = CompanyMainActivity.mSharedPrefs.getString("token", "");
+                    // Adding the Cookie/Token to the Header
+                    headers.put("Authorization", "Bearer " + token);
+                    return headers;
+                }
+            };
 
+            mRequestQueue.add(jsonObjectRequest);
 
-//    // Method to POST answer to server
-//    // /rest-api/answers/
-//
-//    private void login() throws MalformedURLException, URISyntaxException, JSONException {
-//
-//        /** IF IT IS A NEW ANSWER, (USE "rest-api/answers" */
-//        if(newAnswer == 0) {
-//
-//
-//            String urlString = "http://10.0.2.2:8000/rest-api/answers/";
-//            URI uri = new URI(urlString);
-//            URL url = uri.toURL();
-//
-//            JSONObject obj = new JSONObject();
-//            obj.put("question", "1");
-//            obj.put("name", "myname");
-//
-//            RequestQueue queue = mRequestQueue;
-//            JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST,url,obj,
-//                    new Response.Listener<JSONObject>() {
-//                        @Override
-//                        public void onResponse(JSONObject response) {
-//                            System.out.println(response);
-//                            hideProgressDialog();
-//                        }
-//                    },
-//                    new Response.ErrorListener() {
-//                        @Override
-//                        public void onErrorResponse(VolleyError error) {
-//                            hideProgressDialog();
-//                        }
-//                    });
-//            queue.add(jsObjRequest);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//          /** ELSE IF IT IS EDITING AN EXISTING ANSWER, (USE "/rest-api/answers/{ID}/", it needs to include the final "/" */
-//        } else {
-//
-//            // This is the body of the Request (What we are sending to the server in order to get an "ok" or "error" Response)
-//            //  - The Request has been named "request"
-//            StringRequest request = new StringRequest(Request.Method.POST, "http://10.0.2.2:8000/rest-api/answers/{ID}/", responseListener, errorListener) {
-//                // Parameters for the POST Request.
-//                @Override
-//                protected Map<String, String> getParams() throws AuthFailureError {
-//                    Map<String, String> params = new HashMap<>();
-//                    params.put("username", "TinNova");
-//                    params.put("password", "RoboTinNovLogin");
-//                    params.put("client_id", "wsytCUq3OF9aK8eEANZXBTJB6RnQq5cQMmZyDAPF");
-//                    params.put("client_secret", "gHdvqyNYjZZ4R5nmOExkI4tEcKHRq82qKyQNmaMYnln9YE4stvh70ZNKWEXoNG6B99tep4IBFF0TgsJZ9IvcnDiP3bKFL6HRnge7yVFkvqf4p5Y75FQNNEMqU6RgT1XZ");
-//                    params.put("grant_type", "password");
-//                    return params;
-//                }
-//
-//            };
-//
-//
-//        }
-//
-//        mRequestQueue.add(request);
-//    }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
 }
 
