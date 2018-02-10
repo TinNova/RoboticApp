@@ -105,6 +105,10 @@ public class QaDetailActivity extends AppCompatActivity {
                 /** HERE INSERT THE POST FUNCTION USING THE NEW ANSWER */
 
                 Toast.makeText(this, "Answer Saved.", Toast.LENGTH_SHORT).show();
+                // Then it navigates back to the QaFragment
+                // However we need to reLaunch the Get Request in order to get the update list of
+                // answers upon return to the QaFragment.
+                super.onBackPressed();
 
         }
 
@@ -200,8 +204,8 @@ public class QaDetailActivity extends AppCompatActivity {
 // COMMIT!
 // TODO: Add POST function
 // COMMIT!
-// TODO: Have an UP button that takes you specifically to the QA Fragment (NOT a random fragment)
+// COMPLETED: Have an UP button that takes you specifically to the QA Fragment (NOT a random fragment)
 // COMMIT!
-// TODO: Fix the layout a little
+// COMPLETED: Fix the layout a little
 // COMMIT!
 // TODO: Work on the POST function for Comments

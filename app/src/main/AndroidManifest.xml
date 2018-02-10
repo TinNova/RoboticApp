@@ -36,7 +36,6 @@
             android:name=".Activities.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity android:name=".Activities.QaDetailActivity"
-            android:label="@string/title_activity_qa_detail"
             android:parentActivityName=".Activities.CompanyDetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
