@@ -29,6 +29,10 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -81,6 +85,8 @@ public class QaDetailActivity extends AppCompatActivity {
 
         }
 
+        Log.v(TAG, "This is a New or Existing Answer: " + newAnswer);
+
     }
 
     @Override
@@ -101,22 +107,18 @@ public class QaDetailActivity extends AppCompatActivity {
             // If Save is clicked, it will launch the POST request
             case R.id.menu_qa_detail_save:
                 String answerString = mAnswerView.getText().toString();
-
-                /** HERE INSERT THE POST FUNCTION USING THE NEW ANSWER */
                 // If it's an unanswered quesiton create a new answer
-                if(newAnswer == 0) {
+                if (newAnswer == 0) {
                     addNewAnswer(answerString);
-                  // Else we are editing an existing answer
+                    // Else we are editing an existing answer
                 } else {
-                    //editAnswer(answerString);
-
+                    editAnswer(answerString);
                 }
 
                 Toast.makeText(this, "Answer Saved.", Toast.LENGTH_SHORT).show();
                 // Then it navigates back to the QaFragment
                 // However we need to reLaunch the Get Request in order to get the update list of
                 // answers upon return to the QaFragment.
-
                 super.onBackPressed();
 
         }
@@ -132,20 +134,20 @@ public class QaDetailActivity extends AppCompatActivity {
         JSONObject params = new JSONObject();
         try {
             JSONObject question = new JSONObject();
-            question.put("type","field");
-            question.put("required",false);
-            question.put("read_only",false);
-            question.put("label","Question");
+            question.put("type", "field");
+            question.put("required", false);
+            question.put("read_only", false);
+            question.put("label", "Question");
             JSONObject company = new JSONObject();
-            company.put("type","field");
-            company.put("required",false);
-            company.put("read_only",false);
-            company.put("label","Company");
+            company.put("type", "field");
+            company.put("required", false);
+            company.put("read_only", false);
+            company.put("label", "Company");
             JSONObject content = new JSONObject();
-            content.put("type","field");
-            content.put("required",false);
-            content.put("read_only",false);
-            content.put("label","Content");
+            content.put("type", "field");
+            content.put("required", false);
+            content.put("read_only", false);
+            content.put("label", "Content");
 
             int questionNumber = 1;
             int companyID = 31; //EZY Jet
@@ -160,13 +162,75 @@ public class QaDetailActivity extends AppCompatActivity {
 
 
                 }
-            }, new Response.ErrorListener(){
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        }){
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                }
+            }) {
                 // Headers for the POST request (Instead of Parameters as done in the Login Request,
+                // here we are are adding adding headers to the request
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<>();
+                    // Extracting the Cookie/Token from SharedPreferences
+                    String token = CompanyMainActivity.mSharedPrefs.getString("token", "");
+                    // Adding the Cookie/Token to the Header
+                    headers.put("Authorization", "Bearer " + token);
+                    return headers;
+                }
+            };
+
+            mRequestQueue.add(jsonObjectRequest);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void editAnswer(String answerET) {
+
+        /** Within this method, I'd like the POST request to happen */
+
+        JSONObject params = new JSONObject();
+        try {
+            JSONObject question = new JSONObject();
+            question.put("type", "field");
+            question.put("required", false);
+            question.put("read_only", false);
+            question.put("label", "Question");
+            JSONObject company = new JSONObject();
+            company.put("type", "field");
+            company.put("required", false);
+            company.put("read_only", false);
+            company.put("label", "Company");
+            JSONObject content = new JSONObject();
+            content.put("type", "field");
+            content.put("required", false);
+            content.put("read_only", false);
+            content.put("label", "Content");
+
+            int questionNumber = 1;
+            int companyID = 31; //EZY Jet
+
+            //params.put("question", questionNumber);
+            params.put("company", companyID);
+            params.put("content", answerET);
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, "http://10.0.2.2:8000/rest-api/answers/1", params, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Log.i("Response", response.toString());
+
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                }
+            }) {
+                // Headers for the PUT request (Instead of Parameters as done in the Login Request,
                 // here we are are adding adding headers to the request
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
@@ -193,8 +257,9 @@ public class QaDetailActivity extends AppCompatActivity {
 // COMMIT!
 // COMPLETED: Pass the Answer ID to the qaDetailActivity
 // COMMIT!
-// TODO: Add POST function
+// COMPLETED: Add POST function for a new answer
 // COMMIT!
+// TODO: Add POST function for an existing answer
 // COMPLETED: Have an UP button that takes you specifically to the QA Fragment (NOT a random fragment)
 // COMMIT!
 // COMPLETED: Fix the layout a little

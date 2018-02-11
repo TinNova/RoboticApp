@@ -5,18 +5,21 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tin.roboticapp.Adapters.CommentAdapter;
@@ -28,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,12 +40,14 @@ import java.util.Map;
  * Created by Tin on 09/01/2018.
  */
 
-public class CommentsFragment extends Fragment implements CommentAdapter.ListItemClickListener{
+public class CommentsFragment extends Fragment implements CommentAdapter.ListItemClickListener {
 
     private static final String TAG = "CommentsFragment";
     private static final String COMMENT_ARRAY = "comment_array";
 
-    /** Needed for Volley Network Connection */
+    /**
+     * Needed for Volley Network Connection
+     */
     // RequestQueue is for the Volley Network Connection
     private RequestQueue mRequestQueue;
 
@@ -68,6 +74,8 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
         View view = inflater.inflate(R.layout.fragment_comments, container, false);
 
         mComments = new ArrayList<>();
+
+        ImageView sendIcon = (ImageView) view.findViewById(R.id.comment_send_icon);
 
         mCommentEditText = (EditText) view.findViewById(R.id.comment_editText);
 
@@ -102,24 +110,30 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
 
         }
 
-        return view;
-    }
-
-    private void onClick() {
-
-        sendIcon.setOnClickListener(new View.OnClickListener(){
+        sendIcon.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
 
                 // This is the users comment placed into a String
-                String commentToPost = mCommentEditText.getText().toString();
+                String commentToPost = mCommentEditText.getText().toString().trim();
 
-                /** SEND THE POST REQUEST */
-                /** Refresh the feed to see the new post OR figure out how FireBase Can Be Useful */
+                if (!TextUtils.isEmpty(commentToPost)) {
+
+                    postComment(commentToPost);
+                    Toast.makeText(getActivity(), "Comment Sent", Toast.LENGTH_SHORT).show();
+
+
+                } else {
+
+                    Toast.makeText(getActivity(), "Insert A Comment!", Toast.LENGTH_SHORT).show();
+                }
+
 
             }
         });
+
+        return view;
     }
 
 
@@ -220,8 +234,10 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
         fragSavedInstanceState.putParcelableArrayList(COMMENT_ARRAY, mComments);
     }
 
-    /** OnSavedInstanceState saves the list of Articles, ensuring we don't need to do additional
-     * unnecessary Network Connections */
+    /**
+     * OnSavedInstanceState saves the list of Articles, ensuring we don't need to do additional
+     * unnecessary Network Connections
+     */
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -234,6 +250,62 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
+
+    }
+
+
+    private void postComment(String commentET) {
+
+        /** Within this method, I'd like the POST request to happen */
+
+        JSONObject params = new JSONObject();
+        try {
+            JSONObject company = new JSONObject();
+            company.put("type", "field");
+            company.put("required", true);
+            company.put("read_only", false);
+            company.put("label", "Company");
+            JSONObject content = new JSONObject();
+            content.put("type", "string");
+            content.put("required", true);
+            content.put("read_only", false);
+            content.put("label", "Content");
+
+            int companyID = 31; //EZY Jet
+
+            params.put("company", companyID);
+            params.put("content", commentET);
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, "http://10.0.2.2:8000/rest-api/comments/", params, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Log.i("Response", response.toString());
+
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                }
+            }) {
+                // Headers for the POST request (Instead of Parameters as done in the Login Request,
+                // here we are are adding adding headers to the request
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<>();
+                    // Extracting the Cookie/Token from SharedPreferences
+                    String token = CompanyMainActivity.mSharedPrefs.getString("token", "");
+                    // Adding the Cookie/Token to the Header
+                    headers.put("Authorization", "Bearer " + token);
+                    return headers;
+                }
+            };
+
+            mRequestQueue.add(jsonObjectRequest);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 }
