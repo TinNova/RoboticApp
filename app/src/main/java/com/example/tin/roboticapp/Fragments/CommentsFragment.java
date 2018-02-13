@@ -123,6 +123,14 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
                     postComment(commentToPost);
                     Toast.makeText(getActivity(), "Comment Sent", Toast.LENGTH_SHORT).show();
 
+                    // Before reloading the comments to view the latest, we need to clear the current
+                    // list of mComments, but first check if it exists as it's only created on DestroyView
+                    if(mComments != null) {
+
+                        mComments.clear();
+                    }
+                    mRequestQueue = Volley.newRequestQueue(getActivity());
+                    RequestFeed("http://10.0.2.2:8000/rest-api/comments/?company=31");
 
                 } else {
 
