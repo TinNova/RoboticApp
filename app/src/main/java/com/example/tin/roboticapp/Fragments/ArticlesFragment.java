@@ -145,8 +145,6 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
                     // Define the "results" JsonArray as a JSONArray
                     JSONArray companyJsonArray = companyResponseJsonObject.getJSONArray("results");
 
-                    //mArticles = new ArrayList<>();
-
                     // Now we need to get the individual Company JsonObjects from the companyJsonArray
                     // using a for loop
                     for (int i = 0; i < companyJsonArray.length(); i++) {

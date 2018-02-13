@@ -74,8 +74,8 @@ public class QaFragment extends Fragment {
      * onSavedInstate state is not good enough as it only saves state when the Activty's View is Destroyed
      */
     Bundle fragSavedInstanceState;
-    ArrayList<Question> mQuestionArray;
-    ArrayList<Answer> mAnswerArray;
+    ArrayList<Question> mQuestions;
+    ArrayList<Answer> mAnswers;
     Bundle onClickBundle;
 
     @Nullable
@@ -84,6 +84,9 @@ public class QaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_qa, container, false);
 
         Log.d(TAG, "OnCreateView");
+
+        mQuestions = new ArrayList<>();
+        mAnswers = new ArrayList<>();
 
         tvQuestion01 = view.findViewById(R.id.tv_question_01);
         tvQuestion02 = view.findViewById(R.id.tv_question_02);
@@ -137,7 +140,7 @@ public class QaFragment extends Fragment {
 
     private void onClick() {
 
-        editIcon1.setOnClickListener(new View.OnClickListener(){
+        editIcon1.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -201,34 +204,37 @@ public class QaFragment extends Fragment {
 
                         );
 
-                        int id = question.getId();
+                        mQuestions.add(question);
+                        //Log.v(TAG, "Answers List: " + question);
+
+//                        int id = question.getId();
 
                         // Switch statement that says, if the id of the question
                         // is X, then insert that question into tvQuestionX
-                        switch (id) {
-                            case 1:
-                                tvQuestion01.setText(question.getQuestion());
-                                break;
-                            case 2:
-                                tvQuestion02.setText(question.getQuestion());
-                                break;
-                            case 3:
-                                tvQuestion03.setText(question.getQuestion());
-                                break;
-                            case 4:
-                                tvQuestion04.setText(question.getQuestion());
-                                break;
-                            case 5:
-                                tvQuestion05.setText(question.getQuestion());
-                                break;
-                        }
+//                        switch (id) {
+//                            case 1:
+//                                tvQuestion01.setText(question.getQuestion());
+//                                break;
+//                            case 2:
+//                                tvQuestion02.setText(question.getQuestion());
+//                                break;
+//                            case 3:
+//                                tvQuestion03.setText(question.getQuestion());
+//                                break;
+//                            case 4:
+//                                tvQuestion04.setText(question.getQuestion());
+//                                break;
+//                            case 5:
+//                                tvQuestion05.setText(question.getQuestion());
+//                                break;
+//                        }
                     }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-                //Log.i(TAG, "Articles After Parse: " + mArticles);
+                Log.v(TAG, "All Questions: " + mQuestions);
 
             }
         };
@@ -289,40 +295,44 @@ public class QaFragment extends Fragment {
                         JSONObject companyJsonObject = companyJsonArray.getJSONObject(i);
 
                         Answer answer = new Answer(
+                                companyJsonObject.getInt("id"),
                                 companyJsonObject.getInt("question"),
                                 companyJsonObject.getInt("company"),
                                 companyJsonObject.getString("content")
 
                         );
 
-                        int questionId = answer.getQuestion();
+                        mAnswers.add(answer);
+                        //Log.v(TAG, "Answers List: " + answer);
+
+//                        int questionId = answer.getQuestion();
 
                         // Switch statement that says, if the id of the question
                         // is X, then insert that question into tvQuestionX
-                        switch (questionId) {
-                            case 1:
-                                tvAnswer01.setText(answer.getContent());
-                                break;
-                            case 2:
-                                tvAnswer02.setText(answer.getContent());
-                                break;
-                            case 3:
-                                tvAnswer03.setText(answer.getContent());
-                                break;
-                            case 4:
-                                tvAnswer04.setText(answer.getContent());
-                                break;
-                            case 5:
-                                tvAnswer05.setText(answer.getContent());
-                                break;
-                        }
+//                        switch (questionId) {
+//                            case 1:
+//                                tvAnswer01.setText(answer.getContent());
+//                                break;
+//                            case 2:
+//                                tvAnswer02.setText(answer.getContent());
+//                                break;
+//                            case 3:
+//                                tvAnswer03.setText(answer.getContent());
+//                                break;
+//                            case 4:
+//                                tvAnswer04.setText(answer.getContent());
+//                                break;
+//                            case 5:
+//                                tvAnswer05.setText(answer.getContent());
+//                                break;
+//                        }
                     }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-                //Log.i(TAG, "Articles After Parse: " + mArticles);
+                Log.v(TAG, "All Answers: " + mAnswers);
 
             }
         };

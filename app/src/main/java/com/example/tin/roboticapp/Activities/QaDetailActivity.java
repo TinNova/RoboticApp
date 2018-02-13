@@ -40,6 +40,9 @@ public class QaDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "QaDetailActivity";
 
+    public static String REFRESH_QA = "refresh_qa";
+    public static String FRAGMENT_QA = "fragment_qa";
+
     private String mQuestion;
     private String mAnswer;
     private int mId;
@@ -104,12 +107,14 @@ public class QaDetailActivity extends AppCompatActivity {
             case android.R.id.home:
                 super.onBackPressed();
                 return true;
-            // If Save is clicked, it will launch the POST request
+
+            // If Save is clicked, it will launch the POST or PUT request
             case R.id.menu_qa_detail_save:
                 String answerString = mAnswerView.getText().toString();
-                // If it's an unanswered quesiton create a new answer
+                // If it's an unanswered question create a new answer
                 if (newAnswer == 0) {
                     addNewAnswer(answerString);
+
                     // Else we are editing an existing answer
                 } else {
                     editAnswer(answerString);
@@ -119,7 +124,13 @@ public class QaDetailActivity extends AppCompatActivity {
                 // Then it navigates back to the QaFragment
                 // However we need to reLaunch the Get Request in order to get the update list of
                 // answers upon return to the QaFragment.
-                super.onBackPressed();
+//                super.onBackPressed();
+
+                Intent i = new Intent(this, CompanyDetailActivity.class);
+                i.putExtra(FRAGMENT_QA, "qaFrag");
+
+                // Now start your activity
+                startActivity(i);
 
         }
 

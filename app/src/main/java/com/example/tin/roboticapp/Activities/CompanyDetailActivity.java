@@ -67,13 +67,15 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
 
         /** Extracting Data From Intent */
-        Intent intentFromMainActivity = getIntent();
-        if (intentFromMainActivity.getExtras() != null) {
+        Intent intent = getIntent();
+        if (intent.getExtras() != null) {
 
             // Here we've taken the Extra containing the the "TheSteps" Model and put it in the variable mTheSteps
-            mCompanyName = intentFromMainActivity.getStringExtra(CompanyMainActivity.CURRENT_COMPANY_NAME);
-            mCompanyTicker = intentFromMainActivity.getStringExtra(CompanyMainActivity.CURRENT_COMPANY_TICKER);
-            mCompanyId = intentFromMainActivity.getIntExtra(CompanyMainActivity.CURRENT_COMPANY_ID, 0);
+            mCompanyName = intent.getStringExtra(CompanyMainActivity.CURRENT_COMPANY_NAME);
+            mCompanyTicker = intent.getStringExtra(CompanyMainActivity.CURRENT_COMPANY_TICKER);
+            mCompanyId = intent.getIntExtra(CompanyMainActivity.CURRENT_COMPANY_ID, 0);
+
+
 
         } else {
 
@@ -97,17 +99,6 @@ public class CompanyDetailActivity extends AppCompatActivity {
         // Create the tabLayout and connect it to the mViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-
-//        // Floating action button that appears across all Fragments? Would be better if the Fragments
-//        // themselves had their own tailored floating buttons when needed
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
     }
 
@@ -173,4 +164,10 @@ public class CompanyDetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        Log.v(TAG, "Detail Activity Destroyed");
+    }
 }

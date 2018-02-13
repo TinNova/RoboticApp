@@ -9,12 +9,14 @@ import android.os.Parcelable;
 
 public class Answer implements Parcelable {
 
+    private int id;
     private int question;
     private int company;
     private String content;
 
     // Constructor
-    public Answer(int question, int company, String content) {
+    public Answer(int id, int question, int company, String content) {
+        this.id = id;
         this.question = question;
         this.company = company;
         this.content = content;
@@ -22,6 +24,7 @@ public class Answer implements Parcelable {
 
 
     protected Answer(Parcel in) {
+        id = in.readInt();
         question = in.readInt();
         company = in.readInt();
         content = in.readString();
@@ -46,12 +49,17 @@ public class Answer implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
         parcel.writeInt(question);
         parcel.writeInt(company);
         parcel.writeString(content);
     }
 
     // Getters
+    public int getId() {
+        return id;
+    }
+
     public int getQuestion() {
         return question;
     }
