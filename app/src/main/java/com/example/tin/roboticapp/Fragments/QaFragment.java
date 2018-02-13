@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tin.roboticapp.Activities.CompanyMainActivity;
 import com.example.tin.roboticapp.Activities.QaDetailActivity;
+import com.example.tin.roboticapp.Adapters.QaAdapter;
 import com.example.tin.roboticapp.Models.Answer;
 import com.example.tin.roboticapp.Models.Question;
 import com.example.tin.roboticapp.R;
@@ -56,18 +59,11 @@ public class QaFragment extends Fragment {
 
     public static final String NEW_ANSWER = "new_answer";
 
-    String sQuestion01;
-    String sQuestion02;
-
     /**
      * Needed for Volley Network Connection
      */
     // RequestQueue is for the Volley Network Connection
     private RequestQueue mRequestQueue;
-
-    private TextView tvQuestion01, tvQuestion02, tvQuestion03, tvQuestion04, tvQuestion05;
-    private TextView tvAnswer01, tvAnswer02, tvAnswer03, tvAnswer04, tvAnswer05;
-    private ImageView editIcon1, editIcon2, editIcon3, editIcon4, editIcon5;
 
     /**
      * Needed to save the state of the Fragment when Fragment enter onDestroyView
@@ -76,7 +72,11 @@ public class QaFragment extends Fragment {
     Bundle fragSavedInstanceState;
     ArrayList<Question> mQuestions;
     ArrayList<Answer> mAnswers;
-    Bundle onClickBundle;
+
+    RecyclerView mRecyclerView;
+
+    Bundle parsedABundle;
+    Bundle parsedQBundle;
 
     @Nullable
     @Override
@@ -88,183 +88,16 @@ public class QaFragment extends Fragment {
         mQuestions = new ArrayList<>();
         mAnswers = new ArrayList<>();
 
-        tvQuestion01 = view.findViewById(R.id.tv_question_01);
-        tvQuestion02 = view.findViewById(R.id.tv_question_02);
-        tvQuestion03 = view.findViewById(R.id.tv_question_03);
-        tvQuestion04 = view.findViewById(R.id.tv_question_04);
-        tvQuestion05 = view.findViewById(R.id.tv_question_05);
+        // Creating a Request Queue for the Volley Network Connection
+        mRequestQueue = Volley.newRequestQueue(getActivity());
+        RequestQuestionsFeed("http://10.0.2.2:8000/rest-api/questions");
+        RequestAnswersFeed("http://10.0.2.2:8000/rest-api/answers/?company=31");
 
-        tvAnswer01 = view.findViewById(R.id.tv_answer_01);
-        tvAnswer02 = view.findViewById(R.id.tv_answer_02);
-        tvAnswer03 = view.findViewById(R.id.tv_answer_03);
-        tvAnswer04 = view.findViewById(R.id.tv_answer_04);
-        tvAnswer05 = view.findViewById(R.id.tv_answer_05);
-
-
-        if (fragSavedInstanceState != null) {
-
-            tvQuestion01.setText(fragSavedInstanceState.getString(QUESTION_01));
-            tvQuestion02.setText(fragSavedInstanceState.getString(QUESTION_02));
-            tvQuestion03.setText(fragSavedInstanceState.getString(QUESTION_03));
-            tvQuestion04.setText(fragSavedInstanceState.getString(QUESTION_04));
-            tvQuestion05.setText(fragSavedInstanceState.getString(QUESTION_05));
-
-            tvAnswer01.setText(fragSavedInstanceState.getString(ANSWER_01));
-            tvAnswer02.setText(fragSavedInstanceState.getString(ANSWER_02));
-            tvAnswer03.setText(fragSavedInstanceState.getString(ANSWER_03));
-            tvAnswer04.setText(fragSavedInstanceState.getString(ANSWER_04));
-            tvAnswer05.setText(fragSavedInstanceState.getString(ANSWER_05));
-
-            /** FOR LOOP THAT OPENS THE CONTENT OF THE ARRAYLIST THEN CHECKS THEM
-             * AGAINST A SWITCH STATEMENT TO PUT THEM IN THE CORRECT TEXTVIEWS */
-
-        } else {
-
-            // Creating a Request Queue for the Volley Network Connection
-            mRequestQueue = Volley.newRequestQueue(getActivity());
-            RequestQuestionsFeed("http://10.0.2.2:8000/rest-api/questions");
-            RequestAnswersFeed("http://10.0.2.2:8000/rest-api/answers/?company=31");
-
-        }
-
-        editIcon1 = (ImageView) view.findViewById(R.id.qa_editIcon_1);
-        editIcon2 = (ImageView) view.findViewById(R.id.qa_editIcon_2);
-        editIcon3 = (ImageView) view.findViewById(R.id.qa_editIcon_3);
-        editIcon4 = (ImageView) view.findViewById(R.id.qa_editIcon_4);
-        editIcon5 = (ImageView) view.findViewById(R.id.qa_editIcon_5);
-
-        onClick();
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.rV_Qa_list);
+        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         return view;
-    }
-
-    private void onClick() {
-
-        editIcon1.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-
-                onClickBundle = new Bundle();
-                boolean newAnswer;
-                // The Question will always be passed as will the ID
-                onClickBundle.putString(QUESTION_01, tvQuestion01.getText().toString());
-                onClickBundle.putInt(QUESTION_ID_01, 1);
-
-                // if is not "", then pass it to the bundle, else, don't pass it and mark the boolean
-                // as false (needed to know if this is a first time entry or an edit to an existing answer
-                if (tvAnswer01.getText().toString() != "") {
-                    newAnswer = false;
-                    onClickBundle.putString(ANSWER_01, tvAnswer01.getText().toString());
-                    onClickBundle.putBoolean(NEW_ANSWER, newAnswer);
-                } else {
-                    newAnswer = true;
-                    onClickBundle.putBoolean(NEW_ANSWER, newAnswer);
-                }
-
-                Intent intent = new Intent(getActivity(), QaDetailActivity.class);
-                intent.putExtras(onClickBundle);
-                startActivity(intent);
-            }
-        });
-    }
-
-
-    /**
-     * Request on Articles Json w/Cookie attached to request
-     */
-    public void RequestQuestionsFeed(String url) {
-
-        Log.i(TAG, "RequestQuestionsFeed");
-        // Handler for the JSON response when server returns ok
-        final Response.Listener<String> responseListener = new Response.Listener<String>() {
-
-            @Override
-            public void onResponse(final String response) {
-                //Log.i(TAG, "ArticlesFeed Response: " + response);
-
-                /** Parsing JSON */
-
-                try {
-                    // Define the entire response as a JSON Object
-                    JSONObject companyResponseJsonObject = new JSONObject(response);
-                    // Define the "results" JsonArray as a JSONArray
-                    JSONArray companyJsonArray = companyResponseJsonObject.getJSONArray("results");
-
-                    // Now we need to get the individual Company JsonObjects from the companyJsonArray
-                    // using a for loop
-                    for (int i = 0; i < companyJsonArray.length(); i++) {
-
-                        JSONObject companyJsonObject = companyJsonArray.getJSONObject(i);
-
-                        Question question = new Question(
-                                companyJsonObject.getInt("id"),
-                                companyJsonObject.getString("question"),
-                                companyJsonObject.getInt("position")
-
-                        );
-
-                        mQuestions.add(question);
-                        //Log.v(TAG, "Answers List: " + question);
-
-//                        int id = question.getId();
-
-                        // Switch statement that says, if the id of the question
-                        // is X, then insert that question into tvQuestionX
-//                        switch (id) {
-//                            case 1:
-//                                tvQuestion01.setText(question.getQuestion());
-//                                break;
-//                            case 2:
-//                                tvQuestion02.setText(question.getQuestion());
-//                                break;
-//                            case 3:
-//                                tvQuestion03.setText(question.getQuestion());
-//                                break;
-//                            case 4:
-//                                tvQuestion04.setText(question.getQuestion());
-//                                break;
-//                            case 5:
-//                                tvQuestion05.setText(question.getQuestion());
-//                                break;
-//                        }
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                Log.v(TAG, "All Questions: " + mQuestions);
-
-            }
-        };
-
-        // Handler for when the server returns an error response
-        Response.ErrorListener errorListener = new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        };
-
-        // This is the body of the Request
-        //  - The Request has been named "request"
-        StringRequest request = new StringRequest(Request.Method.GET, url, responseListener, errorListener) {
-            // Headers for the POST request (Instead of Parameters as done in the Login Request,
-            // here we are are adding adding headers to the request
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                // Extracting the Cookie/Token from SharedPreferences
-                String token = CompanyMainActivity.mSharedPrefs.getString("token", "");
-                // Adding the Cookie/Token to the Header
-                headers.put("Authorization", "Bearer " + token);
-                return headers;
-            }
-        };
-
-        mRequestQueue.add(request);
-
     }
 
     /**
@@ -303,29 +136,7 @@ public class QaFragment extends Fragment {
                         );
 
                         mAnswers.add(answer);
-                        //Log.v(TAG, "Answers List: " + answer);
 
-//                        int questionId = answer.getQuestion();
-
-                        // Switch statement that says, if the id of the question
-                        // is X, then insert that question into tvQuestionX
-//                        switch (questionId) {
-//                            case 1:
-//                                tvAnswer01.setText(answer.getContent());
-//                                break;
-//                            case 2:
-//                                tvAnswer02.setText(answer.getContent());
-//                                break;
-//                            case 3:
-//                                tvAnswer03.setText(answer.getContent());
-//                                break;
-//                            case 4:
-//                                tvAnswer04.setText(answer.getContent());
-//                                break;
-//                            case 5:
-//                                tvAnswer05.setText(answer.getContent());
-//                                break;
-//                        }
                     }
 
                 } catch (JSONException e) {
@@ -333,6 +144,7 @@ public class QaFragment extends Fragment {
                 }
 
                 Log.v(TAG, "All Answers: " + mAnswers);
+                onSavedParsedAnswers(mAnswers);
 
             }
         };
@@ -365,25 +177,128 @@ public class QaFragment extends Fragment {
 
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
 
-        fragSavedInstanceState = new Bundle();
+    /**
+     * Request on Articles Json w/Cookie attached to request
+     */
+    public void RequestQuestionsFeed(String url) {
 
-        fragSavedInstanceState.putString(QUESTION_01, tvQuestion01.getText().toString());
-        fragSavedInstanceState.putString(QUESTION_02, tvQuestion02.getText().toString());
-        fragSavedInstanceState.putString(QUESTION_03, tvQuestion03.getText().toString());
-        fragSavedInstanceState.putString(QUESTION_04, tvQuestion04.getText().toString());
-        fragSavedInstanceState.putString(QUESTION_05, tvQuestion05.getText().toString());
+        Log.i(TAG, "RequestQuestionsFeed");
+        // Handler for the JSON response when server returns ok
+        final Response.Listener<String> responseListener = new Response.Listener<String>() {
 
-        fragSavedInstanceState.putString(ANSWER_01, tvAnswer01.getText().toString());
-        fragSavedInstanceState.putString(ANSWER_02, tvAnswer02.getText().toString());
-        fragSavedInstanceState.putString(ANSWER_03, tvAnswer03.getText().toString());
-        fragSavedInstanceState.putString(ANSWER_04, tvAnswer04.getText().toString());
-        fragSavedInstanceState.putString(ANSWER_05, tvAnswer05.getText().toString());
+            @Override
+            public void onResponse(final String response) {
+                //Log.i(TAG, "ArticlesFeed Response: " + response);
 
-        Log.v(TAG, "onDestroyView");
+                /** Parsing JSON */
+
+                try {
+                    // Define the entire response as a JSON Object
+                    JSONObject companyResponseJsonObject = new JSONObject(response);
+                    // Define the "results" JsonArray as a JSONArray
+                    JSONArray companyJsonArray = companyResponseJsonObject.getJSONArray("results");
+
+                    // Now we need to get the individual Company JsonObjects from the companyJsonArray
+                    // using a for loop
+                    for (int i = 0; i < companyJsonArray.length(); i++) {
+
+                        JSONObject companyJsonObject = companyJsonArray.getJSONObject(i);
+
+                        Question question = new Question(
+                                companyJsonObject.getInt("id"),
+                                companyJsonObject.getString("question"),
+                                companyJsonObject.getInt("position")
+
+                        );
+
+                        mQuestions.add(question);
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                Log.v(TAG, "All Questions: " + mQuestions);
+                onSaveParseQuestions(mQuestions);
+            }
+        };
+
+        // Handler for when the server returns an error response
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        };
+
+        // This is the body of the Request
+        //  - The Request has been named "request"
+        StringRequest request = new StringRequest(Request.Method.GET, url, responseListener, errorListener) {
+            // Headers for the POST request (Instead of Parameters as done in the Login Request,
+            // here we are are adding adding headers to the request
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                // Extracting the Cookie/Token from SharedPreferences
+                String token = CompanyMainActivity.mSharedPrefs.getString("token", "");
+                // Adding the Cookie/Token to the Header
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+
+        mRequestQueue.add(request);
 
     }
+
+
+
+    public void onSavedParsedAnswers(ArrayList<Answer> answer) {
+        parsedABundle = new Bundle();
+        parsedABundle.putParcelableArrayList("parsedAnswers", answer);
+    }
+
+    public void onSaveParseQuestions(ArrayList<Question> question) {
+        parsedQBundle = new Bundle();
+        parsedQBundle.putParcelableArrayList("parsedQuestions", question);
+
+
+        Log.v(TAG, "QUESTIONS SAVED IN onSaveParseQuestions: " + question);
+
+        unpackBundles();
+    }
+
+    public void unpackBundles(){
+
+        for (int i = 0; parsedABundle == null && parsedQBundle == null; i++) {
+
+        }
+
+        mQuestions = parsedQBundle.getParcelableArrayList("parsedQuestions");
+        mAnswers = parsedABundle.getParcelableArrayList("parsedAnswers");
+
+        QaAdapter qaAdapter = new QaAdapter(mQuestions, mAnswers, getContext());
+
+        Log.v(TAG, "THE QUESTIONS & ANSWERS IN unpackBundles: " + mQuestions + mAnswers);
+
+        mRecyclerView.setAdapter(qaAdapter);
+    }
+
+
+
 }
+
+//    @Override
+//    public void onDestroyView() {
+//        super.onDestroyView();
+//
+//        fragSavedInstanceState = new Bundle();
+//
+//        Log.v(TAG, "onDestroyView");
+//
+//    }
+//}
+
+
