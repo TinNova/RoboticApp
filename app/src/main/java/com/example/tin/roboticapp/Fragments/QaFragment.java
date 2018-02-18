@@ -1,6 +1,5 @@
 package com.example.tin.roboticapp.Fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,8 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -21,9 +18,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tin.roboticapp.Activities.CompanyMainActivity;
-import com.example.tin.roboticapp.Activities.QaDetailActivity;
-import com.example.tin.roboticapp.Adapters.QaAdapter;
+import com.example.tin.roboticapp.Adapters.QaCombinedAdapter;
 import com.example.tin.roboticapp.Models.Answer;
+import com.example.tin.roboticapp.Models.QACombined;
 import com.example.tin.roboticapp.Models.Question;
 import com.example.tin.roboticapp.R;
 
@@ -44,20 +41,8 @@ public class QaFragment extends Fragment {
     private static final String TAG = "QAFragment";
 
     public static final String QUESTION_01 = "question_01";
-    public static final String QUESTION_02 = "question_02";
-    public static final String QUESTION_03 = "question_03";
-    public static final String QUESTION_04 = "question_04";
-    public static final String QUESTION_05 = "question_05";
-
     public static final String ANSWER_01 = "answer_01";
-    public static final String ANSWER_02 = "answer_02";
-    public static final String ANSWER_03 = "answer_03";
-    public static final String ANSWER_04 = "answer_04";
-    public static final String ANSWER_05 = "answer_05";
-
     public static final String QUESTION_ID_01 = "question_id_01";
-
-    public static final String NEW_ANSWER = "new_answer";
 
     /**
      * Needed for Volley Network Connection
@@ -72,8 +57,10 @@ public class QaFragment extends Fragment {
     Bundle fragSavedInstanceState;
     ArrayList<Question> mQuestions;
     ArrayList<Answer> mAnswers;
+    ArrayList<QACombined> mQaCombined;
 
     RecyclerView mRecyclerView;
+    private QaCombinedAdapter adapter;
 
     Bundle parsedABundle;
     Bundle parsedQBundle;
@@ -87,6 +74,7 @@ public class QaFragment extends Fragment {
 
         mQuestions = new ArrayList<>();
         mAnswers = new ArrayList<>();
+        mQaCombined = new ArrayList<>();
 
         // Creating a Request Queue for the Volley Network Connection
         mRequestQueue = Volley.newRequestQueue(getActivity());
@@ -94,6 +82,7 @@ public class QaFragment extends Fragment {
         RequestAnswersFeed("http://10.0.2.2:8000/rest-api/answers/?company=31");
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rV_Qa_list);
+        mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
@@ -254,7 +243,6 @@ public class QaFragment extends Fragment {
     }
 
 
-
     public void onSavedParsedAnswers(ArrayList<Answer> answer) {
         parsedABundle = new Bundle();
         parsedABundle.putParcelableArrayList("parsedAnswers", answer);
@@ -270,8 +258,10 @@ public class QaFragment extends Fragment {
         unpackBundles();
     }
 
-    public void unpackBundles(){
+    public void unpackBundles() {
 
+        // Keep circling this for loop until both the Answers and Questions Bundles are not null,
+        // the moment they are not null, exit the for loop and run the next code
         for (int i = 0; parsedABundle == null && parsedQBundle == null; i++) {
 
         }
@@ -279,16 +269,76 @@ public class QaFragment extends Fragment {
         mQuestions = parsedQBundle.getParcelableArrayList("parsedQuestions");
         mAnswers = parsedABundle.getParcelableArrayList("parsedAnswers");
 
-        QaAdapter qaAdapter = new QaAdapter(mQuestions, mAnswers, getContext());
 
-        Log.v(TAG, "THE QUESTIONS & ANSWERS IN unpackBundles: " + mQuestions + mAnswers);
+        // Loop through mQuestions while i is smaller than mQuestions
+        for (int i = 0; i < mQuestions.size(); i++) {
 
-        mRecyclerView.setAdapter(qaAdapter);
+            int questionId = mQuestions.get(i).getId();
+            String questionQuestion = mQuestions.get(i).getQuestion();
+            int questionPosition = mQuestions.get(i).getPosition();
+
+
+            for (int ii = 0; ii < mAnswers.size(); ii++) {
+
+                int answerId = mAnswers.get(ii).getId();
+                int answerQuestion = mAnswers.get(ii).getQuestion();
+                int answerCompany = mAnswers.get(ii).getCompany();
+                String answersContent = mAnswers.get(ii).getContent();
+
+                // if QuestionId & AnswerQuestion ID Match, add to qACombined
+                if (mQuestions.get(i).getId() == mAnswers.get(ii).getQuestion()) {
+
+                    QACombined qACombined = new QACombined(
+                            questionId,
+                            questionQuestion,
+                            questionPosition,
+                            answerId,
+                            answerQuestion,
+                            answerCompany,
+                            answersContent
+                    );
+                    QACombined test = new QACombined(1,"foo",1,-1,1,1,"answer");
+                    Log.v(TAG, "Question ID: " + test.getQuestion());
+                    Log.v(TAG, "Question ID: " + qACombined.getQuestion());
+
+
+                    mQaCombined.add(qACombined);
+                    ii = 0;
+
+
+                } else {
+                    // Else the Question and Answer do NOT correspond, so only add values for the question
+                    QACombined qACombined = new QACombined(
+                            questionId,
+                            questionQuestion,
+                            questionPosition,
+                            -1,
+                            -1,
+                            -1,
+                            ""
+                    );
+
+                    mQaCombined.add(qACombined);
+
+                }
+
+            }
+
+        }
+
+        Log.v(TAG,"QACombined ArrayList: "+mQaCombined);
+        adapter = new QaCombinedAdapter(mQaCombined, getContext(), QaFragment.this);
+        mRecyclerView.setAdapter(adapter);
+
     }
 
-
-
 }
+
+
+
+
+
+
 
 //    @Override
 //    public void onDestroyView() {
