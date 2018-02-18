@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -47,7 +48,8 @@ public class QaDetailActivity extends AppCompatActivity {
     private String mAnswer;
     private int mId;
 
-    private EditText mAnswerView;
+    private TextView mQuestionTv;
+    private EditText mAnswerTv;
     private RequestQueue mRequestQueue;
 
     // 0 = New Answer (i.e no answer was passed in the intent)
@@ -59,7 +61,9 @@ public class QaDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qa_detail);
 
-        mAnswerView = (EditText) findViewById(R.id.answer_editText);
+
+        mAnswerTv = (EditText) findViewById(R.id.answer_editText);
+        mQuestionTv = (TextView) findViewById(R.id.question_tV_qaDetail);
         mRequestQueue = Volley.newRequestQueue(this);
 
 
@@ -68,16 +72,17 @@ public class QaDetailActivity extends AppCompatActivity {
         Intent intentFromQaFrag = getIntent();
         if (intentFromQaFrag.getExtras() != null) {
 
-            mQuestion = intentFromQaFrag.getStringExtra(QaFragment.QUESTION_01);
-            mId = intentFromQaFrag.getIntExtra(QaFragment.QUESTION_ID_01, 0);
+            mQuestion = intentFromQaFrag.getStringExtra(QaFragment.QUESTION);
+            mQuestionTv.setText(mQuestion);
+            mId = intentFromQaFrag.getIntExtra(QaFragment.QUESTION_ID, 0);
             Log.v(TAG, "The ID of the Question/Answer is: " + mId);
 
             // if the answer is not null then extract it, then put the answer within the EditText
             // and mark the newAnswer as 1
-            if (intentFromQaFrag.getStringExtra(QaFragment.ANSWER_01) != null) {
+            if (intentFromQaFrag.getStringExtra(QaFragment.ANSWER) != null) {
 
-                mAnswer = intentFromQaFrag.getStringExtra(QaFragment.ANSWER_01);
-                mAnswerView.setText(mAnswer);
+                mAnswer = intentFromQaFrag.getStringExtra(QaFragment.ANSWER);
+                mAnswerTv.setText(mAnswer);
                 newAnswer = 1;
 
             }
@@ -110,7 +115,7 @@ public class QaDetailActivity extends AppCompatActivity {
 
             // If Save is clicked, it will launch the POST or PUT request
             case R.id.menu_qa_detail_save:
-                String answerString = mAnswerView.getText().toString();
+                String answerString = mAnswerTv.getText().toString();
                 // If it's an unanswered question create a new answer
                 if (newAnswer == 0) {
                     addNewAnswer(answerString);

@@ -9,7 +9,7 @@
     tools:context="com.example.tin.roboticapp.Activities.QaDetailActivity">
 
     <TextView
-        android:id="@+id/qa_detailTitle"
+        android:id="@+id/question_tV_qaDetail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="What does the company do?"

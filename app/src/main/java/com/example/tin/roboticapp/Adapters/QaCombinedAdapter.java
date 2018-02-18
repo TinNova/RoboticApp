@@ -11,8 +11,6 @@ import com.example.tin.roboticapp.Fragments.QaFragment;
 import com.example.tin.roboticapp.Models.QACombined;
 import com.example.tin.roboticapp.R;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 /**
@@ -24,9 +22,16 @@ public class QaCombinedAdapter extends RecyclerView.Adapter<QaCombinedAdapter.Vi
     private final ArrayList<QACombined> mQACombined;
     private final Context context;
 
-    public QaCombinedAdapter(ArrayList<QACombined> mQACombined, Context context, QaFragment qaFragment) {
+    private final QaCombinedAdapter.ListItemClickListener mOnClickListener;
+
+    public interface ListItemClickListener {
+        void onListItemClick (int clickedItemIndex);
+    }
+
+    public QaCombinedAdapter(ArrayList<QACombined> mQACombined, Context context, QaCombinedAdapter.ListItemClickListener mOnClickListener) {
         this.mQACombined = mQACombined;
         this.context = context;
+        this.mOnClickListener = mOnClickListener;
     }
 
     /**
@@ -70,17 +75,27 @@ public class QaCombinedAdapter extends RecyclerView.Adapter<QaCombinedAdapter.Vi
         return mQACombined.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         final TextView tvQuestion;
         final TextView tvAnswer;
+
+        @Override
+        public void onClick(View view) {
+
+            int clickedPosition = getAdapterPosition();
+            mOnClickListener.onListItemClick(clickedPosition);
+
+        }
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             tvQuestion = (TextView) itemView.findViewById(R.id.tV_rV_question);
             tvAnswer = (TextView) itemView.findViewById(R.id.tV_rV_answer);
+            itemView.setOnClickListener(this);
 
         }
+
     }
 }

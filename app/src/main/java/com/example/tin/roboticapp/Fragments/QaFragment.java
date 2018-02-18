@@ -1,5 +1,6 @@
 package com.example.tin.roboticapp.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -18,6 +21,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tin.roboticapp.Activities.CompanyMainActivity;
+import com.example.tin.roboticapp.Activities.QaDetailActivity;
+import com.example.tin.roboticapp.Adapters.ArticleAdapter;
 import com.example.tin.roboticapp.Adapters.QaCombinedAdapter;
 import com.example.tin.roboticapp.Models.Answer;
 import com.example.tin.roboticapp.Models.QACombined;
@@ -36,13 +41,13 @@ import java.util.Map;
  * Created by Tin on 09/01/2018.
  */
 
-public class QaFragment extends Fragment {
+public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemClickListener {
 
     private static final String TAG = "QAFragment";
 
-    public static final String QUESTION_01 = "question_01";
-    public static final String ANSWER_01 = "answer_01";
-    public static final String QUESTION_ID_01 = "question_id_01";
+    public static final String QUESTION = "question_01";
+    public static final String ANSWER = "answer_01";
+    public static final String QUESTION_ID = "question_id_01";
 
     /**
      * Needed for Volley Network Connection
@@ -61,6 +66,8 @@ public class QaFragment extends Fragment {
 
     RecyclerView mRecyclerView;
     private QaCombinedAdapter adapter;
+
+    Bundle onClickBundle;
 
     Bundle parsedABundle;
     Bundle parsedQBundle;
@@ -88,6 +95,37 @@ public class QaFragment extends Fragment {
 
         return view;
     }
+
+//    private void onClick() {
+//
+//        editIcon.setOnClickListener(new View.OnClickListener(){
+//
+//            @Override
+//            public void onClick(View view) {
+//
+//                onClickBundle = new Bundle();
+//                boolean newAnswer;
+//                // The Question will always be passed as will the ID
+//                onClickBundle.putString(QUESTION_01, tvQuestion01.getText().toString());
+//                onClickBundle.putInt(QUESTION_ID_01, 1);
+//
+//                // if is not "", then pass it to the bundle, else, don't pass it and mark the boolean
+//                // as false (needed to know if this is a first time entry or an edit to an existing answer
+//                if (tvAnswer01.getText().toString() != "") {
+//                    newAnswer = false;
+//                    onClickBundle.putString(ANSWER_01, tvAnswer01.getText().toString());
+//                    onClickBundle.putBoolean(NEW_ANSWER, newAnswer);
+//                } else {
+//                    newAnswer = true;
+//                    onClickBundle.putBoolean(NEW_ANSWER, newAnswer);
+//                }
+//
+//                Intent intent = new Intent(getActivity(), QaDetailActivity.class);
+//                intent.putExtras(onClickBundle);
+//                startActivity(intent);
+//            }
+//        });
+//    }
 
     /**
      * Request on Articles Json w/Cookie attached to request
@@ -262,9 +300,10 @@ public class QaFragment extends Fragment {
 
         // Keep circling this for loop until both the Answers and Questions Bundles are not null,
         // the moment they are not null, exit the for loop and run the next code
-        for (int i = 0; parsedABundle == null && parsedQBundle == null; i++) {
-
-        }
+//        for (int i = 0; parsedABundle == null && parsedQBundle == null; i++) {
+//
+//
+//        }
 
         mQuestions = parsedQBundle.getParcelableArrayList("parsedQuestions");
         mAnswers = parsedABundle.getParcelableArrayList("parsedAnswers");
@@ -297,7 +336,7 @@ public class QaFragment extends Fragment {
                             answerCompany,
                             answersContent
                     );
-                    QACombined test = new QACombined(1,"foo",1,-1,1,1,"answer");
+                    QACombined test = new QACombined(1, "foo", 1, -1, 1, 1, "answer");
                     Log.v(TAG, "Question ID: " + test.getQuestion());
                     Log.v(TAG, "Question ID: " + qACombined.getQuestion());
 
@@ -326,18 +365,36 @@ public class QaFragment extends Fragment {
 
         }
 
-        Log.v(TAG,"QACombined ArrayList: "+mQaCombined);
+        Log.v(TAG, "QACombined ArrayList: " + mQaCombined);
         adapter = new QaCombinedAdapter(mQaCombined, getContext(), QaFragment.this);
         mRecyclerView.setAdapter(adapter);
 
     }
 
+    @Override
+    public void onListItemClick(int clickedItemIndex) {
+
+        Log.v(TAG, "CLICK!!!");
+        Log.v(TAG, "ClickedItemIndex: " + mQaCombined.get(clickedItemIndex));
+
+
+        Intent intent = new Intent(getActivity(), QaDetailActivity.class);
+
+        Bundle onClickBundle = new Bundle();
+        onClickBundle.putString(QUESTION, mQaCombined.get(clickedItemIndex).getQuestion());
+        onClickBundle.putInt(QUESTION_ID, mQaCombined.get(clickedItemIndex).getqId());
+
+        if( mQaCombined.get(clickedItemIndex).getContent() != ""){
+
+            onClickBundle.putString(ANSWER, mQaCombined.get(clickedItemIndex).getContent());
+
+        }
+
+        intent.putExtras(onClickBundle);
+        startActivity(intent);
+
+    }
 }
-
-
-
-
-
 
 
 //    @Override
