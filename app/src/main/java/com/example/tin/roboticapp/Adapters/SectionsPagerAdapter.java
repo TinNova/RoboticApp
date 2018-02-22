@@ -1,4 +1,4 @@
-package com.example.tin.roboticapp.Fragments;
+package com.example.tin.roboticapp.Adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

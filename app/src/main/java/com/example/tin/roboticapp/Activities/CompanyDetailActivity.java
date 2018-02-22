@@ -3,8 +3,6 @@ package com.example.tin.roboticapp.Activities;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -14,14 +12,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.example.tin.roboticapp.Fragments.ArticlesFragment;
 import com.example.tin.roboticapp.Fragments.CommentsFragment;
 import com.example.tin.roboticapp.Fragments.FundamentalsFragment;
 import com.example.tin.roboticapp.Fragments.QaFragment;
-import com.example.tin.roboticapp.Fragments.SectionsPagerAdapter;
+import com.example.tin.roboticapp.Adapters.SectionsPagerAdapter;
 import com.example.tin.roboticapp.R;
 
 public class CompanyDetailActivity extends AppCompatActivity {
@@ -54,6 +51,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
     private CommentsFragment mDiscussionFrag;
     private QaFragment mQaFragment;
 
+    int mFragmentToLoad = 0;
 
 
     ActionBar actionBar;
@@ -74,12 +72,18 @@ public class CompanyDetailActivity extends AppCompatActivity {
             mCompanyName = intent.getStringExtra(CompanyMainActivity.CURRENT_COMPANY_NAME);
             mCompanyTicker = intent.getStringExtra(CompanyMainActivity.CURRENT_COMPANY_TICKER);
             mCompanyId = intent.getIntExtra(CompanyMainActivity.CURRENT_COMPANY_ID, 0);
-
-
+            Log.d(TAG, "Intent From CompanyMainActivity");
 
         } else {
 
             Toast.makeText(this, "ERROR: Data didn't load correctly", Toast.LENGTH_SHORT).show();
+
+        }
+
+        if (intent.getStringExtra("QaFragmentString") != null) {
+
+            mFragmentToLoad = intent.getIntExtra("QaFragment", 1);
+            Log.d(TAG, "Intent From QaDetailActivity");
 
         }
 
@@ -93,13 +97,13 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
         // Create the ViewPager (the container is in the activity_company_detail.xml
         mViewPager = (ViewPager) findViewById(R.id.container);
+
         // Launch the setupViewPager method and pass in the newly created mViewPager
         setupViewPager(mViewPager);
 
         // Create the tabLayout and connect it to the mViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-
     }
 
     /**
@@ -139,6 +143,9 @@ public class CompanyDetailActivity extends AppCompatActivity {
         adapter.addFragment(mArticleFrag, getString(R.string.tab_text_3));
         adapter.addFragment(mDiscussionFrag, getString(R.string.tab_text_4));
         viewPager.setAdapter(adapter);
+
+        mViewPager.setCurrentItem(mFragmentToLoad);
+
     }
 
 

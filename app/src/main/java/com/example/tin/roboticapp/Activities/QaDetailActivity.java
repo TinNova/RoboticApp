@@ -113,30 +113,62 @@ public class QaDetailActivity extends AppCompatActivity {
 
             // When Save is clicked, it will launch the POST or PUT request
             case R.id.menu_qa_detail_save:
-                // Get the text from the EditText and save it as a String
+
+                // Get the text from the EditText and save it as a String.
                 String answerString = mAnswerEt.getText().toString();
-                // If it's an unanswered question create a new answer
-                if (newAnswer == 0) {
-                    addAnswer(answerString);
 
-                    // Else we are editing an existing answer
+                // if the answerString is NOT empty, and it is not the same as the one retrieved
+                // from the Bundle, either addAnswer or editAnswer
+                if (!answerString.matches("") && !answerString.matches(mAnswer)) {
+
+                    // If it's an unanswered question create a new answer
+                    if (newAnswer == 0) {
+                        addAnswer(answerString);
+
+                        // Else we are editing an existing answer
+                    } else {
+                        editAnswer(answerString);
+                    }
+
+                    Toast.makeText(this, "Answer Saved.", Toast.LENGTH_SHORT).show();
+
+//                    // Use onBackPressed to navigate back to QAFragment
+//                    //TODO: CAN AN INTENT BE PASSED WITH onBACKPRESSED???
+//                    super.onBackPressed();
+//                    return true;
+
+                    Intent intent = new Intent(QaDetailActivity.this, CompanyDetailActivity.class);
+
+                    intent.putExtra("QaFragment",1);
+                    intent.putExtra("QaFragmentString", "From QaDetailActivity");
+
+                    startActivity(intent);
+
+                    // if the answerString is empty, notify user
+                } else if (answerString.matches("")) {
+
+                    Toast.makeText(this, "Enter An Answer.", Toast.LENGTH_SHORT).show();
+
+                    // else the only other option is the answer retrieved from the Bundle wasn't edited
                 } else {
-                    editAnswer(answerString);
-                }
 
-                Toast.makeText(this, "Answer Saved.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Answer Wasn't Edited, Nothing To Save.", Toast.LENGTH_SHORT).show();
+
+                }
 
                 //TODO: The app now uses the backUp button upon saving a comment. This however doesn't work because the questions in the QAFragment are saved in a bundle
                 // But when returning to the QAFragment it also seems to load a new set of questions, so we end up with two lists of questions
                 // 1. Check what is called when backup is pressed (is onCreateView launched?, is onResume launched? is another type of lifecycle stage launched? Check them all)
                 //    - if any of those is correct, maybe an if statement can be used to clear the saved Bundle and launch a new request?
 
-                super.onBackPressed();
-                return true;
+
 
         }
 
-        return super.onOptionsItemSelected(item);
+        return super.
+
+                onOptionsItemSelected(item);
+
     }
 
 
