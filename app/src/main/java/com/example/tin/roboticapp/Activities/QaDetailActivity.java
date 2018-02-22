@@ -41,6 +41,9 @@ public class QaDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "QaDetailActivity";
 
+    public static String FRAGMENT_POSITION = "fragment_position";
+    public static String INTENT_FROM_QA_DETAIL_ACTIVITY = "intent_from_qa_detail_activity";
+
     public static String REFRESH_QA = "refresh_qa";
     public static String FRAGMENT_QA = "fragment_qa";
 
@@ -132,16 +135,12 @@ public class QaDetailActivity extends AppCompatActivity {
 
                     Toast.makeText(this, "Answer Saved.", Toast.LENGTH_SHORT).show();
 
-//                    // Use onBackPressed to navigate back to QAFragment
-//                    //TODO: CAN AN INTENT BE PASSED WITH onBACKPRESSED???
-//                    super.onBackPressed();
-//                    return true;
-
+                    // Intent to launch the QAFragment
                     Intent intent = new Intent(QaDetailActivity.this, CompanyDetailActivity.class);
-
-                    intent.putExtra("QaFragment",1);
-                    intent.putExtra("QaFragmentString", "From QaDetailActivity");
-
+                    // Here we are passing in position 1, to load the QAFragment when the activity starts
+                    // The string is passed so that we can do an if statement with it, in onCreate
+                    intent.putExtra(FRAGMENT_POSITION, 1);
+                    intent.putExtra(INTENT_FROM_QA_DETAIL_ACTIVITY, "From QaDetailActivity");
                     startActivity(intent);
 
                     // if the answerString is empty, notify user
@@ -155,13 +154,6 @@ public class QaDetailActivity extends AppCompatActivity {
                     Toast.makeText(this, "Answer Wasn't Edited, Nothing To Save.", Toast.LENGTH_SHORT).show();
 
                 }
-
-                //TODO: The app now uses the backUp button upon saving a comment. This however doesn't work because the questions in the QAFragment are saved in a bundle
-                // But when returning to the QAFragment it also seems to load a new set of questions, so we end up with two lists of questions
-                // 1. Check what is called when backup is pressed (is onCreateView launched?, is onResume launched? is another type of lifecycle stage launched? Check them all)
-                //    - if any of those is correct, maybe an if statement can be used to clear the saved Bundle and launch a new request?
-
-
 
         }
 

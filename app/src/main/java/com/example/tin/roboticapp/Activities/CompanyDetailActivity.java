@@ -79,10 +79,12 @@ public class CompanyDetailActivity extends AppCompatActivity {
             Toast.makeText(this, "ERROR: Data didn't load correctly", Toast.LENGTH_SHORT).show();
 
         }
+        // This checks if the this Activity was started from the QaDetailActivity, if yes we want
+        // to load the QAFragment
+        if (intent.getStringExtra(QaDetailActivity.INTENT_FROM_QA_DETAIL_ACTIVITY) != null) {
 
-        if (intent.getStringExtra("QaFragmentString") != null) {
-
-            mFragmentToLoad = intent.getIntExtra("QaFragment", 1);
+            // The QAFragment position is passed from the QaDetailActivity
+            mFragmentToLoad = intent.getIntExtra(QaDetailActivity.FRAGMENT_POSITION, 1);
             Log.d(TAG, "Intent From QaDetailActivity");
 
         }
@@ -144,6 +146,8 @@ public class CompanyDetailActivity extends AppCompatActivity {
         adapter.addFragment(mDiscussionFrag, getString(R.string.tab_text_4));
         viewPager.setAdapter(adapter);
 
+        // Here we are specifying which Fragment should appear first, but default it is 0, but if
+        // this activity was started from QaDetailActivity it will be 1 meaning the QAFragment will load
         mViewPager.setCurrentItem(mFragmentToLoad);
 
     }
