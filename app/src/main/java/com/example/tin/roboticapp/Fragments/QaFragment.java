@@ -86,7 +86,6 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
         // Creating a Request Queue for the Volley Network Connection
         mRequestQueue = Volley.newRequestQueue(getActivity());
         RequestQuestionsFeed("http://10.0.2.2:8000/rest-api/questions");
-        RequestAnswersFeed("http://10.0.2.2:8000/rest-api/answers/?company=31");
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rV_Qa_list);
         mRecyclerView.setHasFixedSize(true);
@@ -97,82 +96,7 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
     }
 
 
-    /**
-     * Request on Articles Json w/Cookie attached to request
-     */
-    public void RequestAnswersFeed(String url) {
 
-        Log.d(TAG, "RequestAnswersFeed");
-        // Handler for the JSON response when server returns ok
-        final Response.Listener<String> responseListener = new Response.Listener<String>() {
-
-            @Override
-            public void onResponse(final String response) {
-                //Log.d(TAG, "ArticlesFeed Response: " + response);
-
-                /** Parsing JSON */
-
-                try {
-                    // Define the entire response as a JSON Object
-                    JSONObject companyResponseJsonObject = new JSONObject(response);
-                    // Define the "results" JsonArray as a JSONArray
-                    JSONArray companyJsonArray = companyResponseJsonObject.getJSONArray("results");
-
-                    // Now we need to get the individual Company JsonObjects from the companyJsonArray
-                    // using a for loop
-                    for (int i = 0; i < companyJsonArray.length(); i++) {
-
-                        JSONObject companyJsonObject = companyJsonArray.getJSONObject(i);
-
-                        Answer answer = new Answer(
-                                companyJsonObject.getInt("id"),
-                                companyJsonObject.getInt("question"),
-                                companyJsonObject.getInt("company"),
-                                companyJsonObject.getString("content")
-
-                        );
-
-                        mAnswers.add(answer);
-
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                Log.d(TAG, "All Answers: " + mAnswers);
-                onSavedParsedAnswers(mAnswers);
-
-            }
-        };
-
-        // Handler for when the server returns an error response
-        Response.ErrorListener errorListener = new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        };
-
-        // This is the body of the Request
-        //  - The Request has been named "request"
-        StringRequest request = new StringRequest(Request.Method.GET, url, responseListener, errorListener) {
-            // Headers for the POST request (Instead of Parameters as done in the Login Request,
-            // here we are are adding adding headers to the request
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                // Extracting the Cookie/Token from SharedPreferences
-                String token = CompanyMainActivity.mSharedPrefs.getString("token", "");
-                // Adding the Cookie/Token to the Header
-                headers.put("Authorization", "Bearer " + token);
-                return headers;
-            }
-        };
-
-        mRequestQueue.add(request);
-
-    }
 
 
     /**
@@ -210,6 +134,7 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
                         );
 
                         mQuestions.add(question);
+                        Log.d(TAG, "Questions: " + question);
 
                     }
 
@@ -218,7 +143,91 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
                 }
 
                 Log.d(TAG, "All Questions: " + mQuestions);
-                onSaveParseQuestions(mQuestions);
+                parsedQBundle = new Bundle();
+                parsedQBundle.putParcelableArrayList("parsedQuestions", mQuestions);
+
+                RequestAnswersFeed("http://10.0.2.2:8000/rest-api/answers/?company=31");
+            }
+        };
+
+        // Handler for when the server returns an error response
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        };
+
+        // This is the body of the Request
+        //  - The Request has been named "request"
+        StringRequest request = new StringRequest(Request.Method.GET, url, responseListener, errorListener) {
+            // Headers for the POST request (Instead of Parameters as done in the Login Request,
+            // here we are are adding adding headers to the request
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                // Extracting the Cookie/Token from SharedPreferences
+                String token = CompanyMainActivity.mSharedPrefs.getString("token", "");
+                // Adding the Cookie/Token to the Header
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+
+        mRequestQueue.add(request);
+
+    }
+
+    /**
+     * Request on Articles Json w/Cookie attached to request
+     */
+    public void RequestAnswersFeed(String url) {
+
+        Log.d(TAG, "RequestAnswersFeed");
+        // Handler for the JSON response when server returns ok
+        final Response.Listener<String> responseListener = new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(final String response) {
+                //Log.d(TAG, "ArticlesFeed Response: " + response);
+
+                /** Parsing JSON */
+
+                try {
+                    // Define the entire response as a JSON Object
+                    JSONObject companyResponseJsonObject = new JSONObject(response);
+                    // Define the "results" JsonArray as a JSONArray
+                    JSONArray companyJsonArray = companyResponseJsonObject.getJSONArray("results");
+
+                    // Now we need to get the individual Company JsonObjects from the companyJsonArray
+                    // using a for loop
+                    for (int i = 0; i < companyJsonArray.length(); i++) {
+
+                        JSONObject companyJsonObject = companyJsonArray.getJSONObject(i);
+
+                        Answer answer = new Answer(
+                                companyJsonObject.getInt("id"),
+                                companyJsonObject.getInt("question"),
+                                companyJsonObject.getInt("company"),
+                                companyJsonObject.getString("content")
+
+                        );
+
+                        mAnswers.add(answer);
+                        Log.d(TAG, "Answers: " + answer);
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                Log.d(TAG, "All Answers: " + mAnswers);
+                parsedABundle = new Bundle();
+                parsedABundle.putParcelableArrayList("parsedAnswers", mAnswers);
+
+                unpackBundles();
+
             }
         };
 
@@ -251,33 +260,33 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
     }
 
 
-    public void onSavedParsedAnswers(ArrayList<Answer> answer) {
-        parsedABundle = new Bundle();
-        parsedABundle.putParcelableArrayList("parsedAnswers", answer);
-    }
+    /** There are Methods to save the Questions and Answers into Bundles after Parsing */
+//    public void onSavedParsedAnswers(ArrayList<Answer> answer) {
+//        parsedABundle = new Bundle();
+//        parsedABundle.putParcelableArrayList("parsedAnswers", answer);
+//    }
 
-    public void onSaveParseQuestions(ArrayList<Question> question) {
-        parsedQBundle = new Bundle();
-        parsedQBundle.putParcelableArrayList("parsedQuestions", question);
-
-
-        Log.d(TAG, "QUESTIONS SAVED IN onSaveParseQuestions: " + question);
-
-        unpackBundles();
-    }
+//    public void onSaveParseQuestions(ArrayList<Question> question) {
+//        parsedQBundle = new Bundle();
+//        parsedQBundle.putParcelableArrayList("parsedQuestions", question);
+//
+//
+//        Log.d(TAG, "QUESTIONS SAVED IN onSaveParseQuestions: " + question);
+//
+//        unpackBundles();
+//    }
 
     public void unpackBundles() {
 
-        // Keep circling this for loop until both the Answers and Questions Bundles are not null,
-        // the moment they are not null, exit the for loop and run the next code
-        for (int i = 0; parsedABundle == null && parsedQBundle == null; i++) {
+        if (mQuestions != null) {
 
-
+            mQuestions = parsedQBundle.getParcelableArrayList("parsedQuestions");
         }
 
-        mQuestions = parsedQBundle.getParcelableArrayList("parsedQuestions");
-        mAnswers = parsedABundle.getParcelableArrayList("parsedAnswers");
+        if (mAnswers != null) {
 
+            mAnswers = parsedABundle.getParcelableArrayList("parsedAnswers");
+        }
 
         // Loop through mQuestions while i is smaller than mQuestions
         for (int i = 0; i < mQuestions.size(); i++) {
@@ -285,7 +294,6 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
             int questionId = mQuestions.get(i).getId();
             String questionQuestion = mQuestions.get(i).getQuestion();
             int questionPosition = mQuestions.get(i).getPosition();
-
 
             for (int ii = 0; ii < mAnswers.size(); ii++) {
 
@@ -306,14 +314,10 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
                             answerCompany,
                             answersContent
                     );
-//                    QACombined test = new QACombined(1, "foo", 1, -1, 1, 1, "answer");
-//                    Log.d(TAG, "Question ID {{ ROBs TEST }}: " + test.getQuestion());
-                    Log.d(TAG, "Question ID: " + qACombined.getQuestion());
 
+                    Log.d(TAG, "Question's With An Answer: " + qACombined.getQuestion());
 
                     mQaCombined.add(qACombined);
-                    //ii = 0;
-
 
                 } else {
                     // Else the Question and Answer do NOT correspond, so only add values for the question
@@ -330,6 +334,7 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
                     mQaCombined.add(qACombined);
 
                 }
+
 
             }
 
@@ -364,38 +369,6 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
         startActivity(intent);
 
     }
-
-
-    //    private void onClick() {
-//
-//        editIcon.setOnClickListener(new View.OnClickListener(){
-//
-//            @Override
-//            public void onClick(View view) {
-//
-//                onClickBundle = new Bundle();
-//                boolean newAnswer;
-//                // The Question will always be passed as will the ID
-//                onClickBundle.putString(QUESTION_01, tvQuestion01.getText().toString());
-//                onClickBundle.putInt(QUESTION_ID_01, 1);
-//
-//                // if is not "", then pass it to the bundle, else, don't pass it and mark the boolean
-//                // as false (needed to know if this is a first time entry or an edit to an existing answer
-//                if (tvAnswer01.getText().toString() != "") {
-//                    newAnswer = false;
-//                    onClickBundle.putString(ANSWER_01, tvAnswer01.getText().toString());
-//                    onClickBundle.putBoolean(NEW_ANSWER, newAnswer);
-//                } else {
-//                    newAnswer = true;
-//                    onClickBundle.putBoolean(NEW_ANSWER, newAnswer);
-//                }
-//
-//                Intent intent = new Intent(getActivity(), QaDetailActivity.class);
-//                intent.putExtras(onClickBundle);
-//                startActivity(intent);
-//            }
-//        });
-//    }
 
 
     @Override
