@@ -108,7 +108,7 @@ public class FundamentalsFragment extends Fragment {
 
             @Override
             public void onResponse(final String response) {
-                //Log.i(TAG, "ArticlesFeed Response: " + response);
+                //Log.d(TAG, "ArticlesFeed Response: " + response);
 
                 /** Parsing JSON */
 

@@ -61,7 +61,7 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_articles, container, false);
 
-        Log.v(TAG, ">>>>>>>>>>>>>>>>ON CREATE VIEW<<<<<<<<<<<<<<<<");
+        Log.d(TAG, ">>>>>>>>>>>>>>>>ON CREATE VIEW<<<<<<<<<<<<<<<<");
 
         mArticles = new ArrayList<>();
 
@@ -83,7 +83,7 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
         if (fragSavedInstanceState != null) {
 
             mArticles = fragSavedInstanceState.getParcelableArrayList(ARTICLE_ARRAY);
-            Log.v(TAG, "mySavedInstanceState: " + mArticles);
+            Log.d(TAG, "mySavedInstanceState: " + mArticles);
 
             adapter = new ArticleAdapter(mArticles, getContext(), ArticlesFragment.this);
             mRecyclerView.setAdapter(adapter);
@@ -104,7 +104,7 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
     public void onDestroyView() {
         super.onDestroyView();
 
-        Log.v(TAG, ">>>>>>>>>>>>>>>>ON DESTROY VIEW<<<<<<<<<<<<<<<<");
+        Log.d(TAG, ">>>>>>>>>>>>>>>>ON DESTROY VIEW<<<<<<<<<<<<<<<<");
 
         /** Saving an instance of the Articles List, because as the user navigates through the tabs
          * this Fragment will enter onDestroyView and there for the data will be lost unless saved
@@ -161,7 +161,7 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
                         );
 
                         mArticles.add(article);
-                        //Log.v(TAG, "Article List: " + article);
+                        //Log.d(TAG, "Article List: " + article);
 
                     }
 
@@ -211,7 +211,7 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        Log.v(TAG, ">>>>>>>>>>>>>>>On SAVED INSTANCE STATE<<<<<<<<<<<<<<<<<<<<");
+        Log.d(TAG, ">>>>>>>>>>>>>>>On SAVED INSTANCE STATE<<<<<<<<<<<<<<<<<<<<");
 
         outState.putParcelableArrayList(ARTICLE_ARRAY, mArticles);
 

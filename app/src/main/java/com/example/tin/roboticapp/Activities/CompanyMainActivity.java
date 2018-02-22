@@ -169,7 +169,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
                         );
 
                         theCompanies.add(theCompany);
-                        //Log.v(TAG, "Companies List: " + theCompany);
+                        //Log.d(TAG, "Companies List: " + theCompany);
 
                     }
 
@@ -193,7 +193,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
 
         // This is the body of the Request
         //  - The Request has been named "request"
-        StringRequest request = new StringRequest(Request.Method.GET, "http://10.0.2.2:8000/rest-api/companies", responseListener, errorListener) {
+        StringRequest request = new StringRequest(Request.Method.GET, "http://10.0.2.2:8000/rest-api/companies/?limit=500", responseListener, errorListener) {
             // Headers for the POST request (Instead of Parameters as done in the Login Request,
             // here we are are adding adding headers to the request
             @Override
@@ -206,9 +206,6 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
                 return headers;
             }
         };
-        // Making the Network Request and passing in the request we created
-        // TODO: DOES THIS METHOD AUTOMATICALLY RUN ASHYNCHRONOSLY? IS IT BETTER THAN A LOADER OR ASYNCTASK?
-        // Research into the RequestQueue function to find out! WE NEED TO KNOW AS THIS NEEDS TO RUN ASYNCHRONOSLY
         mRequestQueue.add(request);
     }
 

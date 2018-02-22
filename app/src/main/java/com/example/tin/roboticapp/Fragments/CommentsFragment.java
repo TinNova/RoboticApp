@@ -97,7 +97,7 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
         if (fragSavedInstanceState != null) {
 
             mComments = fragSavedInstanceState.getParcelableArrayList(COMMENT_ARRAY);
-            Log.v(TAG, "mySavedInstanceState: " + mComments);
+            Log.d(TAG, "mySavedInstanceState: " + mComments);
 
             adapter = new CommentAdapter(mComments, getContext(), CommentsFragment.this);
             mRecyclerView.setAdapter(adapter);
@@ -184,7 +184,7 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
                         );
 
                         mComments.add(comment);
-                        Log.v(TAG, "Comments List: " + comment);
+                        Log.d(TAG, "Comments List: " + comment);
 
                     }
 
@@ -232,7 +232,7 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
     public void onDestroyView() {
         super.onDestroyView();
 
-        Log.v(TAG, ">>>>>>>>>>>>>>>>ON DESTROY VIEW<<<<<<<<<<<<<<<<");
+        Log.d(TAG, ">>>>>>>>>>>>>>>>ON DESTROY VIEW<<<<<<<<<<<<<<<<");
 
         /** Saving an instance of the Articles List, because as the user navigates through the tabs
          * this Fragment will enter onDestroyView and there for the data will be lost unless saved
@@ -250,7 +250,7 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        Log.v(TAG, ">>>>>>>>>>>>>>>On SAVED INSTANCE STATE<<<<<<<<<<<<<<<<<<<<");
+        Log.d(TAG, ">>>>>>>>>>>>>>>On SAVED INSTANCE STATE<<<<<<<<<<<<<<<<<<<<");
 
         outState.putParcelableArrayList(COMMENT_ARRAY, mComments);
 

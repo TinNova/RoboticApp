@@ -46,14 +46,13 @@ public class QaDetailActivity extends AppCompatActivity {
 
     private String mQuestion;
     private String mAnswer;
-    private int mId;
+    private int mQId;
 
     private TextView mQuestionTv;
-    private EditText mAnswerTv;
+    private EditText mAnswerEt;
     private RequestQueue mRequestQueue;
 
-    // 0 = New Answer (i.e no answer was passed in the intent)
-    // 1 = Editing Answer (i.e we're editing an existing answer)
+    // 0 = New Answer (i.e no answer was passed in the intent) else, 1 = Editing Answer (i.e we're editing an existing answer)
     int newAnswer = 0;
 
     @Override
@@ -61,8 +60,7 @@ public class QaDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qa_detail);
 
-
-        mAnswerTv = (EditText) findViewById(R.id.answer_editText);
+        mAnswerEt = (EditText) findViewById(R.id.answer_editText);
         mQuestionTv = (TextView) findViewById(R.id.question_tV_qaDetail);
         mRequestQueue = Volley.newRequestQueue(this);
 
@@ -74,15 +72,15 @@ public class QaDetailActivity extends AppCompatActivity {
 
             mQuestion = intentFromQaFrag.getStringExtra(QaFragment.QUESTION);
             mQuestionTv.setText(mQuestion);
-            mId = intentFromQaFrag.getIntExtra(QaFragment.QUESTION_ID, 0);
-            Log.v(TAG, "The ID of the Question/Answer is: " + mId);
+            mQId = intentFromQaFrag.getIntExtra(QaFragment.QUESTION_ID, 0);
+            Log.d(TAG, "The ID of the Question/Answer is: " + mQId);
 
             // if the answer is not null then extract it, then put the answer within the EditText
             // and mark the newAnswer as 1
             if (intentFromQaFrag.getStringExtra(QaFragment.ANSWER) != null) {
 
                 mAnswer = intentFromQaFrag.getStringExtra(QaFragment.ANSWER);
-                mAnswerTv.setText(mAnswer);
+                mAnswerEt.setText(mAnswer);
                 newAnswer = 1;
 
             }
@@ -93,7 +91,7 @@ public class QaDetailActivity extends AppCompatActivity {
 
         }
 
-        Log.v(TAG, "This is a New or Existing Answer: " + newAnswer);
+        Log.d(TAG, "This is a New or Existing Answer: " + newAnswer);
 
     }
 
@@ -113,12 +111,13 @@ public class QaDetailActivity extends AppCompatActivity {
                 super.onBackPressed();
                 return true;
 
-            // If Save is clicked, it will launch the POST or PUT request
+            // When Save is clicked, it will launch the POST or PUT request
             case R.id.menu_qa_detail_save:
-                String answerString = mAnswerTv.getText().toString();
+                // Get the text from the EditText and save it as a String
+                String answerString = mAnswerEt.getText().toString();
                 // If it's an unanswered question create a new answer
                 if (newAnswer == 0) {
-                    addNewAnswer(answerString);
+                    addAnswer(answerString);
 
                     // Else we are editing an existing answer
                 } else {
@@ -126,16 +125,14 @@ public class QaDetailActivity extends AppCompatActivity {
                 }
 
                 Toast.makeText(this, "Answer Saved.", Toast.LENGTH_SHORT).show();
-                // Then it navigates back to the QaFragment
-                // However we need to reLaunch the Get Request in order to get the update list of
-                // answers upon return to the QaFragment.
-//                super.onBackPressed();
 
-                Intent i = new Intent(this, CompanyDetailActivity.class);
-                i.putExtra(FRAGMENT_QA, "qaFrag");
+                //TODO: The app now uses the backUp button upon saving a comment. This however doesn't work because the questions in the QAFragment are saved in a bundle
+                // But when returning to the QAFragment it also seems to load a new set of questions, so we end up with two lists of questions
+                // 1. Check what is called when backup is pressed (is onCreateView launched?, is onResume launched? is another type of lifecycle stage launched? Check them all)
+                //    - if any of those is correct, maybe an if statement can be used to clear the saved Bundle and launch a new request?
 
-                // Now start your activity
-                startActivity(i);
+                super.onBackPressed();
+                return true;
 
         }
 
@@ -143,7 +140,10 @@ public class QaDetailActivity extends AppCompatActivity {
     }
 
 
-    private void addNewAnswer(String answerET) {
+    /**
+     * This should be an Intent Service? Because it doesn't affect the UI in this Activity?
+     */
+    private void addAnswer(String answerET) {
 
         /** Within this method, I'd like the POST request to happen */
 
@@ -165,25 +165,27 @@ public class QaDetailActivity extends AppCompatActivity {
             content.put("read_only", false);
             content.put("label", "Content");
 
-            int questionNumber = 1;
             int companyID = 31; //EZY Jet
 
-            params.put("question", questionNumber);
+            params.put("question", mQId);
             params.put("company", companyID);
             params.put("content", answerET);
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, "http://10.0.2.2:8000/rest-api/answers/", params, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Log.i("Response", response.toString());
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                    (Request.Method.POST, "http://10.0.2.2:8000/rest-api/answers/", params, new Response.Listener<JSONObject>() {
 
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.i("Response", response.toString());
 
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    error.printStackTrace();
-                }
-            }) {
+                        }
+
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            error.printStackTrace();
+                        }
+
+                    }) {
                 // Headers for the POST request (Instead of Parameters as done in the Login Request,
                 // here we are are adding adding headers to the request
                 @Override
@@ -227,13 +229,12 @@ public class QaDetailActivity extends AppCompatActivity {
             content.put("read_only", false);
             content.put("label", "Content");
 
-            int questionNumber = 1;
             int companyID = 31; //EZY Jet
 
-            //params.put("question", questionNumber);
+
             params.put("company", companyID);
             params.put("content", answerET);
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, "http://10.0.2.2:8000/rest-api/answers/1", params, new Response.Listener<JSONObject>() {
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, "http://10.0.2.2:8000/rest-api/answers/" + mQId + "/", params, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.i("Response", response.toString());

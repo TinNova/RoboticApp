@@ -63,7 +63,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_company_detail);
 
-        Log.d(TAG, "onCreate: Starting.");
+        Log.d(TAG, "onCreate");
 
 
         /** Extracting Data From Intent */
@@ -165,9 +165,54 @@ public class CompanyDetailActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        Log.d(TAG, "onStart");
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Log.d(TAG, "onResume");
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        Log.d(TAG, "onPause");
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        Log.d(TAG, "onStop");
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        Log.d(TAG, "onRestart");
+
+        /** onRestart and if statement should appear,
+         * if (A bundle has been passed through by)
+         */
+
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        Log.v(TAG, "Detail Activity Destroyed");
+        Log.d(TAG, "onDestroy");
+
     }
 }
