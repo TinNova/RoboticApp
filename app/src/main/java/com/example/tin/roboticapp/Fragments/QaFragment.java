@@ -342,6 +342,7 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
                 String questionQuestion = mQuestions.get(i).getQuestion();
                 int questionPosition = mQuestions.get(i).getPosition();
 
+                // match is used to calculate whether mock data needs to be added to an answer
                 int match = 0;
 
                 for (int j = 0; j < mAnswers.size(); j++) {
@@ -351,12 +352,10 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
                     int answerCompany = mAnswers.get(j).getCompany();
                     String answersContent = mAnswers.get(j).getContent();
 
-                    // if QuestionId & AnswerQuestion ID Match, add to qACombined
-
                     Log.d(TAG, "Id of Current Quesiont" + mQuestions.get(i).getId());
                     Log.d(TAG, "Question Id of Current Answer" + mAnswers.get(j).getQuestion());
 
-
+                    // if QuestionId & AnswerQuestion ID Match, add to qACombined
                     if (mQuestions.get(i).getId() == mAnswers.get(j).getQuestion()) {
 
                         QACombined qACombined = new QACombined(
@@ -372,16 +371,18 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
                         Log.d(TAG, "Question's With An Answer: " + qACombined.getQuestion());
 
                         mQaCombined.add(qACombined);
+                        // make match = 1 to indicate that an answer was found and added
                         match = 1;
+                        // stop the for loop, it doesn't need to keep running
                         j = mAnswers.size();
-
 
                     }
 
                 }
+                // if after completing the answer loop an answer was not found, aka match is still equal to 0
+                // add the question with mock answer data
+                if (match == 0) {
 
-                if (match == 0){
-                    // Else the Question and Answer do NOT correspond, so only add values for the question
                     QACombined qACombined = new QACombined(
                             questionId,
                             questionQuestion,
@@ -390,21 +391,21 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
                             -1,
                             -1,
                             ""
+
                     );
 
                     mQaCombined.add(qACombined);
 
+                }
+
             }
+
+            Log.d(TAG, "Size of mQaCombined after combining the list: " + mQaCombined.size());
+            adapter.notifyDataSetChanged();
 
         }
 
-        //Log.d(TAG, "QACombined ArrayList: " + mQaCombined);
-        Log.d(TAG, "Size of mQaCombined after combining the list: " + mQaCombined.size());
-        adapter.notifyDataSetChanged();
-
     }
-
-}
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
