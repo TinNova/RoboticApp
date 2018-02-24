@@ -76,6 +76,7 @@ public class QaDetailActivity extends AppCompatActivity {
             mQuestion = intentFromQaFrag.getStringExtra(QaFragment.QUESTION);
             mQuestionTv.setText(mQuestion);
             mQId = intentFromQaFrag.getIntExtra(QaFragment.QUESTION_ID, 0);
+            mAnswer = "";
             Log.d(TAG, "The ID of the Question/Answer is: " + mQId);
 
             // if the answer is not null then extract it, then put the answer within the EditText
@@ -119,29 +120,27 @@ public class QaDetailActivity extends AppCompatActivity {
 
                 // Get the text from the EditText and save it as a String.
                 String answerString = mAnswerEt.getText().toString();
+                Log.d(TAG, "The text in the EditText: " + answerString);
 
                 // if the answerString is NOT empty, and it is not the same as the one retrieved
                 // from the Bundle, either addAnswer or editAnswer
                 if (!answerString.matches("") && !answerString.matches(mAnswer)) {
-
+                    Log.d(TAG, "if Statement in line 126 was successful");
                     // If it's an unanswered question create a new answer
                     if (newAnswer == 0) {
+
                         addAnswer(answerString);
+
+                        Log.d(TAG, "addAnswer Launched from if/else statement");
 
                         // Else we are editing an existing answer
                     } else {
+
                         editAnswer(answerString);
+
+                        Log.d(TAG, "editAnswer Launched from if/else statement");
+
                     }
-
-                    Toast.makeText(this, "Answer Saved.", Toast.LENGTH_SHORT).show();
-
-                    // Intent to launch the QAFragment
-                    Intent intent = new Intent(QaDetailActivity.this, CompanyDetailActivity.class);
-                    // Here we are passing in position 1, to load the QAFragment when the activity starts
-                    // The string is passed so that we can do an if statement with it, in onCreate
-                    intent.putExtra(FRAGMENT_POSITION, 1);
-                    intent.putExtra(INTENT_FROM_QA_DETAIL_ACTIVITY, "From QaDetailActivity");
-                    startActivity(intent);
 
                     // if the answerString is empty, notify user
                 } else if (answerString.matches("")) {
@@ -160,6 +159,20 @@ public class QaDetailActivity extends AppCompatActivity {
         return super.
 
                 onOptionsItemSelected(item);
+
+    }
+
+    private void onSuccessfulPostPut() {
+
+        Toast.makeText(this, "Answer Saved.", Toast.LENGTH_SHORT).show();
+
+        // Intent to launch the QAFragment
+        Intent intent = new Intent(QaDetailActivity.this, CompanyDetailActivity.class);
+        // Here we are passing in position 1, to load the QAFragment when the activity starts
+        // The string is passed so that we can do an if statement with it, in onCreate
+        intent.putExtra(FRAGMENT_POSITION, 1);
+        intent.putExtra(INTENT_FROM_QA_DETAIL_ACTIVITY, "From QaDetailActivity");
+        startActivity(intent);
 
     }
 
@@ -199,13 +212,16 @@ public class QaDetailActivity extends AppCompatActivity {
 
                         @Override
                         public void onResponse(JSONObject response) {
-                            Log.i("Response", response.toString());
+                            Log.d(TAG, "Response: " + response.toString());
+
+                            onSuccessfulPostPut();
 
                         }
 
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
+                            Log.d(TAG, "onErrorResponse in addAnswer");
                             error.printStackTrace();
                         }
 
@@ -261,13 +277,16 @@ public class QaDetailActivity extends AppCompatActivity {
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, "http://10.0.2.2:8000/rest-api/answers/" + mQId + "/", params, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    Log.i("Response", response.toString());
+                    Log.d(TAG, "Response: " + response.toString());
 
+                    onSuccessfulPostPut();
 
                 }
+
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    Log.d(TAG, "onErrorResponse in editAnswer");
                     error.printStackTrace();
                 }
             }) {
@@ -300,9 +319,13 @@ public class QaDetailActivity extends AppCompatActivity {
 // COMMIT!
 // COMPLETED: Add POST function for a new answer
 // COMMIT!
-// TODO: Add POST function for an existing answer
+// FAILED: Add POST function for an existing answer
 // COMPLETED: Have an UP button that takes you specifically to the QA Fragment (NOT a random fragment)
 // COMMIT!
 // COMPLETED: Fix the layout a little
 // COMMIT!
-// TODO: Work on the POST function for Comments
+// TODO: Fix the POST on an answer
+// TODO: Fix the PUT on an answer
+// TODO: POST and PUT should happen in a ServiceIntent..or Service? As the result of the data is not linked to the ui or lifecycle of this activity
+//          If you fail to put it in a Service, the activity may onDestroy before the data has been POSTed or PUT
+// TODO: Work on the POST function for Comments, Make it refresh upon a comment submission

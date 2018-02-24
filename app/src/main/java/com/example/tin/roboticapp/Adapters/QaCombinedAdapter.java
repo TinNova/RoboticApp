@@ -2,6 +2,7 @@ package com.example.tin.roboticapp.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
  */
 
 public class QaCombinedAdapter extends RecyclerView.Adapter<QaCombinedAdapter.ViewHolder> {
+
+    private static final String TAG = "QaCombinedAdapter";
 
     private final ArrayList<QACombined> mQACombined;
     private final Context context;
@@ -72,6 +75,9 @@ public class QaCombinedAdapter extends RecyclerView.Adapter<QaCombinedAdapter.Vi
 
     @Override
     public int getItemCount() {
+
+        //Log.d(TAG, "List size: " + mQACombined.size());
+
         return mQACombined.size();
     }
 

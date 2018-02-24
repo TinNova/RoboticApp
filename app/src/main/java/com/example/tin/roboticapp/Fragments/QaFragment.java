@@ -91,12 +91,17 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
         mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
+        adapter = new QaCombinedAdapter(mQaCombined, getContext(), QaFragment.this);
+        mRecyclerView.setAdapter(adapter);
+
+
+        parsedQBundle = new Bundle();
+        parsedABundle = new Bundle();
+
+        int match;
 
         return view;
     }
-
-
-
 
 
     /**
@@ -143,8 +148,10 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
                 }
 
                 Log.d(TAG, "All Questions: " + mQuestions);
-                parsedQBundle = new Bundle();
+//                parsedQBundle = new Bundle();
+                parsedQBundle.clear();
                 parsedQBundle.putParcelableArrayList("parsedQuestions", mQuestions);
+                Log.d(TAG, "Size of mQuesiton in onResponse (Should be 5): " + mQuestions.size());
 
                 RequestAnswersFeed("http://10.0.2.2:8000/rest-api/answers/?company=31");
             }
@@ -223,8 +230,11 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
                 }
 
                 Log.d(TAG, "All Answers: " + mAnswers);
-                parsedABundle = new Bundle();
+//                parsedABundle = new Bundle();
+                parsedABundle.clear();
                 parsedABundle.putParcelableArrayList("parsedAnswers", mAnswers);
+
+                Log.d(TAG, "Size of mAnswer in onResponse (Should be 5): " + mAnswers.size());
 
                 unpackBundles();
 
@@ -260,7 +270,9 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
     }
 
 
-    /** There are Methods to save the Questions and Answers into Bundles after Parsing */
+    /**
+     * There are Methods to save the Questions and Answers into Bundles after Parsing
+     */
 //    public void onSavedParsedAnswers(ArrayList<Answer> answer) {
 //        parsedABundle = new Bundle();
 //        parsedABundle.putParcelableArrayList("parsedAnswers", answer);
@@ -275,8 +287,10 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
 //
 //        unpackBundles();
 //    }
-
     public void unpackBundles() {
+
+        Log.d(TAG, "Size of mQaCombined BEFORE PARSE: " + mQaCombined.size());
+
 
         if (mQuestions != null) {
 
@@ -288,38 +302,85 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
             mAnswers = parsedABundle.getParcelableArrayList("parsedAnswers");
         }
 
-        // Loop through mQuestions while i is smaller than mQuestions
-        for (int i = 0; i < mQuestions.size(); i++) {
+        Log.d(TAG, "mAnswers in unpackBundles: " + mAnswers.size());
+        Log.d(TAG, "mQuestions in unpackBundles: " + mQuestions.size());
 
-            int questionId = mQuestions.get(i).getId();
-            String questionQuestion = mQuestions.get(i).getQuestion();
-            int questionPosition = mQuestions.get(i).getPosition();
+        // If there are not Answer, then skip for looping through answers
+        if (mAnswers.size() == 0) {
 
-            for (int ii = 0; ii < mAnswers.size(); ii++) {
+            // Loop through mQuestions while i is smaller than mQuestions
+            for (int i = 0; i < mQuestions.size(); i++) {
 
-                int answerId = mAnswers.get(ii).getId();
-                int answerQuestion = mAnswers.get(ii).getQuestion();
-                int answerCompany = mAnswers.get(ii).getCompany();
-                String answersContent = mAnswers.get(ii).getContent();
+                int questionId = mQuestions.get(i).getId();
+                String questionQuestion = mQuestions.get(i).getQuestion();
+                int questionPosition = mQuestions.get(i).getPosition();
 
-                // if QuestionId & AnswerQuestion ID Match, add to qACombined
-                if (mQuestions.get(i).getId() == mAnswers.get(ii).getQuestion()) {
+                QACombined qACombined = new QACombined(
+                        questionId,
+                        questionQuestion,
+                        questionPosition,
+                        -1,
+                        -1,
+                        -1,
+                        ""
+                );
 
-                    QACombined qACombined = new QACombined(
-                            questionId,
-                            questionQuestion,
-                            questionPosition,
-                            answerId,
-                            answerQuestion,
-                            answerCompany,
-                            answersContent
-                    );
+                mQaCombined.add(qACombined);
 
-                    Log.d(TAG, "Question's With An Answer: " + qACombined.getQuestion());
+            }
 
-                    mQaCombined.add(qACombined);
+            //Log.d(TAG, "QACombined ArrayList: " + mQaCombined);
+            Log.d(TAG, "Size of mQaCombined after combining the list: " + mQaCombined.size());
+            adapter.notifyDataSetChanged();
 
-                } else {
+        } else {
+
+            // Loop through mQuestions while i is smaller than mQuestions
+            for (int i = 0; i < mQuestions.size(); i++) {
+
+                int questionId = mQuestions.get(i).getId();
+                String questionQuestion = mQuestions.get(i).getQuestion();
+                int questionPosition = mQuestions.get(i).getPosition();
+
+                int match = 0;
+
+                for (int j = 0; j < mAnswers.size(); j++) {
+
+                    int answerId = mAnswers.get(j).getId();
+                    int answerQuestion = mAnswers.get(j).getQuestion();
+                    int answerCompany = mAnswers.get(j).getCompany();
+                    String answersContent = mAnswers.get(j).getContent();
+
+                    // if QuestionId & AnswerQuestion ID Match, add to qACombined
+
+                    Log.d(TAG, "Id of Current Quesiont" + mQuestions.get(i).getId());
+                    Log.d(TAG, "Question Id of Current Answer" + mAnswers.get(j).getQuestion());
+
+
+                    if (mQuestions.get(i).getId() == mAnswers.get(j).getQuestion()) {
+
+                        QACombined qACombined = new QACombined(
+                                questionId,
+                                questionQuestion,
+                                questionPosition,
+                                answerId,
+                                answerQuestion,
+                                answerCompany,
+                                answersContent
+                        );
+
+                        Log.d(TAG, "Question's With An Answer: " + qACombined.getQuestion());
+
+                        mQaCombined.add(qACombined);
+                        match = 1;
+                        j = mAnswers.size();
+
+
+                    }
+
+                }
+
+                if (match == 0){
                     // Else the Question and Answer do NOT correspond, so only add values for the question
                     QACombined qACombined = new QACombined(
                             questionId,
@@ -333,18 +394,17 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
 
                     mQaCombined.add(qACombined);
 
-                }
-
-
             }
 
         }
 
-        Log.d(TAG, "QACombined ArrayList: " + mQaCombined);
-        adapter = new QaCombinedAdapter(mQaCombined, getContext(), QaFragment.this);
-        mRecyclerView.setAdapter(adapter);
+        //Log.d(TAG, "QACombined ArrayList: " + mQaCombined);
+        Log.d(TAG, "Size of mQaCombined after combining the list: " + mQaCombined.size());
+        adapter.notifyDataSetChanged();
 
     }
+
+}
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
@@ -359,7 +419,7 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
         onClickBundle.putString(QUESTION, mQaCombined.get(clickedItemIndex).getQuestion());
         onClickBundle.putInt(QUESTION_ID, mQaCombined.get(clickedItemIndex).getqId());
 
-        if( mQaCombined.get(clickedItemIndex).getContent() != ""){
+        if (mQaCombined.get(clickedItemIndex).getContent() != "") {
 
             onClickBundle.putString(ANSWER, mQaCombined.get(clickedItemIndex).getContent());
 
