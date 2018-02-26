@@ -46,8 +46,10 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
     private static final String TAG = "QAFragment";
 
     public static final String QUESTION = "question";
-    public static final String ANSWER = "answer";
     public static final String QUESTION_ID = "question_id";
+    public static final String ANSWER = "answer";
+    public static final String ANSWER_ID = "answer_id";
+
 
     /**
      * Needed for Volley Network Connection
@@ -423,6 +425,7 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
         if (mQaCombined.get(clickedItemIndex).getContent() != "") {
 
             onClickBundle.putString(ANSWER, mQaCombined.get(clickedItemIndex).getContent());
+            onClickBundle.putInt(ANSWER_ID, mQaCombined.get(clickedItemIndex).getaId());
 
         }
 

@@ -49,6 +49,7 @@ public class QaDetailActivity extends AppCompatActivity {
 
     private String mQuestion;
     private String mAnswer;
+    private int mAnswerId;
     private int mQId;
 
     private TextView mQuestionTv;
@@ -84,6 +85,7 @@ public class QaDetailActivity extends AppCompatActivity {
             if (intentFromQaFrag.getStringExtra(QaFragment.ANSWER) != null) {
 
                 mAnswer = intentFromQaFrag.getStringExtra(QaFragment.ANSWER);
+                mAnswerId = intentFromQaFrag.getIntExtra(QaFragment.ANSWER_ID, -1);
                 mAnswerEt.setText(mAnswer);
                 newAnswer = 1;
 
@@ -135,6 +137,14 @@ public class QaDetailActivity extends AppCompatActivity {
 
                         // Else we are editing an existing answer
                     } else {
+
+                        if (mAnswerId == -1){
+
+                            Toast.makeText(this, "Post cannot be saved, copy your entry and refresh the page", Toast.LENGTH_SHORT).show();
+
+                            Log.d(TAG, "editAnswer cannot launch as mAnswerId == -1, (the default value in the intent");
+
+                        }
 
                         editAnswer(answerString);
 
@@ -271,10 +281,10 @@ public class QaDetailActivity extends AppCompatActivity {
 
             int companyID = 31; //EZY Jet
 
-
+            params.put("question", mQId);
             params.put("company", companyID);
             params.put("content", answerET);
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, "http://10.0.2.2:8000/rest-api/answers/" + mQId + "/", params, new Response.Listener<JSONObject>() {
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, "http://10.0.2.2:8000/rest-api/answers/" + mAnswerId + "/", params, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d(TAG, "Response: " + response.toString());
@@ -324,8 +334,9 @@ public class QaDetailActivity extends AppCompatActivity {
 // COMMIT!
 // COMPLETED: Fix the layout a little
 // COMMIT!
-// TODO: Fix the POST on an answer
-// TODO: Fix the PUT on an answer
+// COMPLETED: Fix the POST on an answer
+// COMPLETED: Fix the PUT on an answer (The issue is the response goes to onErrorResponse
+// COMMIT!
 // TODO: POST and PUT should happen in a ServiceIntent..or Service? As the result of the data is not linked to the ui or lifecycle of this activity
 //          If you fail to put it in a Service, the activity may onDestroy before the data has been POSTed or PUT
 // TODO: Work on the POST function for Comments, Make it refresh upon a comment submission
