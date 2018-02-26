@@ -232,7 +232,7 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
                 }
 
                 Log.d(TAG, "All Answers: " + mAnswers);
-//                parsedABundle = new Bundle();
+
                 parsedABundle.clear();
                 parsedABundle.putParcelableArrayList("parsedAnswers", mAnswers);
 
@@ -271,24 +271,7 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
 
     }
 
-
-    /**
-     * There are Methods to save the Questions and Answers into Bundles after Parsing
-     */
-//    public void onSavedParsedAnswers(ArrayList<Answer> answer) {
-//        parsedABundle = new Bundle();
-//        parsedABundle.putParcelableArrayList("parsedAnswers", answer);
-//    }
-
-//    public void onSaveParseQuestions(ArrayList<Question> question) {
-//        parsedQBundle = new Bundle();
-//        parsedQBundle.putParcelableArrayList("parsedQuestions", question);
-//
-//
-//        Log.d(TAG, "QUESTIONS SAVED IN onSaveParseQuestions: " + question);
-//
-//        unpackBundles();
-//    }
+    /** This unpacks the Answers & Questions that were saved in Bundles after being downloaded */
     public void unpackBundles() {
 
         Log.d(TAG, "Size of mQaCombined BEFORE PARSE: " + mQaCombined.size());

@@ -94,6 +94,10 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
         // Set the mRecyclerView to the layoutManager so it can handle the positioning of the items
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
+        adapter = new CommentAdapter(mComments, getContext(), CommentsFragment.this);
+
+        mRecyclerView.setAdapter(adapter);
+
         if (fragSavedInstanceState != null) {
 
             mComments = fragSavedInstanceState.getParcelableArrayList(COMMENT_ARRAY);
@@ -118,19 +122,13 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
                 // This is the users comment placed into a String
                 String commentToPost = mCommentEditText.getText().toString().trim();
 
+                // if commentToPost is NOT empty, then start the Post
                 if (!TextUtils.isEmpty(commentToPost)) {
 
+                    // Launch the POST request
                     postComment(commentToPost);
+
                     Toast.makeText(getActivity(), "Comment Sent", Toast.LENGTH_SHORT).show();
-
-                    // Before reloading the comments to view the latest, we need to clear the current
-                    // list of mComments, but first check if it exists as it's only created on DestroyView
-                    if(mComments != null) {
-
-                        mComments.clear();
-                    }
-                    mRequestQueue = Volley.newRequestQueue(getActivity());
-                    RequestFeed("http://10.0.2.2:8000/rest-api/comments/?company=31");
 
                 } else {
 
@@ -150,13 +148,13 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
      */
     public void RequestFeed(String url) {
 
-        Log.i(TAG, "RequestFeed");
+        Log.d(TAG, "RequestFeed");
         // Handler for the JSON response when server returns ok
         final Response.Listener<String> responseListener = new Response.Listener<String>() {
 
             @Override
             public void onResponse(final String response) {
-                Log.i(TAG, "Feed Response: " + response);
+                Log.d(TAG, "Feed Response: " + response);
 
                 /** Parsing JSON */
 
@@ -188,14 +186,12 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
 
                     }
 
-                    adapter = new CommentAdapter(mComments, getContext(), CommentsFragment.this);
-                    mRecyclerView.setAdapter(adapter);
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-                Log.i(TAG, "Comments After Parse: " + mComments);
+                Log.d(TAG, "Comments After Parse: " + mComments);
+                adapter.notifyDataSetChanged();
 
             }
         };
@@ -286,7 +282,13 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, "http://10.0.2.2:8000/rest-api/comments/", params, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    Log.i("Response", response.toString());
+                    Log.d("Response", response.toString());
+
+                    // After POST, clear the current mComments list before a new one is downloaded
+                    mComments.clear();
+
+                    // Refresh the Database the moment a Post has been made
+                    RequestFeed("http://10.0.2.2:8000/rest-api/comments/?company=31");
 
 
                 }
