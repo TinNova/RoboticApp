@@ -41,6 +41,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.tin.roboticapp.Activities.CompanyDetailActivity" />
         </activity>
+
+        <provider
+            android:name="com.example.tin.roboticapp.SQLite.FavouriteContentProvider"
+            android:authorities="com.example.tin.roboticapp"
+            android:exported="false" />
     </application>
 
 </manifest>
