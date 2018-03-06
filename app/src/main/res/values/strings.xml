@@ -29,4 +29,8 @@
 
     <!-- QA Detail Menu -->
     <string name="save_menu">SAVE</string>
+
+    <!-- Detail Activity Menu -->
+    <string name="favourites">Favourites</string>
+
 </resources>
