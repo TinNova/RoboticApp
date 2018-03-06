@@ -135,7 +135,6 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
                     Toast.makeText(getActivity(), "Insert A Comment!", Toast.LENGTH_SHORT).show();
                 }
 
-
             }
         });
 
