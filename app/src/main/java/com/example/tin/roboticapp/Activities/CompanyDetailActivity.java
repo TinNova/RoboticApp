@@ -1,7 +1,10 @@
 package com.example.tin.roboticapp.Activities;
 
 import android.app.ActionBar;
+import android.content.ClipData;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +23,11 @@ import com.example.tin.roboticapp.Fragments.FundamentalsFragment;
 import com.example.tin.roboticapp.Fragments.QaFragment;
 import com.example.tin.roboticapp.Adapters.SectionsPagerAdapter;
 import com.example.tin.roboticapp.R;
+import com.example.tin.roboticapp.SQLite.FavouriteContract;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class CompanyDetailActivity extends AppCompatActivity {
 
@@ -51,7 +59,15 @@ public class CompanyDetailActivity extends AppCompatActivity {
     private CommentsFragment mDiscussionFrag;
     private QaFragment mQaFragment;
 
+    // Used to Insert Data into SQLite Database
+    private String mQaCombine;
+    private String mArticles;
+    private String mPrice;
+
     int mFragmentToLoad = 0;
+
+    // This Is For The Favourite Icon In The Menu Item
+    public static MenuItem favouriteMenu;
 
 
     ActionBar actionBar;
@@ -157,6 +173,8 @@ public class CompanyDetailActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_company_detail, menu);
+        favouriteMenu = menu.findItem(R.id.favourite);
+        favouriteMenu.setVisible(false);
         return true;
     }
 
@@ -167,13 +185,80 @@ public class CompanyDetailActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        // User clicked on a menu option in the app bar overflow menu
+        switch (item.getItemId()) {
+
+            case R.id.favourite:
+
+                // Change the Heart Icon from white outline to white heart
+                favouriteMenu.setIcon(R.drawable.ic_star_white_24dp);
+
+                // Method which adds Movie to SQL
+                preAddToDatabase();
+                Toast.makeText(this, "Added To Favourites!", Toast.LENGTH_SHORT).show();
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    /**
+     * Code Which Inserts A Company To The SQL Database
+     */
+    private void addToDatabase(int companyId, String companyTicker, String companyQa, String companyArticles, String companyPrice) {
+
+        // ContentValues passes the values onto the SQLite insert query
+        ContentValues cv = new ContentValues();
+
+        // We don't need to include the ID of the row, because BaseColumns in the Contract Class does this
+        // for us. If we didn't have the BaseColumns we would have to add the ID ourselves.
+        cv.put(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_ID, companyId);
+        cv.put(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_TICKER, companyTicker);
+        cv.put(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_QA_LIST, companyQa);
+        cv.put(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_ARTICLES_LIST, companyArticles);
+        cv.put(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_PRICE, companyPrice);
+
+        // Insert the new company to the Favourite SQLite Db via a ContentResolver
+        Uri uri = getContentResolver().insert(FavouriteContract.FavouriteEntry.CONTENT_URI, cv);
+
+        // Display the URI that's returned with a Toast
+        if (uri != null) {
+            Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
+            Log.d(TAG, "INSERT: " + getBaseContext() + uri.toString());
+        }
+
+    }
+
+    private void preAddToDatabase() {
+
+        JSONObject jsonQas = new JSONObject();
+
+        try {
+
+            jsonQas.put("uniqueArrays", new JSONArray(mQaFragment.mQaCombined));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        mQaCombine = jsonQas.toString();
+
+        JSONObject jsonArticles = new JSONObject();
+
+        try {
+            jsonArticles.put("uniqueArrays", new JSONArray(mArticleFrag.mArticles));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        mArticles = jsonArticles.toString();
+
+        mPrice = mFundFrag.mPrice;
+
+        addToDatabase(mCompanyId, mCompanyTicker, mQaCombine, mArticles, mPrice);
+
+    }
+
 
     @Override
     protected void onStart() {

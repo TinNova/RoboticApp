@@ -61,18 +61,19 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
      * Needed to save the state of the Fragment when Fragment enter onDestroyView
      * onSavedInstate state is not good enough as it only saves state when the Activty's View is Destroyed
      */
-    Bundle fragSavedInstanceState;
-    ArrayList<Question> mQuestions;
-    ArrayList<Answer> mAnswers;
-    ArrayList<QACombined> mQaCombined;
+    private Bundle fragSavedInstanceState;
+    private ArrayList<Question> mQuestions;
+    private ArrayList<Answer> mAnswers;
+    // Public because it is used in CompanyDetailActivity to addToDatabase
+    public ArrayList<QACombined> mQaCombined;
 
-    RecyclerView mRecyclerView;
+    private RecyclerView mRecyclerView;
     private QaCombinedAdapter adapter;
 
-    Bundle onClickBundle;
+    private Bundle onClickBundle;
 
-    Bundle parsedABundle;
-    Bundle parsedQBundle;
+    private Bundle parsedABundle;
+    private Bundle parsedQBundle;
 
     @Nullable
     @Override

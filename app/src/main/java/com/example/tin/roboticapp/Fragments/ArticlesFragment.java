@@ -48,13 +48,14 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
      */
     private RecyclerView mRecyclerView;
     private ArticleAdapter adapter;
-    private ArrayList<Article> mArticles;
+    // Public because it is used in CompanyDetailActivity to addToDatabase
+    public ArrayList<Article> mArticles;
 
     /**
      * Needed to save the state of the Fragment when Fragment enter onDestroyView
      * onSavedInstate state is not good enough as it only saves state when the Activty's View is Destroyed
      */
-    Bundle fragSavedInstanceState;
+    private Bundle fragSavedInstanceState;
 
     @Nullable
     @Override
@@ -90,15 +91,20 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
 
         } else {
 
-            // Creating a Request Queue for the Volley Network Connection
-            mRequestQueue = Volley.newRequestQueue(getActivity());
-            RequestArticlesFeed("http://10.0.2.2:8000/rest-api/articles/?format=json&is_useful=yes&mode=company&ticker=EZJ"); //+ mCompanyTicker);
+            requestFeed();
 
         }
 
         return view;
     }
 
+    public void requestFeed() {
+
+        // Creating a Request Queue for the Volley Network Connection
+        mRequestQueue = Volley.newRequestQueue(getActivity());
+        RequestArticlesFeed("http://10.0.2.2:8000/rest-api/articles/?format=json&is_useful=yes&mode=company&ticker=EZJ"); //+ mCompanyTicker);
+
+    }
 
     @Override
     public void onDestroyView() {

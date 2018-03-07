@@ -46,7 +46,8 @@ public class FundamentalsFragment extends Fragment {
     private TextView tvPriceDate;
     private TextView tvPrice;
     private String mPriceDate;
-    private String mPrice;
+    // Public because it will be added to the Database in CompanyDetailActivity
+    public String mPrice;
 
     /**
      * Needed to save the state of the Fragment when Fragment enter onDestroyView
@@ -78,13 +79,19 @@ public class FundamentalsFragment extends Fragment {
 
         } else {
 
-            // Creating a Request Queue for the Volley Network Connection
-            mRequestQueue = Volley.newRequestQueue(getActivity());
-            RequestArticlesFeed("http://10.0.2.2:8000/rest-api/fundamentals/?company=31");
+            requestFeed();
 
         }
 
         return view;
+    }
+
+    public void requestFeed() {
+
+        // Creating a Request Queue for the Volley Network Connection
+        mRequestQueue = Volley.newRequestQueue(getActivity());
+        RequestArticlesFeed("http://10.0.2.2:8000/rest-api/fundamentals/?company=31");
+
     }
 
     @Override

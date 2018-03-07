@@ -8,6 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -22,6 +25,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.tin.roboticapp.Activities.CompanyDetailActivity;
 import com.example.tin.roboticapp.Adapters.CommentAdapter;
 import com.example.tin.roboticapp.Activities.CompanyMainActivity;
 import com.example.tin.roboticapp.Models.Comment;
@@ -60,7 +64,6 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
 
     private ImageView sendIcon;
     private EditText mCommentEditText;
-
 
     /**
      * Needed to save the state of the Fragment when Fragment enter onDestroyView
@@ -191,6 +194,8 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
 
                 Log.d(TAG, "Comments After Parse: " + mComments);
                 adapter.notifyDataSetChanged();
+
+                CompanyDetailActivity.favouriteMenu.setVisible(true);
 
             }
         };
