@@ -9,13 +9,15 @@ import android.os.Parcelable;
 
 public class TheCompany implements Parcelable {
 
+    private int company_id;
     private int companyId;
     private String companyticker;
     private String companyName;
     private int companySector;
 
     // The Constructor
-    public TheCompany (int companyId, String companyticker, String companyName, int companySector) {
+    public TheCompany (int company_id, int companyId, String companyticker, String companyName, int companySector) {
+        this.company_id = company_id;
         this.companyId = companyId;
         this.companyticker = companyticker;
         this.companyName = companyName;
@@ -24,6 +26,7 @@ public class TheCompany implements Parcelable {
 
     /** Parcelable Code */
     protected TheCompany(Parcel in) {
+        company_id = in.readInt();
         companyId = in.readInt();
         companyticker = in.readString();
         companyName = in.readString();
@@ -49,6 +52,7 @@ public class TheCompany implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(company_id);
         parcel.writeInt(companyId);
         parcel.writeString(companyticker);
         parcel.writeString(companyName);
@@ -56,6 +60,8 @@ public class TheCompany implements Parcelable {
     }
 
     /** Getters */
+    public int getCompany_id() { return company_id; }
+
     public int getCompanyId() {
         return companyId;
     }

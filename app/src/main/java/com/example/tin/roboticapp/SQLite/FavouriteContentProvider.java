@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import static com.example.tin.roboticapp.SQLite.FavouriteContract.FavouriteEntry.COLUMN_COMPANY_ID;
 import static com.example.tin.roboticapp.SQLite.FavouriteContract.FavouriteEntry.TABLE_NAME;
 
 /**
@@ -67,9 +68,59 @@ public class FavouriteContentProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Cursor query(@NonNull Uri uri, @Nullable String[] strings, @Nullable String s, @Nullable String[] strings1, @Nullable String s1) {
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs,
+                        String sortOrder) {
 
-        return null;
+        // Get access to underlying database (read-only for query)
+        final SQLiteDatabase db = mFavouriteDbHelper.getReadableDatabase();
+
+        int match = sUriMatcher.match(uri);
+
+        Cursor retCursor;
+
+        switch (match) {
+            // Query for the favouriteMovies directory
+            case FAVOURITECOMPANY:
+                retCursor = db.query(TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+
+            // Query for a single item in the directory, we don't need one as we are saving everything
+            // into a Model List called FavouriteMovie, from here we can select individual items
+            // HOWEVER see "Lesson 10, Video 26. Query for One Item" to learn more...
+            case FAVOURITECOMPANY_WITH_ID:
+
+                // Get the row id from the URI
+                String id = uri.getPathSegments().get(1);
+
+                //Selection is from the Company_Id Column (not to be confused with row _id
+                String mSelection = COLUMN_COMPANY_ID + "=?";
+                String[] mSelectionArgs = new String[]{id};
+
+                // Construct a query as usual, but passing in the selection and args
+                retCursor = db.query(TABLE_NAME,
+                        projection,
+                        mSelection,
+                        mSelectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+
+                // Default exception
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        // Set a notification URI on the Cursor
+        assert retCursor != null;
+        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+
+        return retCursor;
     }
 
     @Nullable

@@ -11,7 +11,7 @@ public class FavouriteDbHelper extends SQLiteOpenHelper {
 
     // The name of the database as it will be saved on the user Android Device
     private static final String DATABASE_NAME = "favouriteCompanies.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Constructor that takes a context and calls the parent constructor
     public FavouriteDbHelper (Context context) {
@@ -25,6 +25,8 @@ public class FavouriteDbHelper extends SQLiteOpenHelper {
                 FavouriteContract.FavouriteEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 FavouriteContract.FavouriteEntry.COLUMN_COMPANY_ID + " INTEGER NOT NULL, " +
                 FavouriteContract.FavouriteEntry.COLUMN_COMPANY_TICKER + " TEXT NOT NULL, " +
+                FavouriteContract.FavouriteEntry.COLUMN_COMPANY_NAME + " TEXT NOT NULL, " +
+                FavouriteContract.FavouriteEntry.COLUMN_COMPANY_SECTOR + " INTEGER NOT NULL, " +
                 FavouriteContract.FavouriteEntry.COLUMN_COMPANY_QA_LIST + " TEXT NOT NULL, " +
                 FavouriteContract.FavouriteEntry.COLUMN_COMPANY_ARTICLES_LIST + " TEXT NOT NULL, " +
                 FavouriteContract.FavouriteEntry.COLUMN_COMPANY_PRICE + " TEXT NOT NULL" +

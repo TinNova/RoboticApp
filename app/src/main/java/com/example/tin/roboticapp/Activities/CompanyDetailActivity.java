@@ -53,6 +53,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
     private String mCompanyName;
     private String mCompanyTicker;
     private int mCompanyId;
+    private int mCompanySector;
 
     private ArticlesFragment mArticleFrag;
     private FundamentalsFragment mFundFrag;
@@ -88,6 +89,8 @@ public class CompanyDetailActivity extends AppCompatActivity {
             mCompanyName = intent.getStringExtra(CompanyMainActivity.CURRENT_COMPANY_NAME);
             mCompanyTicker = intent.getStringExtra(CompanyMainActivity.CURRENT_COMPANY_TICKER);
             mCompanyId = intent.getIntExtra(CompanyMainActivity.CURRENT_COMPANY_ID, 0);
+            mCompanySector = intent.getIntExtra(CompanyMainActivity.CURRENT_COMPANY_SECTOR, 0);
+
             Log.d(TAG, "Intent From CompanyMainActivity");
 
         } else {
@@ -204,7 +207,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
     /**
      * Code Which Inserts A Company To The SQL Database
      */
-    private void addToDatabase(int companyId, String companyTicker, String companyQa, String companyArticles, String companyPrice) {
+    private void addToDatabase(int companyId, String companyTicker, String companyName, int companySector, String companyQa, String companyArticles, String companyPrice) {
 
         // ContentValues passes the values onto the SQLite insert query
         ContentValues cv = new ContentValues();
@@ -213,6 +216,8 @@ public class CompanyDetailActivity extends AppCompatActivity {
         // for us. If we didn't have the BaseColumns we would have to add the ID ourselves.
         cv.put(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_ID, companyId);
         cv.put(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_TICKER, companyTicker);
+        cv.put(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_NAME, companyName);
+        cv.put(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_SECTOR, companySector);
         cv.put(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_QA_LIST, companyQa);
         cv.put(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_ARTICLES_LIST, companyArticles);
         cv.put(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_PRICE, companyPrice);
@@ -255,7 +260,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
         mPrice = mFundFrag.mPrice;
 
-        addToDatabase(mCompanyId, mCompanyTicker, mQaCombine, mArticles, mPrice);
+        addToDatabase(mCompanyId, mCompanyTicker, mCompanyName, mCompanySector, mQaCombine, mArticles, mPrice);
 
     }
 

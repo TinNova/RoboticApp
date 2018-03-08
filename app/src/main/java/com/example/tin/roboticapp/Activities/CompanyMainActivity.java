@@ -2,12 +2,20 @@ package com.example.tin.roboticapp.Activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -19,6 +27,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.tin.roboticapp.Adapters.CompanyAdapter;
 import com.example.tin.roboticapp.Models.TheCompany;
 import com.example.tin.roboticapp.R;
+import com.example.tin.roboticapp.SQLite.FavouriteContract;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,28 +38,57 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CompanyMainActivity extends AppCompatActivity implements CompanyAdapter.ListItemClickListener {
+public class CompanyMainActivity extends AppCompatActivity implements CompanyAdapter.ListItemClickListener,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = "CompanyMainActivity";
 
-    /** Needed for Intent */
+    /**
+     * Needed for Intent
+     */
     public static String CURRENT_COMPANY_NAME = "current_company_name";
     public static String CURRENT_COMPANY_TICKER = "current_company_ticker";
     public static String CURRENT_COMPANY_ID = "current_company_id";
+    public static String CURRENT_COMPANY_SECTOR = "current_company_sector";
 
-    /** Needed for Login & Cookie Authorisation */
+    /**
+     * Needed for Login & Cookie Authorisation
+     */
     // RequestQueue is for the Volley Authentication
     private RequestQueue mRequestQueue;
     // SharePreferences, the Cookie will be stored here
     public static SharedPreferences mSharedPrefs;
 
-    /** Needed for the RecyclerView */
+    /**
+     * Needed for the RecyclerView
+     */
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter adapter;
     private List<TheCompany> theCompanies;
 
+    /**
+     * Needed for saving Companies List To Bundle
+     */
+    private static String COMPANIES_LIST = "companies_list";
+    private Bundle savedEntireList;
+    private Bundle savedSqlList;
+
+    /**
+     * Needed for loading data from SQL
+     */
+    // Constant to save state of the loader
+    private static final String ROTATION_TAG = "rotation_tag";
+    // Constant for logging and referring to a unique loader
+    private static final int FAVOURITEMOVIES_LOADER_ID = 0;
+
+
+    // This Is For The Save Button In The Menu Item
+    public static MenuItem savedMenu;
+
     // int to hold companyId of the company the user clicked on from the RecyclerView
     private int mCompanyId;
+    private int mCompanySector;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +119,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
 
         // Launching the Login Method on App Start
         login();
-        Log.i(TAG, "App Launched");
+        Log.d(TAG, "App Launched");
 
     }
 
@@ -141,7 +179,9 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
     }
 
 
-    /** Request on Companies Json w/Cookie attached to request */
+    /**
+     * Request on Companies Json w/Cookie attached to request
+     */
     private void RequestCompaniesFeed() {
         // Handler for the JSON response when server returns ok
         final Response.Listener<String> responseListener = new Response.Listener<String>() {
@@ -162,6 +202,9 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
                         JSONObject companyJsonObject = companyJsonArray.getJSONObject(i);
 
                         TheCompany theCompany = new TheCompany(
+                                // This first 'id' is just a default value, it is actually used as a
+                                // '_id' for the SQLite table. this default value should be ignored.
+                                companyJsonObject.getInt("id"),
                                 companyJsonObject.getInt("id"),
                                 companyJsonObject.getString("ticker"),
                                 companyJsonObject.getString("name"),
@@ -169,7 +212,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
                         );
 
                         theCompanies.add(theCompany);
-                        //Log.d(TAG, "Companies List: " + theCompany);
+                        Log.d(TAG, "Companies List: " + theCompany);
 
                     }
 
@@ -210,8 +253,9 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
     }
 
 
-
-    /** This Only Works If You Implement: implements CompanyAdapter.ListItemClickListener */
+    /**
+     * This Only Works If You Implement: implements CompanyAdapter.ListItemClickListener
+     */
     @Override
     public void onListItemClick(int clickedItemIndex) {
 
@@ -219,6 +263,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
 
         // The company ID is not part of the recycler view, so we have to pass it through slightly differently
         mCompanyId = theCompanies.get(clickedItemIndex).getCompanyId();
+        mCompanySector = theCompanies.get(clickedItemIndex).getCompanySector();
 
         // Company Name is needed for the Title of the Activity
         // Ticker is needed for Articles Feed and Title of The Activity
@@ -226,11 +271,170 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
         companyListBundle.putString(CURRENT_COMPANY_NAME, theCompanies.get(clickedItemIndex).getCompanyName());
         companyListBundle.putString(CURRENT_COMPANY_TICKER, theCompanies.get(clickedItemIndex).getCompanyticker());
         companyListBundle.putInt(CURRENT_COMPANY_ID, mCompanyId);
+        companyListBundle.putInt(CURRENT_COMPANY_SECTOR, mCompanySector);
 
         intent.putExtras(companyListBundle);
 
         startActivity(intent);
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_company_main, menu);
+        savedMenu = menu.findItem(R.id.favourite);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        // User clicked on a menu option in the app bar overflow menu
+        switch (item.getItemId()) {
+
+            case R.id.saved_list:
+
+                // Save the current list of companies into a bundle
+                savedEntireList = new Bundle();
+                savedEntireList.putParcelableArrayList(COMPANIES_LIST, (ArrayList<? extends Parcelable>) theCompanies);
+                // Clear the list of companies
+                // Not needed as "adapter.notifyDataSetChanged();" does this
+                theCompanies.clear();
+
+                // Start the SQL Loader
+                getSupportLoaderManager().initLoader(FAVOURITEMOVIES_LOADER_ID, null, this);
+                // What happens when saved_list is clicked
+                // 1. It will save the current list of companies into a bundle
+                // 2. It will clear the theCompanies list
+                // 3. It will load the saved list from SQL and put it into the theCompanies list
+                // 4. It will update the adapter with the new list
+                // 5. It will turn the menu from Saved to Entire, so it can revert to the Entire list
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    /**
+     * Instantiates and returns a new AsyncTaskLoader with the given ID.
+     * This loader will return favouriteMovie data as a Cursor or null if an error occurs.
+     * <p>
+     * Implements the required callbacks to take care of loading data at all stages of loading.
+     */
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        return new AsyncTaskLoader<Cursor>(this) {
+
+            Cursor mFavouriteCompaniesData = null;
+
+            @Override
+            protected void onStartLoading() {
+                if (mFavouriteCompaniesData != null) {
+                    // Delivers any previously loaded data immediately
+                    deliverResult(mFavouriteCompaniesData);
+                } else {
+                    // Force a new load
+                    forceLoad();
+                }
+            }
+
+            // loadInBackground() performs asynchronous loading of data
+            @Override
+            public Cursor loadInBackground() {
+
+                Log.d(TAG, "loadInBackground");
+
+                try {
+                    return getContentResolver().query(
+                            FavouriteContract.FavouriteEntry.CONTENT_URI,
+                            null,
+                            null,
+                            null,
+                            FavouriteContract.FavouriteEntry._ID
+                    );
+
+                } catch (Exception e) {
+                    Log.e(TAG, "Failed to asynchronously load data.");
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            // deliverResult sends the result of the load, a Cursor, to the registered listener
+            public void deliverResult(Cursor data) {
+                mFavouriteCompaniesData = data;
+                super.deliverResult(data);
+            }
+        };
+    }
+
+    /**
+     * Called when a previously created loader has finished its load.
+     *
+     * @param loader The Loader that has finished.
+     * @param data   The data generated by the Loader.
+     */
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        /** Here We Are Accessing The SQLite Query We Received In The Method getSqlCompanies() Which Is Set To Read All Rows
+         * We're Going Through Each Row With A For Loop And Putting Them Into Our FavouriteMovie Model
+         *
+         * @param cursor
+         */
+
+        if (data != null && data.getCount() > 0) {
+            data.moveToFirst();
+            for (int count = 0; count < data.getCount(); count++) {
+
+                TheCompany theCompany = new TheCompany(
+
+                        data.getInt(data.getColumnIndex(FavouriteContract.FavouriteEntry._ID)),
+                        data.getInt(data.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_ID)),
+                        data.getString(data.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_TICKER)),
+                        data.getString(data.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_NAME)),
+                        data.getInt(data.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_SECTOR))
+
+                );
+
+                Log.d(TAG, "Row_Id" + data.getLong(data.getColumnIndex(FavouriteContract.FavouriteEntry._ID)));
+
+                theCompanies.add(theCompany);
+
+                Log.d(TAG, "DATA LOADED BY onLoadFinished: " + theCompanies);
+
+                data.moveToNext();
+            }
+
+            // Update the adapter with the new list
+            adapter.notifyDataSetChanged();
+
+
+        } else {
+            Log.v(TAG, "cursor is Empty");
+        }
+
+        assert data != null;
+        data.close();
+    }
+
+    /**
+     * Called when a previously created loader is being reset, and thus
+     * making its data unavailable.
+     * onLoaderReset removes any references this activity had to the loader's data.
+     *
+     * @param loader The Loader that is being reset.
+     */
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+    }
+
 
 }

@@ -27,10 +27,14 @@
 
     <!-- QA Fragment -->
 
-    <!-- QA Detail Menu -->
+    <!-- Menu QA Detail -->
     <string name="save_menu">SAVE</string>
 
-    <!-- Detail Activity Menu -->
+    <!-- Menu Detail Activity -->
     <string name="favourites">Favourites</string>
+
+    <!-- Menu Main Activity -->
+    <string name="saved_list">Saved List</string>
+
 
 </resources>

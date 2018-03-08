@@ -33,6 +33,8 @@ public class FavouriteContract {
         public static final String TABLE_NAME = "favouriteCompanies";
         public static final String COLUMN_COMPANY_ID = "companyId";
         public static final String COLUMN_COMPANY_TICKER = "companyTicker";
+        public static final String COLUMN_COMPANY_NAME = "companyName";
+        public static final String COLUMN_COMPANY_SECTOR = "companySector";
         public static final String COLUMN_COMPANY_QA_LIST = "companyQaList";
         public static final String COLUMN_COMPANY_ARTICLES_LIST = "companyArticlesList";
         public static final String COLUMN_COMPANY_PRICE = "companyPrice";
