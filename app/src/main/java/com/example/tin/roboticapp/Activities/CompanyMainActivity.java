@@ -300,21 +300,21 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
 
             case R.id.saved_list:
 
+                /** What happens when saved_list is clicked
+                * 1. It will save the current list of companies into a bundle
+                * 2. It will clear the theCompanies list
+                * 3. It will load the saved list from SQL and put it into the theCompanies list
+                * 4. It will update the adapter with the new list
+                * 5. It will turn the menu from Saved to Entire, so it can revert to the Entire list */
                 // Save the current list of companies into a bundle
                 savedEntireList = new Bundle();
                 savedEntireList.putParcelableArrayList(COMPANIES_LIST, (ArrayList<? extends Parcelable>) theCompanies);
                 // Clear the list of companies
-                // Not needed as "adapter.notifyDataSetChanged();" does this
                 theCompanies.clear();
 
                 // Start the SQL Loader
                 getSupportLoaderManager().initLoader(FAVOURITEMOVIES_LOADER_ID, null, this);
-                // What happens when saved_list is clicked
-                // 1. It will save the current list of companies into a bundle
-                // 2. It will clear the theCompanies list
-                // 3. It will load the saved list from SQL and put it into the theCompanies list
-                // 4. It will update the adapter with the new list
-                // 5. It will turn the menu from Saved to Entire, so it can revert to the Entire list
+                
         }
 
         return super.onOptionsItemSelected(item);
