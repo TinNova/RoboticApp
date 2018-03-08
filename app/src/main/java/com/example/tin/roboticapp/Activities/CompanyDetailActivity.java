@@ -199,6 +199,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
                 // Method which adds Movie to SQL
                 preAddToDatabase();
                 Toast.makeText(this, "Added To Favourites!", Toast.LENGTH_SHORT).show();
+
         }
 
         return super.onOptionsItemSelected(item);

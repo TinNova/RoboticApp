@@ -35,6 +35,9 @@
 
     <!-- Menu Main Activity -->
     <string name="saved_list">Saved List</string>
+    <string name="ftse_list">FTSE List</string>
+
+
 
 
 </resources>

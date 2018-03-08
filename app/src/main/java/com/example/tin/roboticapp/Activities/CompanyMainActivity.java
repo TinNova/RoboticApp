@@ -64,14 +64,13 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
      */
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter adapter;
-    private List<TheCompany> theCompanies;
+    private ArrayList<TheCompany> mTheCompanies;
 
     /**
      * Needed for saving Companies List To Bundle
      */
-    private static String COMPANIES_LIST = "companies_list";
-    private Bundle savedEntireList;
-    private Bundle savedSqlList;
+    // 0 = Displaying Entire FTSE data, 1 = Displaying SQL data
+    private int listType = 0;
 
     /**
      * Needed for loading data from SQL
@@ -79,7 +78,10 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
     // Constant to save state of the loader
     private static final String ROTATION_TAG = "rotation_tag";
     // Constant for logging and referring to a unique loader
-    private static final int FAVOURITEMOVIES_LOADER_ID = 0;
+    private static final int FAVOURITECOMPANIES_LOADER_ID = 0;
+    // 0 = the SQL Loader has never run before, 1 = it has run before, therefore it needs to be reset
+    // before running it again
+    private int loaderCreated = 0;
 
 
     // This Is For The Save Button In The Menu Item
@@ -114,8 +116,8 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
                 new LinearLayoutManager(this);
         // Set the mRecyclerView to the layoutManager so it can handle the positioning of the items
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
-        // Creating the theCompanies ArrayList<> to avoid a null exception
-        theCompanies = new ArrayList<>();
+        // Creating the mTheCompanies ArrayList<> to avoid a null exception
+        mTheCompanies = new ArrayList<>();
 
         // Launching the Login Method on App Start
         login();
@@ -211,13 +213,21 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
                                 companyJsonObject.getInt("sector")
                         );
 
-                        theCompanies.add(theCompany);
+                        mTheCompanies.add(theCompany);
                         Log.d(TAG, "Companies List: " + theCompany);
 
                     }
 
-                    adapter = new CompanyAdapter(theCompanies, getApplicationContext(), CompanyMainActivity.this);
-                    mRecyclerView.setAdapter(adapter);
+                    if (listType == 0) {
+                        adapter = new CompanyAdapter(mTheCompanies, getApplicationContext(), CompanyMainActivity.this);
+                        mRecyclerView.setAdapter(adapter);
+
+                    } else {
+
+                        adapter.notifyDataSetChanged();
+
+                        listType = 0;
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -262,14 +272,14 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
         Intent intent = new Intent(this, CompanyDetailActivity.class);
 
         // The company ID is not part of the recycler view, so we have to pass it through slightly differently
-        mCompanyId = theCompanies.get(clickedItemIndex).getCompanyId();
-        mCompanySector = theCompanies.get(clickedItemIndex).getCompanySector();
+        mCompanyId = mTheCompanies.get(clickedItemIndex).getCompanyId();
+        mCompanySector = mTheCompanies.get(clickedItemIndex).getCompanySector();
 
         // Company Name is needed for the Title of the Activity
         // Ticker is needed for Articles Feed and Title of The Activity
         Bundle companyListBundle = new Bundle();
-        companyListBundle.putString(CURRENT_COMPANY_NAME, theCompanies.get(clickedItemIndex).getCompanyName());
-        companyListBundle.putString(CURRENT_COMPANY_TICKER, theCompanies.get(clickedItemIndex).getCompanyticker());
+        companyListBundle.putString(CURRENT_COMPANY_NAME, mTheCompanies.get(clickedItemIndex).getCompanyName());
+        companyListBundle.putString(CURRENT_COMPANY_TICKER, mTheCompanies.get(clickedItemIndex).getCompanyticker());
         companyListBundle.putInt(CURRENT_COMPANY_ID, mCompanyId);
         companyListBundle.putInt(CURRENT_COMPANY_SECTOR, mCompanySector);
 
@@ -283,7 +293,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_company_main, menu);
-        savedMenu = menu.findItem(R.id.favourite);
+        savedMenu = menu.findItem(R.id.saved_list);
 
         return true;
     }
@@ -300,24 +310,53 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
 
             case R.id.saved_list:
 
-                /** What happens when saved_list is clicked
-                * 1. It will save the current list of companies into a bundle
-                * 2. It will clear the theCompanies list
-                * 3. It will load the saved list from SQL and put it into the theCompanies list
-                * 4. It will update the adapter with the new list
-                * 5. It will turn the menu from Saved to Entire, so it can revert to the Entire list */
-                // Save the current list of companies into a bundle
-                savedEntireList = new Bundle();
-                savedEntireList.putParcelableArrayList(COMPANIES_LIST, (ArrayList<? extends Parcelable>) theCompanies);
-                // Clear the list of companies
-                theCompanies.clear();
+                if (listType == 0) {
+                    /** What happens when saved_list is clicked
+                     * 1. It will save the current list of companies into a bundle
+                     * 2. It will clear the mTheCompanies list
+                     * 3. It will load the saved list from SQL and put it into the mTheCompanies list
+                     * 4. It will update the adapter with the new list
+                     * 5. It will turn the menu from Saved to Entire, so it can revert to the Entire list */
 
-                // Start the SQL Loader
-                getSupportLoaderManager().initLoader(FAVOURITEMOVIES_LOADER_ID, null, this);
-                
+                    // Clear the list of companies
+                    mTheCompanies.clear();
+
+                    if (loaderCreated == 1) {
+
+                        getSupportLoaderManager().restartLoader(FAVOURITECOMPANIES_LOADER_ID, null, this);
+                    }
+
+                    // Start the SQL Loader
+                    getSupportLoaderManager().initLoader(FAVOURITECOMPANIES_LOADER_ID, null, this);
+
+                    // Change title
+                    savedMenu.setTitle(getString(R.string.ftse_list));
+                    // Change List Type
+                    listType = 1;
+
+                } else {
+
+                    /** What happens when ftse_list is clicked
+                     * 1. It will save the current list of saved companies into a bundle
+                     * 2. It will clear mTheCompanies list
+                     * 3. It will populate mTheCompanies list with the savedEntireList Bundle
+                     * 4. It will make the ftse_list invisible and the save_list visible */
+                    // Save the current list of companies into a bundle
+
+                    // Clear the list of companies
+                    mTheCompanies.clear();
+
+                    // Download a new list, within onResponse notifyChanges to Adapter & change List Type
+                    RequestCompaniesFeed();
+                    // Change Title
+                    savedMenu.setTitle(getString(R.string.saved_list));
+
+                }
+
         }
 
         return super.onOptionsItemSelected(item);
+
     }
 
 
@@ -406,15 +445,17 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
 
                 Log.d(TAG, "Row_Id" + data.getLong(data.getColumnIndex(FavouriteContract.FavouriteEntry._ID)));
 
-                theCompanies.add(theCompany);
+                mTheCompanies.add(theCompany);
 
-                Log.d(TAG, "DATA LOADED BY onLoadFinished: " + theCompanies);
+                Log.d(TAG, "DATA LOADED BY onLoadFinished: " + mTheCompanies);
 
                 data.moveToNext();
             }
 
             // Update the adapter with the new list
             adapter.notifyDataSetChanged();
+
+            loaderCreated = 1;
 
 
         } else {
@@ -435,6 +476,5 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
     }
-
 
 }
