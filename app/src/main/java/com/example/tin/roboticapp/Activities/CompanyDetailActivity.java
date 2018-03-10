@@ -54,6 +54,8 @@ public class CompanyDetailActivity extends AppCompatActivity {
     private String mCompanyTicker;
     private int mCompanyId;
     private int mCompanySector;
+    private int mListType;
+    private int m_id;
 
     private ArticlesFragment mArticleFrag;
     private FundamentalsFragment mFundFrag;
@@ -90,6 +92,14 @@ public class CompanyDetailActivity extends AppCompatActivity {
             mCompanyTicker = intent.getStringExtra(CompanyMainActivity.CURRENT_COMPANY_TICKER);
             mCompanyId = intent.getIntExtra(CompanyMainActivity.CURRENT_COMPANY_ID, 0);
             mCompanySector = intent.getIntExtra(CompanyMainActivity.CURRENT_COMPANY_SECTOR, 0);
+            mListType = intent.getIntExtra(CompanyMainActivity.LIST_TYPE,0);
+
+            // if Intent was triggered from the SQL list, we in addition should take the _id
+            if (intent.getIntExtra(CompanyMainActivity.LIST_TYPE,0) != 0) {
+
+                m_id = intent.getIntExtra(CompanyMainActivity.CURRENT_COMPANY__ID,0);
+
+            }
 
             Log.d(TAG, "Intent From CompanyMainActivity");
 
@@ -98,6 +108,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
             Toast.makeText(this, "ERROR: Data didn't load correctly", Toast.LENGTH_SHORT).show();
 
         }
+
         // This checks if the this Activity was started from the QaDetailActivity, if yes we want
         // to load the QAFragment
         if (intent.getStringExtra(QaDetailActivity.INTENT_FROM_QA_DETAIL_ACTIVITY) != null) {
@@ -145,6 +156,14 @@ public class CompanyDetailActivity extends AppCompatActivity {
         argsForFrags.putString(CompanyMainActivity.CURRENT_COMPANY_TICKER, mCompanyTicker);
         argsForFrags.putInt(CompanyMainActivity.CURRENT_COMPANY_ID, mCompanyId);
 
+        // if m_id exists, we need to pass that to Fragments as well, as the data will be loaded
+        // from SQL not the API
+        if (m_id != 0) {
+
+            argsForFrags.putInt(CompanyMainActivity.CURRENT_COMPANY__ID, m_id);
+
+        }
+
         // Create the mArticlesFrag
         mArticleFrag = new ArticlesFragment();
         // Placing the Bundle Arguments into the mArticlesFrag
@@ -178,6 +197,12 @@ public class CompanyDetailActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_company_detail, menu);
         favouriteMenu = menu.findItem(R.id.favourite);
         favouriteMenu.setVisible(false);
+
+        if (mListType != 0) {
+
+            favouriteMenu.setIcon(R.drawable.ic_star_white_24dp);
+
+        }
         return true;
     }
 
@@ -193,12 +218,22 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
             case R.id.favourite:
 
-                // Change the Heart Icon from white outline to white heart
-                favouriteMenu.setIcon(R.drawable.ic_star_white_24dp);
+                if (mListType == 0) {
 
-                // Method which adds Movie to SQL
-                preAddToDatabase();
-                Toast.makeText(this, "Added To Favourites!", Toast.LENGTH_SHORT).show();
+                    // Change the Heart Icon from white outline to white heart
+                    favouriteMenu.setIcon(R.drawable.ic_star_white_24dp);
+
+                    // Method which adds Movie to SQL
+                    preAddToDatabase();
+                    Toast.makeText(this, "Added To Favourites!", Toast.LENGTH_SHORT).show();
+
+                } else {
+
+                    // Change the Heart Icon from white to white outline
+                    favouriteMenu.setIcon(R.drawable.ic_star_border_white_24dp);
+
+                }
+
 
         }
 

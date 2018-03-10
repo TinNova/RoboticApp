@@ -50,6 +50,8 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
     public static String CURRENT_COMPANY_TICKER = "current_company_ticker";
     public static String CURRENT_COMPANY_ID = "current_company_id";
     public static String CURRENT_COMPANY_SECTOR = "current_company_sector";
+    public static String LIST_TYPE = "list_type";
+    public static String CURRENT_COMPANY__ID = "current_company__id";
 
     /**
      * Needed for Login & Cookie Authorisation
@@ -67,12 +69,6 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
     private ArrayList<TheCompany> mTheCompanies;
 
     /**
-     * Needed for saving Companies List To Bundle
-     */
-    // 0 = Displaying Entire FTSE data, 1 = Displaying SQL data
-    private int listType = 0;
-
-    /**
      * Needed for loading data from SQL
      */
     // Constant to save state of the loader
@@ -82,6 +78,8 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
     // 0 = the SQL Loader has never run before, 1 = it has run before, therefore it needs to be reset
     // before running it again
     private int loaderCreated = 0;
+    // 0 = FTSE 350 List, 1 = List from SQL Db
+    private int listType = 0;
 
 
     // This Is For The Save Button In The Menu Item
@@ -259,6 +257,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
                 return headers;
             }
         };
+
         mRequestQueue.add(request);
     }
 
@@ -282,6 +281,12 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
         companyListBundle.putString(CURRENT_COMPANY_TICKER, mTheCompanies.get(clickedItemIndex).getCompanyticker());
         companyListBundle.putInt(CURRENT_COMPANY_ID, mCompanyId);
         companyListBundle.putInt(CURRENT_COMPANY_SECTOR, mCompanySector);
+        companyListBundle.putInt(LIST_TYPE, listType);
+
+        if (listType == 1) {
+
+            companyListBundle.putInt(CURRENT_COMPANY__ID, mTheCompanies.get(clickedItemIndex).getCompany_id());
+        }
 
         intent.putExtras(companyListBundle);
 
