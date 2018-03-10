@@ -43,8 +43,8 @@
         </activity>
 
         <provider
-            android:name="com.example.tin.roboticapp.SQLite.FavouriteContentProvider"
             android:authorities="com.example.tin.roboticapp"
+            android:name="com.example.tin.roboticapp.SQLite.FavouriteContentProvider"
             android:exported="false" />
     </application>
 

@@ -99,7 +99,8 @@ public class FavouriteContentProvider extends ContentProvider {
                 String id = uri.getPathSegments().get(1);
 
                 //Selection is from the Company_Id Column (not to be confused with row _id
-                String mSelection = COLUMN_COMPANY_ID + "=?";
+                //String mSelection = COLUMN_COMPANY_ID + "=?";
+                String mSelection = "_id=?";
                 String[] mSelectionArgs = new String[]{id};
 
                 // Construct a query as usual, but passing in the selection and args
@@ -110,6 +111,7 @@ public class FavouriteContentProvider extends ContentProvider {
                         null,
                         null,
                         sortOrder);
+                break;
 
                 // Default exception
             default:

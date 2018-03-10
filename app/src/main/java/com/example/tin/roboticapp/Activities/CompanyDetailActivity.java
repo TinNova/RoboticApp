@@ -99,6 +99,8 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
                 m_id = intent.getIntExtra(CompanyMainActivity.CURRENT_COMPANY__ID,0);
 
+                Log.d(TAG, "Selected m_id: " + m_id);
+
             }
 
             Log.d(TAG, "Intent From CompanyMainActivity");
@@ -155,10 +157,11 @@ public class CompanyDetailActivity extends AppCompatActivity {
         argsForFrags.putString(CompanyMainActivity.CURRENT_COMPANY_NAME, mCompanyName);
         argsForFrags.putString(CompanyMainActivity.CURRENT_COMPANY_TICKER, mCompanyTicker);
         argsForFrags.putInt(CompanyMainActivity.CURRENT_COMPANY_ID, mCompanyId);
+        argsForFrags.putInt(CompanyMainActivity.LIST_TYPE, mListType);
 
         // if m_id exists, we need to pass that to Fragments as well, as the data will be loaded
         // from SQL not the API
-        if (m_id != 0) {
+        if (mListType == 1) {
 
             argsForFrags.putInt(CompanyMainActivity.CURRENT_COMPANY__ID, m_id);
 

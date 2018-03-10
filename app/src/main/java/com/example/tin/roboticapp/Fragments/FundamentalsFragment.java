@@ -1,13 +1,18 @@
 package com.example.tin.roboticapp.Fragments;
 
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -16,9 +21,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import android.support.v4.content.CursorLoader;
+
 import com.example.tin.roboticapp.Activities.CompanyMainActivity;
 import com.example.tin.roboticapp.Models.Fundamental;
 import com.example.tin.roboticapp.R;
+import com.example.tin.roboticapp.SQLite.FavouriteContract;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,7 +40,12 @@ import java.util.Map;
  * Created by Tin on 09/01/2018.
  */
 
-public class FundamentalsFragment extends Fragment {
+public class FundamentalsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    public static final String[] FUNDAMENTAL_PROJECTION = {
+            FavouriteContract.FavouriteEntry.COLUMN_COMPANY_SECTOR
+    };
+    int mCompanySector;
 
     private static final String TAG = "FundamentalsFragment";
     private static final String FUND_DATE = "fund_date";
@@ -48,6 +62,20 @@ public class FundamentalsFragment extends Fragment {
     private String mPriceDate;
     // Public because it will be added to the Database in CompanyDetailActivity
     public String mPrice;
+
+    // For Extracting Arguments Passed into Fragment
+    private int mCompanyId;
+    private int mCompany_id;
+    private Uri mUri = FavouriteContract.FavouriteEntry.CONTENT_URI;
+
+    // Constant to save state of the loader
+    private static final String ROTATION_TAG = "rotation_tag";
+    // Constant for logging and referring to a unique loader
+    private static final int FUNDAMENTALS_LOADER_ID = 0;
+    // 0 = the SQL Loader has never run before, 1 = it has run before, therefore it needs to be reset
+    // before running it again
+    private int loaderCreated = 0;
+
 
     /**
      * Needed to save the state of the Fragment when Fragment enter onDestroyView
@@ -79,7 +107,43 @@ public class FundamentalsFragment extends Fragment {
 
         } else {
 
-            requestFeed();
+            if (getArguments() != null) {
+
+                /** Extracting Data From Arguments Passed Into Fragment From DetailActivity */
+                if (getArguments().getInt(CompanyMainActivity.LIST_TYPE) == 0) {
+
+                    mCompanyId = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY_ID);
+                    requestFeed();
+
+                } else {
+
+                    mCompany_id = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY__ID);
+
+                    //mUri = FavouriteContract.FavouriteEntry.buildCompanyUriWith_id(mCompany_id);
+                    // Here we are building up the uri using the row_id in order to tell the ContentResolver
+                    // to delete the item
+                    String stringRowId = Integer.toString(mCompany_id);
+                    mUri = mUri.buildUpon().appendPath(stringRowId).build();
+
+                    Log.d(TAG, "mCompany_id: " + mCompany_id);
+                    Log.d(TAG, "mUri: " + mUri);
+                    // Check if there is already an open instance of a Loader
+                    if (loaderCreated == 1) {
+
+                        getLoaderManager().restartLoader(FUNDAMENTALS_LOADER_ID, null, this);
+                    }
+
+                    // Start the SQL Loader
+                    getLoaderManager().initLoader(FUNDAMENTALS_LOADER_ID, null, this);
+
+                }
+
+            } else {
+
+                Toast.makeText(getActivity(), "Error Loading Data, Try Again", Toast.LENGTH_SHORT).show();
+
+            }
+
 
         }
 
@@ -176,4 +240,57 @@ public class FundamentalsFragment extends Fragment {
         mRequestQueue.add(request);
 
     }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        switch (id) {
+
+            case FUNDAMENTALS_LOADER_ID:
+
+                return new CursorLoader(getActivity(),
+                        mUri,
+                        FUNDAMENTAL_PROJECTION,
+                        null,
+                        null,
+                        null);
+
+            default:
+                throw new RuntimeException("Loader Not Implemented: " + id);
+        }
+
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        /** Here We Are Accessing The SQLite Query We Received In The Method getSqlCompanies() Which Is Set To Read All Rows
+         * We're Going Through Each Row With A For Loop And Putting Them Into Our FavouriteMovie Model
+         *
+         * @param cursor
+         */
+
+        if (data != null && data.getCount() > 0) {
+            data.moveToFirst();
+            mCompanySector = data.getInt(0);
+            tvPrice.setText(null);
+            tvPrice.setText(String.valueOf(mCompanySector));
+
+            loaderCreated = 1;
+
+
+        } else {
+            Log.v(TAG, "cursor is Empty");
+        }
+
+        assert data != null;
+        data.close();
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
 }
