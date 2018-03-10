@@ -232,6 +232,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
                     // Change the Heart Icon from white to white outline
                     favouriteMenu.setIcon(R.drawable.ic_star_border_white_24dp);
 
+
                 }
 
 

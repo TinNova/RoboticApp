@@ -39,6 +39,17 @@ public class FavouriteContract {
         public static final String COLUMN_COMPANY_ARTICLES_LIST = "companyArticlesList";
         public static final String COLUMN_COMPANY_PRICE = "companyPrice";
 
+        // This allows us to create a Uri to select one particular Row from the table.
+        // For example, "buildCompanyUriWith_id(3);" will create this URI:
+        //      content://com.example.tin.roboticapp/favouriteCompanies/3
+        // With that URI we can now query Row 3 or Delete it.
+        public static Uri buildCompanyUriWith_id(int _id) {
+            return CONTENT_URI.buildUpon()
+                    .appendPath(Integer.toString(_id))
+                    .build();
+
+        }
+
     }
 
 }
