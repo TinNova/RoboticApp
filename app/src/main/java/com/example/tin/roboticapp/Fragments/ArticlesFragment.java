@@ -1,14 +1,21 @@
 package com.example.tin.roboticapp.Fragments;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -19,13 +26,18 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tin.roboticapp.Adapters.ArticleAdapter;
 import com.example.tin.roboticapp.Activities.CompanyMainActivity;
+import com.example.tin.roboticapp.Adapters.QaCombinedAdapter;
 import com.example.tin.roboticapp.Models.Article;
 import com.example.tin.roboticapp.R;
+import com.example.tin.roboticapp.SQLite.FavouriteContract;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,12 +46,19 @@ import java.util.Map;
  * Created by Tin on 09/01/2018.
  */
 
-public class ArticlesFragment extends Fragment implements ArticleAdapter.ListItemClickListener {
+public class ArticlesFragment extends Fragment implements ArticleAdapter.ListItemClickListener,
+        LoaderManager.LoaderCallbacks<Cursor> {
+
+    public static final String[] FUNDAMENTAL_PROJECTION = {
+            FavouriteContract.FavouriteEntry.COLUMN_COMPANY_ARTICLES_LIST
+    };
 
     private static final String TAG = "ArticlesFragment";
     private static final String ARTICLE_ARRAY = "article_array";
 
-    /** Needed for Volley Network Connection */
+    /**
+     * Needed for Volley Network Connection
+     */
     // RequestQueue is for the Volley Network Connection
     private RequestQueue mRequestQueue;
 
@@ -49,7 +68,18 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
     private RecyclerView mRecyclerView;
     private ArticleAdapter adapter;
     // Public because it is used in CompanyDetailActivity to addToDatabase
-    public ArrayList<Article> mArticles;
+    public ArrayList<Article> mArticles = new ArrayList<>();
+
+    String mCompanyTicker;
+    int mCompany_id;
+    Uri mUri = FavouriteContract.FavouriteEntry.CONTENT_URI;
+    // Constant to save state of the loader
+    private static final String ROTATION_TAG = "rotation_tag";
+    // Constant for logging and referring to a unique loader
+    private static final int FUNDAMENTALS_LOADER_ID = 0;
+    // 0 = the SQL Loader has never run before, 1 = it has run before, therefore it needs to be reset
+    // before running it again
+    private int loaderCreated = 0;
 
     /**
      * Needed to save the state of the Fragment when Fragment enter onDestroyView
@@ -64,7 +94,7 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
 
         Log.d(TAG, ">>>>>>>>>>>>>>>>ON CREATE VIEW<<<<<<<<<<<<<<<<");
 
-        mArticles = new ArrayList<>();
+        //mArticles = new ArrayList<>();
 
         /** Creating The RecyclerView */
         // This will be used to attach the RecyclerView to the MovieAdapter
@@ -80,6 +110,8 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         // Set the mRecyclerView to the layoutManager so it can handle the positioning of the items
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
+        adapter = new ArticleAdapter(mArticles, getContext(), ArticlesFragment.this);
+        mRecyclerView.setAdapter(adapter);
 
         if (fragSavedInstanceState != null) {
 
@@ -91,7 +123,44 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
 
         } else {
 
-            requestFeed();
+            if (getArguments() != null) {
+
+                // If LIST_TYPE == 0, the Arguments DO NOT contain SQL data
+                if (getArguments().getInt(CompanyMainActivity.LIST_TYPE) == 0) {
+
+                    mCompanyTicker = getArguments().getString(CompanyMainActivity.CURRENT_COMPANY_TICKER);
+                    requestFeed();
+
+                    // Else LIST_TYPE == 1, the Argument DO contain SQL data
+                } else {
+
+                    mCompany_id = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY__ID);
+
+                    // Here we are building up the uri using the row_id in order to tell the ContentResolver
+                    // to delete the item
+                    String stringRowId = Integer.toString(mCompany_id);
+                    mUri = mUri.buildUpon().appendPath(stringRowId).build();
+
+                    Log.d(TAG, "mCompany_id: " + mCompany_id);
+                    Log.d(TAG, "stringRowId: " + stringRowId);
+                    Log.d(TAG, "mUri: " + mUri);
+                    // Check if there is already an open instance of a Loader
+                    if (loaderCreated == 1) {
+
+                        getLoaderManager().restartLoader(FUNDAMENTALS_LOADER_ID, null, this);
+
+                    }
+
+                    // Start the SQL Loader
+                    getLoaderManager().initLoader(FUNDAMENTALS_LOADER_ID, null, this);
+
+                }
+
+            } else {
+
+                Toast.makeText(getActivity(), "Error Loading Data, Try Again", Toast.LENGTH_SHORT).show();
+
+            }
 
         }
 
@@ -121,7 +190,9 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
     }
 
 
-    /** What Happens When An Article Is Clicked */
+    /**
+     * What Happens When An Article Is Clicked
+     */
     @Override
     public void onListItemClick(int clickedItemIndex) {
 
@@ -171,14 +242,11 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
 
                     }
 
-                    adapter = new ArticleAdapter(mArticles, getContext(), ArticlesFragment.this);
-                    mRecyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-                //Log.i(TAG, "Articles After Parse: " + mArticles);
 
             }
         };
@@ -211,8 +279,71 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
 
     }
 
-    /** OnSavedInstanceState saves the list of Articles, ensuring we don't need to do additional
-     * unnecessary Network Connections */
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        switch (id) {
+
+            case FUNDAMENTALS_LOADER_ID:
+
+                return new CursorLoader(getActivity(),
+                        mUri,
+                        FUNDAMENTAL_PROJECTION,
+                        null,
+                        null,
+                        null);
+
+            default:
+                throw new RuntimeException("Loader Not Implemented: " + id);
+        }
+
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        /** Here We Are Accessing The SQLite Query We Received In The Method getSqlCompanies() Which Is Set To Read All Rows
+         * We're Going Through Each Row With A For Loop And Putting Them Into Our FavouriteMovie Model
+         *
+         * @param cursor
+         */
+
+        if (data != null && data.getCount() > 0) {
+            data.moveToFirst();
+
+            String stringOfArticles = data.getString(0);
+            Log.d(TAG, "stringOfArticles: " + stringOfArticles);
+
+            Gson gson = new Gson();
+
+            Type type = new TypeToken<ArrayList<Article>>() {
+            }.getType();
+
+            Log.d(TAG, "mArticles ArrayList Before Gson: " + mArticles);
+            mArticles = gson.fromJson(stringOfArticles, type);
+            Log.d(TAG, "mArticles ArrayList After Gson: " + mArticles);
+
+            adapter.notifyDataSetChanged();
+            loaderCreated = 1;
+
+        } else {
+            Log.d(TAG, "cursor is Empty");
+        }
+
+        assert data != null;
+        data.close();
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
+    /**
+     * OnSavedInstanceState saves the list of Articles, ensuring we don't need to do additional
+     * unnecessary Network Connections
+     */
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

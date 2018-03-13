@@ -43,9 +43,9 @@ import java.util.Map;
 public class FundamentalsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String[] FUNDAMENTAL_PROJECTION = {
-            FavouriteContract.FavouriteEntry.COLUMN_COMPANY_SECTOR
+            FavouriteContract.FavouriteEntry.COLUMN_COMPANY_PRICE
     };
-    int mCompanySector;
+    int mCompanyPrice;
 
     private static final String TAG = "FundamentalsFragment";
     private static final String FUND_DATE = "fund_date";
@@ -106,20 +106,20 @@ public class FundamentalsFragment extends Fragment implements LoaderManager.Load
             tvPrice = tvPrice.findViewById(R.id.tv_price);
 
         } else {
-
+            // First safety checking that Arguments passed from CompanyDetailActivity are not null
             if (getArguments() != null) {
 
-                /** Extracting Data From Arguments Passed Into Fragment From DetailActivity */
+                // If LIST_TYPE == 0, the Arguments DO NOT contain SQL data
                 if (getArguments().getInt(CompanyMainActivity.LIST_TYPE) == 0) {
 
                     mCompanyId = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY_ID);
                     requestFeed();
 
+                    // Else LIST_TYPE == 1, the Argument DO contain SQL data
                 } else {
 
                     mCompany_id = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY__ID);
 
-                    //mUri = FavouriteContract.FavouriteEntry.buildCompanyUriWith_id(mCompany_id);
                     // Here we are building up the uri using the row_id in order to tell the ContentResolver
                     // to delete the item
                     String stringRowId = Integer.toString(mCompany_id);
@@ -143,7 +143,6 @@ public class FundamentalsFragment extends Fragment implements LoaderManager.Load
                 Toast.makeText(getActivity(), "Error Loading Data, Try Again", Toast.LENGTH_SHORT).show();
 
             }
-
 
         }
 
@@ -272,9 +271,9 @@ public class FundamentalsFragment extends Fragment implements LoaderManager.Load
 
         if (data != null && data.getCount() > 0) {
             data.moveToFirst();
-            mCompanySector = data.getInt(0);
+            mCompanyPrice = data.getInt(0);
             tvPrice.setText(null);
-            tvPrice.setText(String.valueOf(mCompanySector));
+            tvPrice.setText(String.valueOf(mCompanyPrice));
 
             loaderCreated = 1;
 

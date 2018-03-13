@@ -22,12 +22,18 @@ import com.example.tin.roboticapp.Fragments.CommentsFragment;
 import com.example.tin.roboticapp.Fragments.FundamentalsFragment;
 import com.example.tin.roboticapp.Fragments.QaFragment;
 import com.example.tin.roboticapp.Adapters.SectionsPagerAdapter;
+import com.example.tin.roboticapp.Models.Article;
+import com.example.tin.roboticapp.Models.QACombined;
 import com.example.tin.roboticapp.R;
 import com.example.tin.roboticapp.SQLite.FavouriteContract;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CompanyDetailActivity extends AppCompatActivity {
 
@@ -64,6 +70,8 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
     // Used to Insert Data into SQLite Database
     private String mQaCombine;
+    private ArrayList<QACombined> mQaInputArray;
+    private ArrayList<Article> mArticleInputArray;
     private String mArticles;
     private String mPrice;
 
@@ -265,6 +273,8 @@ public class CompanyDetailActivity extends AppCompatActivity {
         // Insert the new company to the Favourite SQLite Db via a ContentResolver
         Uri uri = getContentResolver().insert(FavouriteContract.FavouriteEntry.CONTENT_URI, cv);
 
+        Log.d(TAG, "The Data Added: " + cv);
+
         // Display the URI that's returned with a Toast
         if (uri != null) {
             Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
@@ -275,32 +285,40 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
     private void preAddToDatabase() {
 
-        JSONObject jsonQas = new JSONObject();
+        mQaInputArray = new ArrayList<QACombined>();
 
-        try {
+        mQaInputArray = mQaFragment.mQaCombined;
 
-            jsonQas.put("uniqueArrays", new JSONArray(mQaFragment.mQaCombined));
+        Gson gson = new Gson();
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        String mQaInputString = gson.toJson(mQaInputArray);
 
-        mQaCombine = jsonQas.toString();
+        Log.d(TAG, "mQaInputString: " + mQaInputString);
 
-        JSONObject jsonArticles = new JSONObject();
+        //
 
-        try {
-            jsonArticles.put("uniqueArrays", new JSONArray(mArticleFrag.mArticles));
+        mArticleInputArray = new ArrayList<>();
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        mArticleInputArray = mArticleFrag.mArticles;
 
-        mArticles = jsonArticles.toString();
+        String mArticlesInputString = gson.toJson(mArticleInputArray);
+
+        Log.d(TAG, "mArticlesInputString: " + mArticlesInputString);
+
+//        JSONObject jsonArticles = new JSONObject();
+//
+//        try {
+//            jsonArticles.put("uniqueArrays2", new JSONArray(mArticleFrag.mArticles));
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//
+//        mArticles = jsonArticles.toString();
 
         mPrice = mFundFrag.mPrice;
 
-        addToDatabase(mCompanyId, mCompanyTicker, mCompanyName, mCompanySector, mQaCombine, mArticles, mPrice);
+        addToDatabase(mCompanyId, mCompanyTicker, mCompanyName, mCompanySector, mQaInputString, mArticlesInputString, mPrice);
 
     }
 
