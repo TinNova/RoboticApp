@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.tin.roboticapp">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
@@ -45,6 +46,10 @@
         <provider
             android:authorities="com.example.tin.roboticapp"
             android:name="com.example.tin.roboticapp.SQLite.FavouriteContentProvider"
+            android:exported="false" />
+
+        <service
+            android:name=".IntentServices.SqlIntentService"
             android:exported="false" />
     </application>
 

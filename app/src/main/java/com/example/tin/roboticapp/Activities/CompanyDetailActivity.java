@@ -22,6 +22,7 @@ import com.example.tin.roboticapp.Fragments.CommentsFragment;
 import com.example.tin.roboticapp.Fragments.FundamentalsFragment;
 import com.example.tin.roboticapp.Fragments.QaFragment;
 import com.example.tin.roboticapp.Adapters.SectionsPagerAdapter;
+import com.example.tin.roboticapp.IntentServices.SqlIntentService;
 import com.example.tin.roboticapp.Models.Article;
 import com.example.tin.roboticapp.Models.QACombined;
 import com.example.tin.roboticapp.R;
@@ -40,6 +41,17 @@ public class CompanyDetailActivity extends AppCompatActivity {
     private static final String TAG = "CompanyDetailActivity";
 
     public static final String ARTICLES_LIST = "articles_List";
+
+    /** Strings for the SQL Intent Service */
+    public static final String SQL_QA_LIST = "sql_qa_list";
+    public static final String SQL_ARTICLES_LIST = "sql_articles_list";
+    public static final String SQL_FUND = "sql_fund_list";
+    public static final String SQL_COMPANY_ID = "sql_company_id";
+    public static final String SQL_COMPANY_TICKER = "sql_company_ticker";
+    public static final String SQL_COMPANY_NAME = "sql_company_name";
+    public static final String SQL_COMPANY_SECTOR = "sql_company_sector";
+
+
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -235,7 +247,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
                     favouriteMenu.setIcon(R.drawable.ic_star_white_24dp);
 
                     // Method which adds Movie to SQL
-                    preAddToDatabase();
+                    startSqlIntentService();
                     Toast.makeText(this, "Added To Favourites!", Toast.LENGTH_SHORT).show();
 
                 } else {
@@ -243,82 +255,32 @@ public class CompanyDetailActivity extends AppCompatActivity {
                     // Change the Heart Icon from white to white outline
                     favouriteMenu.setIcon(R.drawable.ic_star_border_white_24dp);
 
-
                 }
-
 
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Code Which Inserts A Company To The SQL Database
-     */
-    private void addToDatabase(int companyId, String companyTicker, String companyName, int companySector, String companyQa, String companyArticles, String companyPrice) {
 
-        // ContentValues passes the values onto the SQLite insert query
-        ContentValues cv = new ContentValues();
+    private void startSqlIntentService() {
 
-        // We don't need to include the ID of the row, because BaseColumns in the Contract Class does this
-        // for us. If we didn't have the BaseColumns we would have to add the ID ourselves.
-        cv.put(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_ID, companyId);
-        cv.put(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_TICKER, companyTicker);
-        cv.put(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_NAME, companyName);
-        cv.put(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_SECTOR, companySector);
-        cv.put(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_QA_LIST, companyQa);
-        cv.put(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_ARTICLES_LIST, companyArticles);
-        cv.put(FavouriteContract.FavouriteEntry.COLUMN_COMPANY_PRICE, companyPrice);
+        Intent saveSqlIntent = new Intent(this, SqlIntentService.class);
 
-        // Insert the new company to the Favourite SQLite Db via a ContentResolver
-        Uri uri = getContentResolver().insert(FavouriteContract.FavouriteEntry.CONTENT_URI, cv);
+        Bundle saveSqlIntentBundle = new Bundle();
 
-        Log.d(TAG, "The Data Added: " + cv);
+        saveSqlIntentBundle.putParcelableArrayList(SQL_QA_LIST, mQaFragment.mQaCombined);
+        saveSqlIntentBundle.putParcelableArrayList(SQL_ARTICLES_LIST, mArticleFrag.mArticles);
+        saveSqlIntentBundle.putString(SQL_FUND, mFundFrag.mPrice);
+        saveSqlIntentBundle.putInt(SQL_COMPANY_ID, mCompanyId);
+        saveSqlIntentBundle.putString(SQL_COMPANY_TICKER, mCompanyTicker);
+        saveSqlIntentBundle.putString(SQL_COMPANY_NAME, mCompanyName);
+        saveSqlIntentBundle.putInt(SQL_COMPANY_SECTOR, mCompanySector);
 
-        // Display the URI that's returned with a Toast
-        if (uri != null) {
-            Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
-            Log.d(TAG, "INSERT: " + getBaseContext() + uri.toString());
-        }
 
-    }
+        saveSqlIntent.putExtras(saveSqlIntentBundle);
 
-    private void preAddToDatabase() {
-
-        mQaInputArray = new ArrayList<QACombined>();
-
-        mQaInputArray = mQaFragment.mQaCombined;
-
-        Gson gson = new Gson();
-
-        String mQaInputString = gson.toJson(mQaInputArray);
-
-        Log.d(TAG, "mQaInputString: " + mQaInputString);
-
-        //
-
-        mArticleInputArray = new ArrayList<>();
-
-        mArticleInputArray = mArticleFrag.mArticles;
-
-        String mArticlesInputString = gson.toJson(mArticleInputArray);
-
-        Log.d(TAG, "mArticlesInputString: " + mArticlesInputString);
-
-//        JSONObject jsonArticles = new JSONObject();
-//
-//        try {
-//            jsonArticles.put("uniqueArrays2", new JSONArray(mArticleFrag.mArticles));
-//
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//        mArticles = jsonArticles.toString();
-
-        mPrice = mFundFrag.mPrice;
-
-        addToDatabase(mCompanyId, mCompanyTicker, mCompanyName, mCompanySector, mQaInputString, mArticlesInputString, mPrice);
+        startService(saveSqlIntent);
 
     }
 
