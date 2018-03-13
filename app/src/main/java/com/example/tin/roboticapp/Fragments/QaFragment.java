@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -27,10 +26,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tin.roboticapp.Activities.CompanyMainActivity;
 import com.example.tin.roboticapp.Activities.QaDetailActivity;
-import com.example.tin.roboticapp.Adapters.ArticleAdapter;
 import com.example.tin.roboticapp.Adapters.QaCombinedAdapter;
 import com.example.tin.roboticapp.Models.Answer;
-import com.example.tin.roboticapp.Models.Article;
 import com.example.tin.roboticapp.Models.QACombined;
 import com.example.tin.roboticapp.Models.Question;
 import com.example.tin.roboticapp.R;
@@ -509,19 +506,22 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
         if (data != null && data.getCount() > 0) {
             data.moveToFirst();
 
-            String stringOfArticles = data.getString(0);
-            Log.d(TAG, "stringOfArticles: " + stringOfArticles);
+            String stringOfQa = data.getString(0);
+            Log.d(TAG, "stringOfArticles: " + stringOfQa);
 
             Gson gson = new Gson();
 
-            Type type = new TypeToken<ArrayList<Article>>() {
+            Type type = new TypeToken<ArrayList<QACombined>>() {
             }.getType();
 
             Log.d(TAG, "mArticles ArrayList Before Gson: " + mQaCombined);
-            mQaCombined = gson.fromJson(stringOfArticles, type);
+            mQaCombined = gson.fromJson(stringOfQa, type);
             Log.d(TAG, "mArticles ArrayList After Gson: " + mQaCombined);
 
+            mRecyclerView.setAdapter((new QaCombinedAdapter(mQaCombined, getContext(), QaFragment.this)));
+
             adapter.notifyDataSetChanged();
+
             loaderCreated = 1;
 
         } else {
