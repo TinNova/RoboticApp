@@ -67,6 +67,10 @@ public class CompanyDetailActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private ArticlesFragment mArticleFrag;
+    private FundamentalsFragment mFundFrag;
+    private CommentsFragment mDiscussionFrag;
+    private QaFragment mQaFragment;
 
     private String mCompanyName;
     private String mCompanyTicker;
@@ -74,11 +78,8 @@ public class CompanyDetailActivity extends AppCompatActivity {
     private int mCompanySector;
     private int mListType;
     private int m_id;
+    private int isSaved;
 
-    private ArticlesFragment mArticleFrag;
-    private FundamentalsFragment mFundFrag;
-    private CommentsFragment mDiscussionFrag;
-    private QaFragment mQaFragment;
 
     // Used to Insert Data into SQLite Database
     private String mQaCombine;
@@ -158,6 +159,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
         // Create the tabLayout and connect it to the mViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
     }
 
     /**
@@ -252,8 +254,10 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
                 } else {
 
-                    // Change the Heart Icon from white to white outline
+                    // Change the Heart Icon from white to white outline,
+                    // Then remove the company from the db
                     favouriteMenu.setIcon(R.drawable.ic_star_border_white_24dp);
+                    removeCompany(m_id);
 
                 }
 
@@ -282,6 +286,25 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
         startService(saveSqlIntent);
 
+    }
+
+    /**
+     * This Method Deletes a Movie form the Database
+     * - It takes a long as the input which is the ID of the Row
+     * - It returns a boolean to say if the deletion was successful or not
+     */
+    private void removeCompany(int id) {
+
+        // Here we are building up the uri using the row_id in order to tell the ContentResolver
+        // to delete the item
+        String stringRowId = Long.toString(id);
+        Uri uri = FavouriteContract.FavouriteEntry.CONTENT_URI;
+        uri = uri.buildUpon().appendPath(stringRowId).build();
+
+        getContentResolver().delete(uri, null, null);
+
+        Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
+        Log.d(TAG, "REMOVE: " + getBaseContext() + uri.toString());
     }
 
 

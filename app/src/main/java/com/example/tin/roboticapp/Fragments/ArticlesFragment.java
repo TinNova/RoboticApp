@@ -323,6 +323,8 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
             mArticles = gson.fromJson(stringOfArticles, type);
             Log.d(TAG, "mArticles ArrayList After Gson: " + mArticles);
 
+//            notifyDataUpdate(mArticles);
+
             mRecyclerView.setAdapter((new ArticleAdapter(mArticles, getContext(), ArticlesFragment.this)));
 
             adapter.notifyDataSetChanged();
@@ -337,6 +339,11 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
         data.close();
 
     }
+
+//    public void notifyDataUpdate(ArrayList<Article> newList) {
+//        this.mArticles.addAll(newList);
+//        adapter.notifyDataSetChanged();
+//    }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
