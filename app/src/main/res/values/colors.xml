@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Robotic Colours -->
     <color name="colorPrimary">#24255D</color>
     <color name="colorPrimaryDark">#000033</color>
     <color name="colorAccent">#BF935B</color>
+
+    <color name="white">#FFF</color>
+
 </resources>

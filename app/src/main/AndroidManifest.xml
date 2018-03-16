@@ -36,7 +36,8 @@
         <activity
             android:name=".Activities.LoginActivity"
             android:label="@string/title_activity_login" />
-        <activity android:name=".Activities.QaDetailActivity"
+        <activity
+            android:name=".Activities.QaDetailActivity"
             android:parentActivityName=".Activities.CompanyDetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -44,13 +45,29 @@
         </activity>
 
         <provider
+            android:name=".SQLite.FavouriteContentProvider"
             android:authorities="com.example.tin.roboticapp"
-            android:name="com.example.tin.roboticapp.SQLite.FavouriteContentProvider"
             android:exported="false" />
 
         <service
             android:name=".IntentServices.SqlIntentService"
             android:exported="false" />
+
+        <receiver android:name=".Widget.CompanyWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/company_widget_provider_info" />
+        </receiver>
+
+        <service
+            android:name=".Widget.CompanyWidgetService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
     </application>
 
 </manifest>

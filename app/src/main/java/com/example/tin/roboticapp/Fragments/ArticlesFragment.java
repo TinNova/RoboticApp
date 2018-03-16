@@ -1,14 +1,19 @@
 package com.example.tin.roboticapp.Fragments;
 
+import android.app.IntentService;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,6 +35,7 @@ import com.example.tin.roboticapp.Adapters.QaCombinedAdapter;
 import com.example.tin.roboticapp.Models.Article;
 import com.example.tin.roboticapp.R;
 import com.example.tin.roboticapp.SQLite.FavouriteContract;
+import com.example.tin.roboticapp.Widget.CompanyWidgetProvider;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -55,6 +61,8 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
 
     private static final String TAG = "ArticlesFragment";
     private static final String ARTICLE_ARRAY = "article_array";
+    // Used for widget
+    public static final String SHARED_PREFERENCES_KEY = "shared_preferences_key";
 
     /**
      * Needed for Volley Network Connection
@@ -244,6 +252,14 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
 
                     adapter.notifyDataSetChanged();
 
+                    makeWidgetData(mArticles);
+
+                    Intent intent = new Intent(getActivity(), CompanyWidgetProvider.class);
+                    intent.setAction("android.appwidget.action.APPWIDGET_UPDATE\"");
+                    getActivity().sendBroadcast(intent);
+
+
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -363,5 +379,29 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
         outState.putParcelableArrayList(ARTICLE_ARRAY, mArticles);
 
     }
+
+
+
+    // Takes ClickedOn TheIngredients ArrayList And Converts It To Json
+    // Then Passes The Json To The RecipeWidgetService, this will display the selected ingredients
+    // in the Widget
+    private void makeWidgetData(ArrayList<Article> articles) {
+        // Initialise a Gson
+        Gson gson = new Gson();
+        // Convert theIngredients to a Json using the Gson Library
+        String theArticlesJson = gson.toJson(articles);
+        // Initialise SharedPreferences
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences.Editor editor = prefs.edit();
+        // Pass in theIngredients in Json format
+        editor.putString(SHARED_PREFERENCES_KEY, theArticlesJson).apply();
+
+    }
+
+//    private void sendBroadcast(Intent intent) {
+//        //Intent intent = new Intent(getActivity(), CompanyWidgetProvider.class);
+//        intent.setAction("android.appwidget.action.APPWIDGET_UPDATE\"");
+//        sendBroadcast(intent);
+//    }
 
 }

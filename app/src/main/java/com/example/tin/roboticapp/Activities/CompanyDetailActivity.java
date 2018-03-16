@@ -360,3 +360,8 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
     }
 }
+
+// TODO Improvements:
+// TODO 1: Allow user to remove company from SQL DB whether they accessed the DetailActivity via FTSE 350 or saveList
+// TODO 2: Prevent the ability to add the same Company twice to the SQL DB
+// TODO 3: If user keeps clicking the star icon, it should add, then remove, then add, then remove ect the Company form the DB
