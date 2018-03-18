@@ -8,7 +8,10 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <!-- Internet permission -->
+    <!-- Required Permissions For AdMobs -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
 
     <application
         android:allowBackup="true"
@@ -67,6 +70,15 @@
             android:name=".Widget.CompanyWidgetService"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <!-- This Activity is required for AdMobs, it is what displays the ad when clicked on
+                We do not need to create this Activity as a class, we just need to add it to the Manifest-->
+        <activity
+            android:name="com.google.android.gms.ads.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
+
+        <!-- Required meta-data For AdMobs -->
+        <meta-data android:name="com.google.android.gms.version" />
 
     </application>
 

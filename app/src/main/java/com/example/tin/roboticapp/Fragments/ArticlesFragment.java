@@ -254,11 +254,6 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
 
                     makeWidgetData(mArticles);
 
-                    Intent intent = new Intent(getActivity(), CompanyWidgetProvider.class);
-                    intent.setAction("android.appwidget.action.APPWIDGET_UPDATE\"");
-                    getActivity().sendBroadcast(intent);
-
-
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -339,8 +334,6 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
             mArticles = gson.fromJson(stringOfArticles, type);
             Log.d(TAG, "mArticles ArrayList After Gson: " + mArticles);
 
-//            notifyDataUpdate(mArticles);
-
             mRecyclerView.setAdapter((new ArticleAdapter(mArticles, getContext(), ArticlesFragment.this)));
 
             adapter.notifyDataSetChanged();
@@ -355,11 +348,6 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
         data.close();
 
     }
-
-//    public void notifyDataUpdate(ArrayList<Article> newList) {
-//        this.mArticles.addAll(newList);
-//        adapter.notifyDataSetChanged();
-//    }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
@@ -380,11 +368,8 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
 
     }
 
-
-
-    // Takes ClickedOn TheIngredients ArrayList And Converts It To Json
-    // Then Passes The Json To The RecipeWidgetService, this will display the selected ingredients
-    // in the Widget
+    // Takes the mArticles ArrayList And Converts It To Json
+    // Then Passes The Json To The CompanyWidgetService, this will display the article in the Widget
     private void makeWidgetData(ArrayList<Article> articles) {
         // Initialise a Gson
         Gson gson = new Gson();
@@ -396,12 +381,14 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
         // Pass in theIngredients in Json format
         editor.putString(SHARED_PREFERENCES_KEY, theArticlesJson).apply();
 
+        sendBroadcast();
+
     }
 
-//    private void sendBroadcast(Intent intent) {
-//        //Intent intent = new Intent(getActivity(), CompanyWidgetProvider.class);
-//        intent.setAction("android.appwidget.action.APPWIDGET_UPDATE\"");
-//        sendBroadcast(intent);
-//    }
+    private void sendBroadcast() {
+        Intent intent = new Intent(getActivity(), CompanyWidgetProvider.class);
+        intent.setAction("android.appwidget.action.APPWIDGET_UPDATE\"");
+        getActivity().sendBroadcast(intent);
+    }
 
 }

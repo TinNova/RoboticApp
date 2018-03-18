@@ -15,7 +15,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -24,10 +23,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.tin.roboticapp.AdModUtils.ToastAdListener;
 import com.example.tin.roboticapp.Adapters.CompanyAdapter;
 import com.example.tin.roboticapp.Models.TheCompany;
 import com.example.tin.roboticapp.R;
 import com.example.tin.roboticapp.SQLite.FavouriteContract;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,13 +37,16 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class CompanyMainActivity extends AppCompatActivity implements CompanyAdapter.ListItemClickListener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = "CompanyMainActivity";
+    /**
+     * Needed for AdMod
+     */
+    private AdView mAdView;
 
     /**
      * Needed for Intent
@@ -94,6 +99,12 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_company_main);
+
+        // Setting Up The AdMod
+        mAdView = (AdView) findViewById(R.id.adView);
+        mAdView.setAdListener(new ToastAdListener(this));
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         // Creating an instance of SharedPreferences & the RequestQueue
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);

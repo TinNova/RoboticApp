@@ -153,12 +153,16 @@ public class CompanyDetailActivity extends AppCompatActivity {
         // Create the ViewPager (the container is in the activity_company_detail.xml
         mViewPager = (ViewPager) findViewById(R.id.container);
 
+        // Set the number of off-screen fragment that must be loaded on each side of the current one.
+        mViewPager.setOffscreenPageLimit(3);
+
         // Launch the setupViewPager method and pass in the newly created mViewPager
         setupViewPager(mViewPager);
 
         // Create the tabLayout and connect it to the mViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
 
     }
 

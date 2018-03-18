@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -18,12 +19,14 @@ import java.util.ArrayList;
 
 public class CompanyWidgetService extends RemoteViewsService {
 
+    private static final String TAG = "CompanyWidgetService";
+
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         return new CompanyServiceFactory(this.getApplicationContext());
     }
 
-    private class CompanyServiceFactory implements RemoteViewsService.RemoteViewsFactory {
+    class CompanyServiceFactory implements RemoteViewsService.RemoteViewsFactory {
 
         private final Context context;
         private ArrayList<Article> mArticles;
@@ -32,7 +35,7 @@ public class CompanyWidgetService extends RemoteViewsService {
 
             this.context = context;
             mArticles = new ArrayList<>();
-            mArticles.add(new Article(1, "publishDate", "headline", "summary", "sourceUrl"));
+            mArticles.add(new Article(0, "publishDate", "headline", "summary", "sourceUrl"));
 
         }
 
@@ -50,6 +53,8 @@ public class CompanyWidgetService extends RemoteViewsService {
                 Gson gson = new Gson();
                 mArticles = gson.fromJson(theArticlesJson, new TypeToken<ArrayList<Article>>() {
                 }.getType());
+
+                Log.d(TAG, "mArticles in onDataSetChanged: " + mArticles);
             }
 
         }
@@ -63,13 +68,19 @@ public class CompanyWidgetService extends RemoteViewsService {
         public int getCount() {
             if (mArticles != null) {
                 return mArticles.size();
+
             } else return 0;
+
         }
 
         @Override
         public RemoteViews getViewAt(int i) {
             RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.companies_list_item);
-            rv.setTextViewText(R.id.widget_articles_tv, String.valueOf(mArticles.get(i).getHeadline()));
+            rv.setTextViewText(R.id.widget_articles_tv, String.valueOf(mArticles.get(i).getArticleId()));
+
+            Log.d(TAG, "getCount In Widget Service: comp " + String.valueOf(mArticles.get(i).getArticleId()));
+
+
 //            rv.setTextViewText(R.id.widget_measure_tv, String.valueOf(mTheIngredients.get(i).getMeasure()));
 //            rv.setTextViewText(R.id.widget_quantity_tv, String.valueOf(mTheIngredients.get(i).getQuantity()));
             return rv;
@@ -82,7 +93,7 @@ public class CompanyWidgetService extends RemoteViewsService {
 
         @Override
         public int getViewTypeCount() {
-            return 0;
+            return 1;
         }
 
         @Override
