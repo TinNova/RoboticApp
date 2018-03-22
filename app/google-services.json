@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "823803460569",
+    "firebase_url": "https://robotic-app.firebaseio.com",
+    "project_id": "robotic-app",
+    "storage_bucket": "robotic-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:823803460569:android:9fdb20c7357d717e",
+        "android_client_info": {
+          "package_name": "com.example.tin.roboticapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "823803460569-fjkohhvkpv6qpodf42sfcigc0tede504.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOuYVS_d7lqT03-8ThO6qiTD6wr27NmR0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

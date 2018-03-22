@@ -17,9 +17,8 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 /**
- * Created by Tin on 13/03/2018.
+ * IntentService from the MainActivity which saves a company to the SQL db
  */
-
 public class SqlIntentService extends IntentService {
 
     private static final String TAG = "SqlIntentService";

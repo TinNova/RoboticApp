@@ -27,6 +27,10 @@
 
     <!-- QA Fragment -->
 
+    <!-- Question Detail Activity-->
+    <string name="question_detail_title">What does the company do?</string>
+    <string name="question_detail_hint">Write your answer here...</string>
+
     <!-- Menu QA Detail -->
     <string name="save_menu">SAVE</string>
 
@@ -39,7 +43,33 @@
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
 
-    <!-- Test Banner Unit Id-->
+    <!-- Test Banner Unit Id -->
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+
+    <!-- Content Descriptions -->
+    <string name="companies_list_cd">A List of Companies</string>
+    <string name="ad_cd">An Advert</string>
+    <string name="activity_qa_detail_paragraph_icon_cd">A paragraph icon</string>
+    <string name="main_activity_switch_lists_cd">Click to switch between the FTSE 350 List and your list of saved companies</string>
+    <string name="qa_list_item_pen_icon_cd">A pen icon</string>
+    <string name="main_activity_FTSE_list">Press to view a list of FTSE 350 companies</string>
+    <string name="main_activity_saved_list">Press to view a list of your saved companies</string>
+
+    <!-- SnackBar Messages -->
+    <string name="check_connection">Network cannot be found, please try again.</string>
+    <string name="check_connection_02">No Network Connection. Answer cannot be posted, please try again.</string>
+    <!-- QA Detail Activity -->
+    <string name="answer_missing">Enter An Answer.</string>
+    <string name="answer_not_edited">Answer Wasn\'t Edited, Nothing To Save.</string>
+
+
+
+
+
+
+
+
+
+
 
 </resources>

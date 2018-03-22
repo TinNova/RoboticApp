@@ -1,13 +1,17 @@
 package com.example.tin.roboticapp.Activities;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,24 +22,17 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tin.roboticapp.Fragments.QaFragment;
+import com.example.tin.roboticapp.Notifications.SnackBarUtils;
 import com.example.tin.roboticapp.R;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.example.tin.roboticapp.KeyboardUtils.KeyBoardUtils.hideSoftKeyboard;
 
 public class QaDetailActivity extends AppCompatActivity {
 
@@ -58,6 +55,10 @@ public class QaDetailActivity extends AppCompatActivity {
 
     // 0 = New Answer (i.e no answer was passed in the intent) else, 1 = Editing Answer (i.e we're editing an existing answer)
     int newAnswer = 0;
+
+    // Used to check if the device has internet connection
+    private ConnectivityManager connectionManager;
+    private NetworkInfo networkInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +100,9 @@ public class QaDetailActivity extends AppCompatActivity {
 
         Log.d(TAG, "This is a New or Existing Answer: " + newAnswer);
 
+        // Checking If The Device Is Connected To The Internet
+        connectionManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
     }
 
     @Override
@@ -120,72 +124,69 @@ public class QaDetailActivity extends AppCompatActivity {
             // When Save is clicked, it will launch the POST or PUT request
             case R.id.menu_qa_detail_save:
 
-                // Get the text from the EditText and save it as a String.
-                String answerString = mAnswerEt.getText().toString();
-                Log.d(TAG, "The text in the EditText: " + answerString);
+                // if phone is connected to internet, start the intent
+                if (connectionManager != null)
+                    networkInfo = connectionManager.getActiveNetworkInfo();
+                if (networkInfo != null && networkInfo.isConnected()) {
 
-                // if the answerString is NOT empty, and it is not the same as the one retrieved
-                // from the Bundle, either addAnswer or editAnswer
-                if (!answerString.matches("") && !answerString.matches(mAnswer)) {
-                    Log.d(TAG, "if Statement in line 126 was successful");
-                    // If it's an unanswered question create a new answer
-                    if (newAnswer == 0) {
+                    // Get the text from the EditText and save it as a String.
+                    String answerString = mAnswerEt.getText().toString();
+                    Log.d(TAG, "The text in the EditText: " + answerString);
 
-                        addAnswer(answerString);
+                    // if the answerString is NOT empty, and it is NOT the same as the one retrieved
+                    // from the Bundle, either addAnswer or editAnswer
+                    if (!answerString.matches("") && !answerString.matches(mAnswer)) {
+                        Log.d(TAG, "if Statement in line 126 was successful");
+                        // If it's an unanswered question create a new answer
+                        if (newAnswer == 0) {
 
-                        Log.d(TAG, "addAnswer Launched from if/else statement");
+                            addAnswer(answerString);
 
-                        // Else we are editing an existing answer
-                    } else {
+                            Log.d(TAG, "addAnswer Launched from if/else statement");
 
-                        if (mAnswerId == -1){
+                            // Else we are editing an existing answer
+                        } else {
 
-                            Toast.makeText(this, "Post cannot be saved, copy your entry and refresh the page", Toast.LENGTH_SHORT).show();
+                            if (mAnswerId == -1) {
 
-                            Log.d(TAG, "editAnswer cannot launch as mAnswerId == -1, (the default value in the intent");
+                                Toast.makeText(this, "Post cannot be saved, copy your entry and refresh the page", Toast.LENGTH_SHORT).show();
+
+                                Log.d(TAG, "editAnswer cannot launch as mAnswerId == -1, (the default value in the intent");
+
+                            }
+
+                            editAnswer(answerString);
+
+                            Log.d(TAG, "editAnswer Launched from if/else statement");
 
                         }
 
-                        editAnswer(answerString);
+                        // if the answerString is empty, notify user
+                    } else if (answerString.matches("")) {
 
-                        Log.d(TAG, "editAnswer Launched from if/else statement");
+                        SnackBarUtils.snackBar(findViewById(R.id.qa_activity), getString(R.string.answer_missing), Snackbar.LENGTH_LONG);
+
+                        // else the only other option is the answer retrieved from the Bundle wasn't edited
+                    } else {
+
+                        SnackBarUtils.snackBar(findViewById(R.id.qa_activity), getString(R.string.answer_not_edited), Snackbar.LENGTH_LONG);
 
                     }
 
-                    // if the answerString is empty, notify user
-                } else if (answerString.matches("")) {
-
-                    Toast.makeText(this, "Enter An Answer.", Toast.LENGTH_SHORT).show();
-
-                    // else the only other option is the answer retrieved from the Bundle wasn't edited
                 } else {
 
-                    Toast.makeText(this, "Answer Wasn't Edited, Nothing To Save.", Toast.LENGTH_SHORT).show();
+                    hideSoftKeyboard(this);
+                    SnackBarUtils.snackBar(findViewById(R.id.qa_activity), getString(R.string.check_connection), Snackbar.LENGTH_INDEFINITE);
 
                 }
-
         }
+
 
         return super.
 
                 onOptionsItemSelected(item);
 
     }
-
-    private void onSuccessfulPostPut() {
-
-        Toast.makeText(this, "Answer Saved.", Toast.LENGTH_SHORT).show();
-
-        // Intent to launch the QAFragment
-        Intent intent = new Intent(QaDetailActivity.this, CompanyDetailActivity.class);
-        // Here we are passing in position 1, to load the QAFragment when the activity starts
-        // The string is passed so that we can do an if statement with it, in onCreate
-        intent.putExtra(FRAGMENT_POSITION, 1);
-        intent.putExtra(INTENT_FROM_QA_DETAIL_ACTIVITY, "From QaDetailActivity");
-        startActivity(intent);
-
-    }
-
 
     /**
      * This should be an Intent Service? Because it doesn't affect the UI in this Activity?
@@ -285,6 +286,7 @@ public class QaDetailActivity extends AppCompatActivity {
             params.put("company", companyID);
             params.put("content", answerET);
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, "http://10.0.2.2:8000/rest-api/answers/" + mAnswerId + "/", params, new Response.Listener<JSONObject>() {
+
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d(TAG, "Response: " + response.toString());
@@ -321,22 +323,22 @@ public class QaDetailActivity extends AppCompatActivity {
 
     }
 
+    private void onSuccessfulPostPut() {
+
+        Toast.makeText(this, "Answer Saved.", Toast.LENGTH_SHORT).show();
+
+        // Intent to launch the QAFragment
+        Intent intent = new Intent(QaDetailActivity.this, CompanyDetailActivity.class);
+        // Here we are passing in position 1, to load the QAFragment when the activity starts
+        // The string is passed so that we can do an if statement with it, in onCreate
+        intent.putExtra(FRAGMENT_POSITION, 1);
+        intent.putExtra(INTENT_FROM_QA_DETAIL_ACTIVITY, "From QaDetailActivity");
+        startActivity(intent);
+
+    }
+
 }
 
-// COMPLETED: Add a save button that triggers the POST function
-// COMMIT!
-// COMPLETED: Pass the Answer ID to the qaDetailActivity
-// COMMIT!
-// COMPLETED: Add POST function for a new answer
-// COMMIT!
-// FAILED: Add POST function for an existing answer
-// COMPLETED: Have an UP button that takes you specifically to the QA Fragment (NOT a random fragment)
-// COMMIT!
-// COMPLETED: Fix the layout a little
-// COMMIT!
-// COMPLETED: Fix the POST on an answer
-// COMPLETED: Fix the PUT on an answer (The issue is the response goes to onErrorResponse
-// COMMIT!
+
 // TODO: POST and PUT should happen in a ServiceIntent..or Service? As the result of the data is not linked to the ui or lifecycle of this activity
-//          If you fail to put it in a Service, the activity may onDestroy before the data has been POSTed or PUT
-// TODO: Work on the POST function for Comments, Make it refresh upon a comment submission
+// TODO: Check for internet connection before posting to server (the if Statements didn't work

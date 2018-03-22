@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.tin.roboticapp.Activities.CompanyMainActivity">
+    tools:context="com.example.tin.roboticapp.Activities.CompanyMainActivity"
+    android:id="@+id/main_activity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rV_companyList"
@@ -22,6 +23,7 @@
         ads:layout_constraintBottom_toBottomOf="parent"
         ads:layout_constraintTop_toBottomOf="@+id/rV_companyList"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="0dp" />
+        tools:layout_editor_absoluteX="0dp"
+        android:contentDescription="@string/ad_cd"/>
 
 </android.support.constraint.ConstraintLayout>

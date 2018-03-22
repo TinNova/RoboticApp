@@ -1,10 +1,16 @@
 package com.example.tin.roboticapp.Activities;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.os.Parcelable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -15,6 +21,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -26,6 +33,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.tin.roboticapp.AdModUtils.ToastAdListener;
 import com.example.tin.roboticapp.Adapters.CompanyAdapter;
 import com.example.tin.roboticapp.Models.TheCompany;
+import com.example.tin.roboticapp.Notifications.SnackBarUtils;
 import com.example.tin.roboticapp.R;
 import com.example.tin.roboticapp.SQLite.FavouriteContract;
 import com.google.android.gms.ads.AdRequest;
@@ -94,17 +102,15 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
     private int mCompanyId;
     private int mCompanySector;
 
+    // Used to check if the device has internet connection
+    private ConnectivityManager connectionManager;
+    private NetworkInfo networkInfo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_company_main);
-
-        // Setting Up The AdMod
-        mAdView = (AdView) findViewById(R.id.adView);
-        mAdView.setAdListener(new ToastAdListener(this));
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
 
         // Creating an instance of SharedPreferences & the RequestQueue
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -128,9 +134,72 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
         // Creating the mTheCompanies ArrayList<> to avoid a null exception
         mTheCompanies = new ArrayList<>();
 
-        // Launching the Login Method on App Start
-        login();
-        Log.d(TAG, "App Launched");
+        // Checking If The Device Is Connected To The Internet
+        connectionManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        // If the connManager and networkInfo is NOT null, start the login() method
+        if (connectionManager != null)
+            networkInfo = connectionManager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+
+            // Launching the Login Method on App Start
+            login();
+            Log.d(TAG, "App Launched");
+
+        } else {
+
+            snackBarOnCreate(findViewById(R.id.main_activity), getString(R.string.check_connection), Snackbar.LENGTH_INDEFINITE);
+
+        }
+
+        // Setting Up The AdMod
+        mAdView = (AdView) findViewById(R.id.adView);
+        mAdView.setAdListener(new ToastAdListener(this));
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+    }
+
+    // Method which is launched when user clicks "REFRESH" on the SnackBar
+    public void connectToNetworkMainActivity() {
+
+        // If the connManager and networkInfo is NOT null, start the login() method
+        if (connectionManager != null)
+            networkInfo = connectionManager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+
+            // Launching the Login Method on App Start
+            login();
+            Log.d(TAG, "App Launched");
+
+        } else {
+
+            snackBarOnCreate(findViewById(R.id.main_activity), getString(R.string.check_connection), Snackbar.LENGTH_INDEFINITE);
+
+        }
+
+    }
+
+    public void snackBarOnCreate(final View view, String message, int duration) {
+
+        // Else if the connManager and networkInfo IS null, show a snakeBar informing the user
+        final Snackbar snackbar = Snackbar.make(view, message, duration);
+        View snackBarView = snackbar.getView();
+
+        // Set an action on it, and a handler
+        snackbar.setAction("REFRESH", new View.OnClickListener()
+
+        {
+            @Override
+            public void onClick(View v) {
+
+                connectToNetworkMainActivity();
+                snackbar.dismiss();
+
+            }
+        });
+
+        snackbar.show();
 
     }
 
@@ -279,29 +348,41 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
     @Override
     public void onListItemClick(int clickedItemIndex) {
 
-        Intent intent = new Intent(this, CompanyDetailActivity.class);
+        // if phone is connected to internet, start the intent
+        if (connectionManager != null)
+            networkInfo = connectionManager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
 
-        // The company ID is not part of the recycler view, so we have to pass it through slightly differently
-        mCompanyId = mTheCompanies.get(clickedItemIndex).getCompanyId();
-        mCompanySector = mTheCompanies.get(clickedItemIndex).getCompanySector();
+            Intent intent = new Intent(this, CompanyDetailActivity.class);
 
-        // Company Name is needed for the Title of the Activity
-        // Ticker is needed for Articles Feed and Title of The Activity
-        Bundle companyListBundle = new Bundle();
-        companyListBundle.putString(CURRENT_COMPANY_NAME, mTheCompanies.get(clickedItemIndex).getCompanyName());
-        companyListBundle.putString(CURRENT_COMPANY_TICKER, mTheCompanies.get(clickedItemIndex).getCompanyticker());
-        companyListBundle.putInt(CURRENT_COMPANY_ID, mCompanyId);
-        companyListBundle.putInt(CURRENT_COMPANY_SECTOR, mCompanySector);
-        companyListBundle.putInt(LIST_TYPE, listType);
+            // The company ID is not part of the recycler view, so we have to pass it through slightly differently
+            mCompanyId = mTheCompanies.get(clickedItemIndex).getCompanyId();
+            mCompanySector = mTheCompanies.get(clickedItemIndex).getCompanySector();
 
-        if (listType == 1) {
+            // Company Name is needed for the Title of the Activity
+            // Ticker is needed for Articles Feed and Title of The Activity
+            Bundle companyListBundle = new Bundle();
+            companyListBundle.putString(CURRENT_COMPANY_NAME, mTheCompanies.get(clickedItemIndex).getCompanyName());
+            companyListBundle.putString(CURRENT_COMPANY_TICKER, mTheCompanies.get(clickedItemIndex).getCompanyticker());
+            companyListBundle.putInt(CURRENT_COMPANY_ID, mCompanyId);
+            companyListBundle.putInt(CURRENT_COMPANY_SECTOR, mCompanySector);
+            companyListBundle.putInt(LIST_TYPE, listType);
 
-            companyListBundle.putInt(CURRENT_COMPANY__ID, mTheCompanies.get(clickedItemIndex).getCompany_id());
+            if (listType == 1) {
+
+                companyListBundle.putInt(CURRENT_COMPANY__ID, mTheCompanies.get(clickedItemIndex).getCompany_id());
+            }
+
+            intent.putExtras(companyListBundle);
+
+            startActivity(intent);
+
+            // else if not connected to internet, show SnackBar
+        } else {
+
+            SnackBarUtils.snackBar(findViewById(R.id.main_activity), getString(R.string.check_connection), Snackbar.LENGTH_INDEFINITE);
+
         }
-
-        intent.putExtras(companyListBundle);
-
-        startActivity(intent);
 
     }
 
@@ -314,6 +395,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
         return true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -347,6 +429,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
 
                     // Change title
                     savedMenu.setTitle(getString(R.string.ftse_list));
+                    savedMenu.setContentDescription(String.valueOf(R.string.main_activity_FTSE_list));
                     // Change List Type
                     listType = 1;
 
@@ -366,6 +449,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
                     RequestCompaniesFeed();
                     // Change Title
                     savedMenu.setTitle(getString(R.string.saved_list));
+                    savedMenu.setContentDescription(String.valueOf(R.string.main_activity_saved_list));
 
                 }
 
@@ -382,6 +466,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
      * <p>
      * Implements the required callbacks to take care of loading data at all stages of loading.
      */
+    @SuppressLint("StaticFieldLeak")
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
@@ -494,3 +579,5 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
     }
 
 }
+
+//TODO: Add a refresh button for when there is no internet connection so user can try load again.

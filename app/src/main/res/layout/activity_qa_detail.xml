@@ -6,13 +6,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="8dp"
-    tools:context="com.example.tin.roboticapp.Activities.QaDetailActivity">
+    tools:context="com.example.tin.roboticapp.Activities.QaDetailActivity"
+    android:id="@+id/qa_activity">
 
     <TextView
         android:id="@+id/question_tV_qaDetail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="What does the company do?"
+        android:text="@string/question_detail_title"
         android:textSize="21sp"
         android:paddingBottom="8dp"/>
 
@@ -27,7 +28,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="clip_vertical"
         android:paddingTop="6dp"
-        android:src="@drawable/ic_short_text_black_24dp" />
+        android:src="@drawable/ic_short_text_black_24dp"
+        android:contentDescription="@string/activity_qa_detail_paragraph_icon_cd"/>
 
     <EditText
         android:id="@+id/answer_editText"
@@ -35,6 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:paddingStart="8dp"
+        android:hint="@string/question_detail_hint"
         tools:text="This is the answer to the question that can be edited at any point."
         android:textSize="15sp"/>
 

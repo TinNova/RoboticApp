@@ -39,5 +39,9 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.2'
     // Required dependency for AdMobs
     compile 'com.google.android.gms:play-services-ads:11.8.0'
-
+    // Required for Firebase Analytics
+    compile 'com.google.firebase:firebase-core:11.8.0'
 }
+
+// Add to the bottom of the file
+apply plugin: 'com.google.gms.google-services'
