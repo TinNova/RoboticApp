@@ -3,12 +3,6 @@ package com.example.tin.roboticapp.Notifications;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
-import com.example.tin.roboticapp.Activities.CompanyMainActivity;
-import com.example.tin.roboticapp.R;
-
-/**
- * Created by Tin on 21/03/2018.
- */
 
 public class SnackBarUtils {
 

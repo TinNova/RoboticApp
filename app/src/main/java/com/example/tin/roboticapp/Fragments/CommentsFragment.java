@@ -1,7 +1,11 @@
 package com.example.tin.roboticapp.Fragments;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,6 +33,7 @@ import com.example.tin.roboticapp.Activities.CompanyDetailActivity;
 import com.example.tin.roboticapp.Adapters.CommentAdapter;
 import com.example.tin.roboticapp.Activities.CompanyMainActivity;
 import com.example.tin.roboticapp.Models.Comment;
+import com.example.tin.roboticapp.Notifications.SnackBarUtils;
 import com.example.tin.roboticapp.R;
 
 import org.json.JSONArray;
@@ -39,6 +44,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.example.tin.roboticapp.KeyboardUtils.KeyBoardUtils.hideSoftKeyboard;
 
 /**
  * Created by Tin on 09/01/2018.
@@ -71,10 +78,17 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
      */
     Bundle fragSavedInstanceState;
 
+    // Used to check if the device has internet connection
+    private ConnectivityManager connectionManager;
+    private NetworkInfo networkInfo;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_comments, container, false);
+
+        // Checking If The Device Is Connected To The Internet
+        connectionManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
 
         mComments = new ArrayList<>();
 
@@ -122,22 +136,37 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
             @Override
             public void onClick(View view) {
 
-                // This is the users comment placed into a String
-                String commentToPost = mCommentEditText.getText().toString().trim();
+                // if phone is connected to internet, start the intent
+                if (connectionManager != null)
+                    networkInfo = connectionManager.getActiveNetworkInfo();
+                if (networkInfo != null && networkInfo.isConnected()) {
 
-                // if commentToPost is NOT empty, then start the Post
-                if (!TextUtils.isEmpty(commentToPost)) {
 
-                    // Launch the POST request
-                    postComment(commentToPost);
+                    // This is the users comment placed into a String
+                    String commentToPost = mCommentEditText.getText().toString().trim();
 
-                    Toast.makeText(getActivity(), "Comment Sent", Toast.LENGTH_SHORT).show();
+                    // if commentToPost is NOT empty, then start the Post
+                    if (!TextUtils.isEmpty(commentToPost)) {
+
+                        // Launch the POST request
+                        postComment(commentToPost);
+
+                        // Removes text from EditText
+                        mCommentEditText.getText().clear();
+
+                        Toast.makeText(getActivity(), "Comment Sent", Toast.LENGTH_SHORT).show();
+
+                    } else {
+
+                        Toast.makeText(getActivity(), "Insert A Comment!", Toast.LENGTH_SHORT).show();
+                    }
 
                 } else {
 
-                    Toast.makeText(getActivity(), "Insert A Comment!", Toast.LENGTH_SHORT).show();
-                }
+                    hideSoftKeyboard(getActivity());
+                    SnackBarUtils.snackBar(getActivity().findViewById(R.id.company_detail), getString(R.string.check_connection), Snackbar.LENGTH_INDEFINITE);
 
+                }
             }
         });
 
