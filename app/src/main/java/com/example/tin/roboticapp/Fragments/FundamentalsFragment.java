@@ -113,7 +113,7 @@ public class FundamentalsFragment extends Fragment implements LoaderManager.Load
                 if (getArguments().getInt(CompanyMainActivity.LIST_TYPE) == 0) {
 
                     mCompanyId = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY_ID);
-                    requestFeed();
+                    requestFeed(mCompanyId);
 
                     // Else LIST_TYPE == 1, the Argument DO contain SQL data
                 } else {
@@ -149,11 +149,12 @@ public class FundamentalsFragment extends Fragment implements LoaderManager.Load
         return view;
     }
 
-    public void requestFeed() {
+    public void requestFeed(int companyId) {
 
         // Creating a Request Queue for the Volley Network Connection
         mRequestQueue = Volley.newRequestQueue(getActivity());
-        RequestArticlesFeed("http://10.0.2.2:8000/rest-api/fundamentals/?company=31");
+        // Original: http://10.0.2.2:8000/rest-api/fundamentals/?company=31
+        RequestArticlesFeed("https://robotic-site.herokuapp.com/rest-api/fundamentals/?company=" + companyId);
 
     }
 

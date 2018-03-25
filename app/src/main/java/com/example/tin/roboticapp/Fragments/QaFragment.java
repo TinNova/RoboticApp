@@ -58,6 +58,7 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
 
     private static final String TAG = "QAFragment";
 
+    public static final String COMPANY_ID = "company_id";
     public static final String QUESTION = "question";
     public static final String QUESTION_ID = "question_id";
     public static final String ANSWER = "answer";
@@ -88,6 +89,8 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
     private ArrayList<Answer> mAnswers;
     // Public because it is used in CompanyDetailActivity to addToDatabase
     public ArrayList<QACombined> mQaCombined;
+
+    private int mCompanyId;
 
     private RecyclerView mRecyclerView;
     private QaCombinedAdapter adapter;
@@ -121,14 +124,18 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
 
         int match;
 
+        // First safety check that the data aka "arguments" has been passed to the activity
         if (getArguments() != null) {
 
             // If LIST_TYPE == 0, the Arguments DO NOT contain SQL data
             if (getArguments().getInt(CompanyMainActivity.LIST_TYPE) == 0) {
 
+                mCompanyId = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY_ID);
+
                 // Creating a Request Queue for the Volley Network Connection
                 mRequestQueue = Volley.newRequestQueue(getActivity());
-                RequestQuestionsFeed("http://10.0.2.2:8000/rest-api/questions");
+                // Original: http://10.0.2.2:8000/rest-api/questions
+                RequestQuestionsFeed("https://robotic-site.herokuapp.com/rest-api/questions");
 
                 // Else LIST_TYPE == 1, the Argument DO contain SQL data
             } else {
@@ -143,6 +150,7 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
                 Log.d(TAG, "mCompany_id: " + mCompany_id);
                 Log.d(TAG, "stringRowId: " + stringRowId);
                 Log.d(TAG, "mUri: " + mUri);
+
                 // Check if there is already an open instance of a Loader
                 if (loaderCreated == 1) {
 
@@ -213,7 +221,8 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
                 parsedQBundle.putParcelableArrayList("parsedQuestions", mQuestions);
                 Log.d(TAG, "Size of mQuesiton in onResponse (Should be 5): " + mQuestions.size());
 
-                RequestAnswersFeed("http://10.0.2.2:8000/rest-api/answers/?company=31");
+                // Original: http://10.0.2.2:8000/rest-api/answers/?company=31
+                RequestAnswersFeed("https://robotic-site.herokuapp.com/rest-api/answers/?company=" + mCompanyId);
             }
         };
 
@@ -462,6 +471,7 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
         Bundle onClickBundle = new Bundle();
         onClickBundle.putString(QUESTION, mQaCombined.get(clickedItemIndex).getQuestion());
         onClickBundle.putInt(QUESTION_ID, mQaCombined.get(clickedItemIndex).getqId());
+        onClickBundle.putInt(COMPANY_ID, mCompanyId);
 
         if (mQaCombined.get(clickedItemIndex).getContent() != "") {
 

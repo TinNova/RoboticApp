@@ -127,7 +127,8 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
 
             // Creating a Request Queue for the Volley Network Connection
             mRequestQueue = Volley.newRequestQueue(getActivity());
-            RequestFeed("http://10.0.2.2:8000/rest-api/comments/?company=31");
+            // Original: http://10.0.2.2:8000/rest-api/comments/?company=31
+            RequestFeed("https://robotic-site.herokuapp.com/rest-api/comments/?company=31");
 
         }
 
@@ -321,7 +322,8 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
                     mComments.clear();
 
                     // Refresh the Database the moment a Post has been made
-                    RequestFeed("http://10.0.2.2:8000/rest-api/comments/?company=31");
+                    // Original: http://10.0.2.2:8000/rest-api/comments/?company=31
+                    RequestFeed("https://robotic-site.herokuapp.com/rest-api/comments/?company=31");
 
 
                 }

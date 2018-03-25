@@ -38,12 +38,15 @@ public class QaDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "QaDetailActivity";
 
+    // Needed when returning back to qaFragment
     public static String FRAGMENT_POSITION = "fragment_position";
     public static String INTENT_FROM_QA_DETAIL_ACTIVITY = "intent_from_qa_detail_activity";
+    public static String COMPANY_ID = "company_id";
 
     public static String REFRESH_QA = "refresh_qa";
     public static String FRAGMENT_QA = "fragment_qa";
 
+    private int mCompanyId;
     private String mQuestion;
     private String mAnswer;
     private int mAnswerId;
@@ -75,6 +78,7 @@ public class QaDetailActivity extends AppCompatActivity {
         Intent intentFromQaFrag = getIntent();
         if (intentFromQaFrag.getExtras() != null) {
 
+            mCompanyId = intentFromQaFrag.getIntExtra(QaFragment.COMPANY_ID, -1);
             mQuestion = intentFromQaFrag.getStringExtra(QaFragment.QUESTION);
             mQuestionTv.setText(mQuestion);
             mQId = intentFromQaFrag.getIntExtra(QaFragment.QUESTION_ID, 0);
@@ -89,6 +93,7 @@ public class QaDetailActivity extends AppCompatActivity {
                 mAnswerId = intentFromQaFrag.getIntExtra(QaFragment.ANSWER_ID, -1);
                 mAnswerEt.setText(mAnswer);
                 newAnswer = 1;
+
 
             }
 
@@ -213,13 +218,14 @@ public class QaDetailActivity extends AppCompatActivity {
             content.put("read_only", false);
             content.put("label", "Content");
 
-            int companyID = 31; //EZY Jet
+            //int companyID = 31; //EZY Jet
 
             params.put("question", mQId);
-            params.put("company", companyID);
+            params.put("company", mCompanyId);
             params.put("content", answerET);
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                    (Request.Method.POST, "http://10.0.2.2:8000/rest-api/answers/", params, new Response.Listener<JSONObject>() {
+                // Original: http://10.0.2.2:8000/rest-api/answers/
+                    (Request.Method.POST, "https://robotic-site.herokuapp.com/rest-api/answers/", params, new Response.Listener<JSONObject>() {
 
                         @Override
                         public void onResponse(JSONObject response) {
@@ -280,12 +286,13 @@ public class QaDetailActivity extends AppCompatActivity {
             content.put("read_only", false);
             content.put("label", "Content");
 
-            int companyID = 31; //EZY Jet
+            //int companyID = 31; //EZY Jet
 
             params.put("question", mQId);
-            params.put("company", companyID);
+            params.put("company", mCompanyId);
             params.put("content", answerET);
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, "http://10.0.2.2:8000/rest-api/answers/" + mAnswerId + "/", params, new Response.Listener<JSONObject>() {
+            // Original: http://10.0.2.2:8000/rest-api/answers/
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, "https://robotic-site.herokuapp.com/rest-api/answers/" + mAnswerId + "/", params, new Response.Listener<JSONObject>() {
 
                 @Override
                 public void onResponse(JSONObject response) {
@@ -333,6 +340,7 @@ public class QaDetailActivity extends AppCompatActivity {
         // The string is passed so that we can do an if statement with it, in onCreate
         intent.putExtra(FRAGMENT_POSITION, 1);
         intent.putExtra(INTENT_FROM_QA_DETAIL_ACTIVITY, "From QaDetailActivity");
+        intent.putExtra(COMPANY_ID, mCompanyId);
         startActivity(intent);
 
     }

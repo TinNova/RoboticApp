@@ -160,49 +160,6 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
 
     }
 
-    // Method which is launched when user clicks "REFRESH" on the SnackBar
-    public void connectToNetworkMainActivity() {
-
-        // If the connManager and networkInfo is NOT null, start the login() method
-        if (connectionManager != null)
-            networkInfo = connectionManager.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-
-            // Launching the Login Method on App Start
-            login();
-            Log.d(TAG, "App Launched");
-
-        } else {
-
-            snackBarOnCreate(findViewById(R.id.main_activity), getString(R.string.check_connection), Snackbar.LENGTH_INDEFINITE);
-
-        }
-
-    }
-
-    public void snackBarOnCreate(final View view, String message, int duration) {
-
-        // Else if the connManager and networkInfo IS null, show a snakeBar informing the user
-        final Snackbar snackbar = Snackbar.make(view, message, duration);
-        View snackBarView = snackbar.getView();
-
-        // Set an action on it, and a handler
-        snackbar.setAction("REFRESH", new View.OnClickListener()
-
-        {
-            @Override
-            public void onClick(View v) {
-
-                connectToNetworkMainActivity();
-                snackbar.dismiss();
-
-            }
-        });
-
-        snackbar.show();
-
-    }
-
     // Login Method
     private void login() {
         // Handler for the JSON response when server returns ok
@@ -233,28 +190,30 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "onErrorResponse login() " + error);
                 error.printStackTrace();
 
             }
         };
 
         // This is the body of the Request (What we are sending to the server in order to get an "ok" or "error" Response)
-        //  - The Request has been named "request"
-        StringRequest request = new StringRequest(Request.Method.POST, "http://10.0.2.2:8000/rest-oauth/token", responseListener, errorListener) {
+        //  - The Request has been named "request" https://robotic-site.herokuapp.com http://10.0.2.2:8000
+        StringRequest request = new StringRequest(Request.Method.POST, "https://robotic-site.herokuapp.com/rest-oauth/token", responseListener, errorListener) {
             // Parameters for the POST Request.
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("username", "TinNova");
-                params.put("password", "RoboTinNovLogin");
-                params.put("client_id", "wsytCUq3OF9aK8eEANZXBTJB6RnQq5cQMmZyDAPF");
-                params.put("client_secret", "gHdvqyNYjZZ4R5nmOExkI4tEcKHRq82qKyQNmaMYnln9YE4stvh70ZNKWEXoNG6B99tep4IBFF0TgsJZ9IvcnDiP3bKFL6HRnge7yVFkvqf4p5Y75FQNNEMqU6RgT1XZ");
+                params.put("username", "tinnovamail"); // TinNova
+                params.put("password", "roboticauth"); // RoboTinNovLogin
+                params.put("client_id", "deMOvj2c5MNn2mqD1v6ShOHx9mqYktvFhWsAwNLs"); // wsytCUq3OF9aK8eEANZXBTJB6RnQq5cQMmZyDAPF
+                params.put("client_secret", "w04Ci7zfTLPSjzYUY7Bnku93LlVpcu1IgPy0SOmtDotCYPC0V35iYsCuOCAArmtShEdMRCM5FwOi2cVE4SgwtOZW68fW20nJbpgm2Y5GnpyvsxPrALq9DVN6uyhq8Lvs"); // gHdvqyNYjZZ4R5nmOExkI4tEcKHRq82qKyQNmaMYnln9YE4stvh70ZNKWEXoNG6B99tep4IBFF0TgsJZ9IvcnDiP3bKFL6HRnge7yVFkvqf4p5Y75FQNNEMqU6RgT1XZ
                 params.put("grant_type", "password");
                 return params;
             }
 
         };
 
+        Log.d(TAG, "request login(): " + request);
         mRequestQueue.add(request);
     }
 
@@ -293,12 +252,18 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
 
                         mTheCompanies.add(theCompany);
                         Log.d(TAG, "Companies List: " + theCompany);
+                        Log.d(TAG, "Code Ran 1");
 
                     }
 
+
                     if (listType == 0) {
+                        Log.d(TAG, "Code Ran 2");
                         adapter = new CompanyAdapter(mTheCompanies, getApplicationContext(), CompanyMainActivity.this);
+                        Log.d(TAG, "adapter 1: " + adapter);
                         mRecyclerView.setAdapter(adapter);
+                        Log.d(TAG, "mRecyclerView 1: " + mRecyclerView);
+
 
                     } else {
 
@@ -309,6 +274,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
 
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Log.d(TAG, "JSONException: 1 " + e);
                 }
 
             }
@@ -324,7 +290,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
 
         // This is the body of the Request
         //  - The Request has been named "request"
-        StringRequest request = new StringRequest(Request.Method.GET, "http://10.0.2.2:8000/rest-api/companies/?limit=500", responseListener, errorListener) {
+        StringRequest request = new StringRequest(Request.Method.GET, "https://robotic-site.herokuapp.com/rest-api/companies/?limit=276/", responseListener, errorListener) {
             // Headers for the POST request (Instead of Parameters as done in the Login Request,
             // here we are are adding adding headers to the request
             @Override
@@ -429,7 +395,6 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
 
                     // Change title
                     savedMenu.setTitle(getString(R.string.ftse_list));
-                    savedMenu.setContentDescription(String.valueOf(R.string.main_activity_FTSE_list));
                     // Change List Type
                     listType = 1;
 
@@ -449,7 +414,6 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
                     RequestCompaniesFeed();
                     // Change Title
                     savedMenu.setTitle(getString(R.string.saved_list));
-                    savedMenu.setContentDescription(String.valueOf(R.string.main_activity_saved_list));
 
                 }
 
@@ -578,6 +542,47 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
     public void onLoaderReset(Loader<Cursor> loader) {
     }
 
-}
+    // Method which is launched when user clicks "REFRESH" on the SnackBar
+    public void connectToNetworkMainActivity() {
 
-//TODO: Add a refresh button for when there is no internet connection so user can try load again.
+        // If the connManager and networkInfo is NOT null, start the login() method
+        if (connectionManager != null)
+            networkInfo = connectionManager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+
+            // Launching the Login Method on App Start
+            login();
+            Log.d(TAG, "App Launched");
+
+        } else {
+
+            snackBarOnCreate(findViewById(R.id.main_activity), getString(R.string.check_connection), Snackbar.LENGTH_INDEFINITE);
+
+        }
+
+    }
+
+    public void snackBarOnCreate(final View view, String message, int duration) {
+
+        // Else if the connManager and networkInfo IS null, show a snakeBar informing the user
+        final Snackbar snackbar = Snackbar.make(view, message, duration);
+        View snackBarView = snackbar.getView();
+
+        // Set an action on it, and a handler
+        snackbar.setAction("REFRESH", new View.OnClickListener()
+
+        {
+            @Override
+            public void onClick(View v) {
+
+                connectToNetworkMainActivity();
+                snackbar.dismiss();
+
+            }
+        });
+
+        snackbar.show();
+
+    }
+
+}

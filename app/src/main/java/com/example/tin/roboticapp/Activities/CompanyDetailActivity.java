@@ -138,6 +138,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
             // The QAFragment position is passed from the QaDetailActivity
             mFragmentToLoad = intent.getIntExtra(QaDetailActivity.FRAGMENT_POSITION, 1);
+            mCompanyId = intent.getIntExtra(QaDetailActivity.COMPANY_ID, -1);
             Log.d(TAG, "Intent From QaDetailActivity");
 
         }

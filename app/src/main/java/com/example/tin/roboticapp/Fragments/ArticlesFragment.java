@@ -179,7 +179,8 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
 
         // Creating a Request Queue for the Volley Network Connection
         mRequestQueue = Volley.newRequestQueue(getActivity());
-        RequestArticlesFeed("http://10.0.2.2:8000/rest-api/articles/?format=json&is_useful=yes&mode=company&ticker=EZJ"); //+ mCompanyTicker);
+        // Original: http://10.0.2.2:8000/rest-api/articles/?format=json&is_useful=yes&mode=company&ticker=EZJ
+        RequestArticlesFeed("https://robotic-site.herokuapp.com/rest-api/articles/?format=json&is_useful=yes&mode=company&ticker=EZJ"); //+ mCompanyTicker);
 
     }
 
