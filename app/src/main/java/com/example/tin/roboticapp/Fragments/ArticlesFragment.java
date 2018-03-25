@@ -137,7 +137,8 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
                 if (getArguments().getInt(CompanyMainActivity.LIST_TYPE) == 0) {
 
                     mCompanyTicker = getArguments().getString(CompanyMainActivity.CURRENT_COMPANY_TICKER);
-                    requestFeed();
+                    requestFeed(mCompanyTicker);
+                    Log.d(TAG, "mCompanyTicker" + mCompanyTicker);
 
                     // Else LIST_TYPE == 1, the Argument DO contain SQL data
                 } else {
@@ -175,12 +176,12 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
         return view;
     }
 
-    public void requestFeed() {
+    public void requestFeed(String CompanyTicker) {
 
         // Creating a Request Queue for the Volley Network Connection
         mRequestQueue = Volley.newRequestQueue(getActivity());
         // Original: http://10.0.2.2:8000/rest-api/articles/?format=json&is_useful=yes&mode=company&ticker=EZJ
-        RequestArticlesFeed("https://robotic-site.herokuapp.com/rest-api/articles/?format=json&is_useful=yes&mode=company&ticker=EZJ"); //+ mCompanyTicker);
+        RequestArticlesFeed("https://robotic-site.herokuapp.com/rest-api/articles/?format=json&is_useful=yes&mode=company&ticker=" + CompanyTicker); //+ mCompanyTicker);
 
     }
 
