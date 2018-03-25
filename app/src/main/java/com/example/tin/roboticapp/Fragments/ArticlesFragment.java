@@ -394,3 +394,7 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
     }
 
 }
+
+//TODO: Add code to correctly manage the App for when there are no articles.
+//      - Maybe have a SnackBar appear instructing user to enable articles for this company in the /admin
+//      - Maybe have a graphic that appears like tumble weed to show that there are no articles

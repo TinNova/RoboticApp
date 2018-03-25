@@ -57,11 +57,16 @@ public class FundamentalsFragment extends Fragment implements LoaderManager.Load
     // RequestQueue is for the Volley Network Connection
     private RequestQueue mRequestQueue;
 
+    private TextView tvTitle;
     private TextView tvPriceDate;
     private TextView tvPrice;
     private String mPriceDate;
     // Public because it will be added to the Database in CompanyDetailActivity
     public String mPrice;
+
+    // TextViews for when Price data is empty
+    private TextView tvFundamentals;
+    private TextView tvNoData;
 
     // For Extracting Arguments Passed into Fragment
     private int mCompanyId;
@@ -90,8 +95,11 @@ public class FundamentalsFragment extends Fragment implements LoaderManager.Load
 
         Log.d(TAG, "FundFrag OnCreateView");
 
+        tvTitle = view.findViewById(R.id.tv_fund_title);
         tvPriceDate = view.findViewById(R.id.tv_price_date);
         tvPrice = view.findViewById(R.id.tv_price);
+        tvFundamentals = view.findViewById(R.id.tv_fundamentals);
+        tvNoData = view.findViewById(R.id.tv_fund_no_data);
 
 
         if (fragSavedInstanceState != null) {
@@ -179,7 +187,7 @@ public class FundamentalsFragment extends Fragment implements LoaderManager.Load
 
             @Override
             public void onResponse(final String response) {
-                //Log.d(TAG, "ArticlesFeed Response: " + response);
+                Log.d(TAG, "Fundamentals Response: " + response);
 
                 /** Parsing JSON */
 
@@ -189,28 +197,45 @@ public class FundamentalsFragment extends Fragment implements LoaderManager.Load
                     // Define the "results" JsonArray as a JSONArray
                     JSONArray companyJsonArray = companyResponseJsonObject.getJSONArray("results");
 
-                    JSONObject companyJsonObject = companyJsonArray.getJSONObject(0);
+                    // if the JsonArray within "results" is NOT 0, it has data, else it is empty, so show the no data screen
+                    if (companyJsonArray.length() != 0) {
 
-                    Fundamental fundamental = new Fundamental(
-                            companyJsonObject.getString("price_date"),
-                            companyJsonObject.getInt("company"),
-                            companyJsonObject.getString("price")
+                        // Define each item in the companyJsonArray as an individual companyJsonObject
+                        JSONObject companyJsonObject = companyJsonArray.getJSONObject(0);
 
-                    );
+                        Fundamental fundamental = new Fundamental(
+                                companyJsonObject.getString("price_date"),
+                                companyJsonObject.getInt("company"),
+                                companyJsonObject.getString("price")
 
-                    mPriceDate = fundamental.getPrice_date();
-                    mPrice = fundamental.getPrice();
-                    tvPriceDate.setText(mPriceDate);
-                    tvPrice.setText(mPrice);
+                        );
 
+                        // If the data is NOT empty, display it, else display the no data message
+                        //if (fundamental.getPrice() != null) {
+                        mPriceDate = fundamental.getPrice_date();
+                        mPrice = fundamental.getPrice();
+                        tvPriceDate.setText(mPriceDate);
+                        tvPrice.setText(mPrice);
+
+                    } else {
+
+                        tvTitle.setVisibility(View.GONE);
+                        tvPriceDate.setVisibility(View.GONE);
+                        tvPrice.setVisibility(View.GONE);
+
+                        tvFundamentals.setVisibility(View.VISIBLE);
+                        tvNoData.setVisibility(View.VISIBLE);
+
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-                //Log.i(TAG, "Articles After Parse: " + mArticles);
-
             }
+
+            //Log.i(TAG, "Articles After Parse: " + mArticles);
+
         };
 
         // Handler for when the server returns an error response
@@ -218,6 +243,7 @@ public class FundamentalsFragment extends Fragment implements LoaderManager.Load
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
+                Log.d(TAG, "onErrorResponse: " + error);
             }
         };
 

@@ -8,19 +8,7 @@
     tools:context="com.example.tin.roboticapp.Activities.CompanyDetailActivity$PlaceholderFragment">
 
     <TextView
-        android:id="@+id/tv_price_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:text="01/01/18"
-        android:textAlignment="center"
-        android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/tv_price" />
-
-    <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tv_fund_title"
         android:layout_width="32dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
@@ -28,6 +16,7 @@
         android:layout_marginStart="8dp"
         android:text="Price"
         android:textAlignment="center"
+        android:textColor="@color/colorPrimary"
         app:layout_constraintBottom_toTopOf="@+id/tv_price"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -38,12 +27,54 @@
         android:layout_height="32dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
-        android:text="100.12"
         android:textAlignment="center"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.39"
+        tools:layout_editor_absoluteX="0dp"
+        tools:text="100.12" />
+
+    <TextView
+        android:id="@+id/tv_price_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimary"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@+id/tv_fund_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_price"
+        tools:text="01/01/18" />
+
+    <TextView
+        android:id="@+id/tv_fundamentals"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="156dp"
+        android:text="Fundamentals"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <TextView
+        android:id="@+id/tv_fund_no_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_marginTop="8dp"
+        android:text="Not currently available for this company."
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimary"
+        android:textSize="15sp"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@+id/tv_fundamentals"
         tools:layout_editor_absoluteX="0dp" />
 
 </android.support.constraint.ConstraintLayout>

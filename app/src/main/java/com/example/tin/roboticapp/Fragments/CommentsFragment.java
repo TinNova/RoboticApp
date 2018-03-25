@@ -72,6 +72,8 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
     private ImageView sendIcon;
     private EditText mCommentEditText;
 
+    private int mCompanyId;
+
     /**
      * Needed to save the state of the Fragment when Fragment enter onDestroyView
      * onSavedInstate state is not good enough as it only saves state when the Activty's View is Destroyed
@@ -125,10 +127,16 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
 
         } else {
 
+            if (getArguments() != null) {
+
+                mCompanyId = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY_ID);
+
+            }
+
             // Creating a Request Queue for the Volley Network Connection
             mRequestQueue = Volley.newRequestQueue(getActivity());
             // Original: http://10.0.2.2:8000/rest-api/comments/?company=31
-            RequestFeed("https://robotic-site.herokuapp.com/rest-api/comments/?company=31");
+            RequestFeed("https://robotic-site.herokuapp.com/rest-api/comments/?company=" + mCompanyId);
 
         }
 
@@ -309,11 +317,9 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
             content.put("read_only", false);
             content.put("label", "Content");
 
-            int companyID = 31; //EZY Jet
-
-            params.put("company", companyID);
+            params.put("company", mCompanyId);
             params.put("content", commentET);
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, "http://10.0.2.2:8000/rest-api/comments/", params, new Response.Listener<JSONObject>() {
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, "https://robotic-site.herokuapp.com/rest-api/comments/", params, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d("Response", response.toString());
@@ -323,7 +329,7 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
 
                     // Refresh the Database the moment a Post has been made
                     // Original: http://10.0.2.2:8000/rest-api/comments/?company=31
-                    RequestFeed("https://robotic-site.herokuapp.com/rest-api/comments/?company=31");
+                    RequestFeed("https://robotic-site.herokuapp.com/rest-api/comments/?company=" + mCompanyId);
 
 
                 }
@@ -354,3 +360,6 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
 
     }
 }
+
+//TODO: Add code to correctly manage the App for when there are no articles.
+//      - Maybe have a graphic that appears like tumble weed to show that there are no comments and a message that says, "be the first to leave a comment"
