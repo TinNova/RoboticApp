@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -89,6 +90,10 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
     // before running it again
     private int loaderCreated = 0;
 
+    // TextViews for when Price data is empty
+    private TextView tvNoDataTitle;
+    private TextView tvNoDataBody;
+
     /**
      * Needed to save the state of the Fragment when Fragment enter onDestroyView
      * onSavedInstate state is not good enough as it only saves state when the Activty's View is Destroyed
@@ -102,7 +107,8 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
 
         Log.d(TAG, ">>>>>>>>>>>>>>>>ON CREATE VIEW<<<<<<<<<<<<<<<<");
 
-        //mArticles = new ArrayList<>();
+        tvNoDataTitle = view.findViewById(R.id.tv_articles_no_data_title);
+        tvNoDataBody = view.findViewById(R.id.tv_articles_no_data_body);
 
         /** Creating The RecyclerView */
         // This will be used to attach the RecyclerView to the MovieAdapter
@@ -232,29 +238,40 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
                     // Define the "results" JsonArray as a JSONArray
                     JSONArray companyJsonArray = companyResponseJsonObject.getJSONArray("results");
 
-                    // Now we need to get the individual Company JsonObjects from the companyJsonArray
-                    // using a for loop
-                    for (int i = 0; i < companyJsonArray.length(); i++) {
+                    // if the JsonArray within "results" is NOT 0, it has data, else it is empty, so show the no data screen
+                    if (companyJsonArray.length() != 0) {
 
-                        JSONObject companyJsonObject = companyJsonArray.getJSONObject(i);
+                        // Now we need to get the individual Company JsonObjects from the companyJsonArray
+                        // using a for loop
+                        for (int i = 0; i < companyJsonArray.length(); i++) {
 
-                        Article article = new Article(
-                                companyJsonObject.getInt("id"),
-                                companyJsonObject.getString("publish_date"),
-                                companyJsonObject.getString("headline"),
-                                companyJsonObject.getString("summary"),
-                                companyJsonObject.getString("source_url")
+                            JSONObject companyJsonObject = companyJsonArray.getJSONObject(i);
 
-                        );
+                            Article article = new Article(
+                                    companyJsonObject.getInt("id"),
+                                    companyJsonObject.getString("publish_date"),
+                                    companyJsonObject.getString("headline"),
+                                    companyJsonObject.getString("summary"),
+                                    companyJsonObject.getString("source_url")
 
-                        mArticles.add(article);
-                        //Log.d(TAG, "Article List: " + article);
+                            );
+
+                            mArticles.add(article);
+                            //Log.d(TAG, "Article List: " + article);
+
+                        }
+
+                        adapter.notifyDataSetChanged();
+
+                        makeWidgetData(mArticles);
+
+                    } else {
+
+                        mRecyclerView.setVisibility(View.GONE);
+                        tvNoDataTitle.setVisibility(View.VISIBLE);
+                        tvNoDataBody.setVisibility(View.VISIBLE);
 
                     }
-
-                    adapter.notifyDataSetChanged();
-
-                    makeWidgetData(mArticles);
 
 
                 } catch (JSONException e) {

@@ -50,7 +50,7 @@
         tools:text="01/01/18" />
 
     <TextView
-        android:id="@+id/tv_fundamentals"
+        android:id="@+id/tv_fund_no_data_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="156dp"
@@ -59,12 +59,12 @@
         android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp" />
 
     <TextView
-        android:id="@+id/tv_fund_no_data"
+        android:id="@+id/tv_fund_no_data_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
@@ -73,8 +73,8 @@
         android:textAlignment="center"
         android:textColor="@color/colorPrimary"
         android:textSize="15sp"
-        android:visibility="visible"
-        app:layout_constraintTop_toBottomOf="@+id/tv_fundamentals"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/tv_fund_no_data_title"
         tools:layout_editor_absoluteX="0dp" />
 
 </android.support.constraint.ConstraintLayout>

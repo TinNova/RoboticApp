@@ -64,9 +64,9 @@ public class FundamentalsFragment extends Fragment implements LoaderManager.Load
     // Public because it will be added to the Database in CompanyDetailActivity
     public String mPrice;
 
-    // TextViews for when Price data is empty
-    private TextView tvFundamentals;
-    private TextView tvNoData;
+    // TextViews for when Json results array is empty
+    private TextView tvNoDataTitle;
+    private TextView tvNoDataBody;
 
     // For Extracting Arguments Passed into Fragment
     private int mCompanyId;
@@ -98,8 +98,8 @@ public class FundamentalsFragment extends Fragment implements LoaderManager.Load
         tvTitle = view.findViewById(R.id.tv_fund_title);
         tvPriceDate = view.findViewById(R.id.tv_price_date);
         tvPrice = view.findViewById(R.id.tv_price);
-        tvFundamentals = view.findViewById(R.id.tv_fundamentals);
-        tvNoData = view.findViewById(R.id.tv_fund_no_data);
+        tvNoDataTitle = view.findViewById(R.id.tv_fund_no_data_title);
+        tvNoDataBody = view.findViewById(R.id.tv_fund_no_data_body);
 
 
         if (fragSavedInstanceState != null) {
@@ -223,8 +223,8 @@ public class FundamentalsFragment extends Fragment implements LoaderManager.Load
                         tvPriceDate.setVisibility(View.GONE);
                         tvPrice.setVisibility(View.GONE);
 
-                        tvFundamentals.setVisibility(View.VISIBLE);
-                        tvNoData.setVisibility(View.VISIBLE);
+                        tvNoDataTitle.setVisibility(View.VISIBLE);
+                        tvNoDataBody.setVisibility(View.VISIBLE);
 
                     }
 
