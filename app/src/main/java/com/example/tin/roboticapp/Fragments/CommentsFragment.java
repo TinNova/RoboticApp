@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -80,6 +81,10 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
      */
     Bundle fragSavedInstanceState;
 
+    // TextViews for when Json results array is empty
+    private TextView tvNoDataTitle;
+    private TextView tvNoDataBody;
+
     // Used to check if the device has internet connection
     private ConnectivityManager connectionManager;
     private NetworkInfo networkInfo;
@@ -88,6 +93,9 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_comments, container, false);
+
+        tvNoDataTitle = view.findViewById(R.id.tv_comments_no_data_title);
+        tvNoDataBody = view.findViewById(R.id.tv_comments_no_data_body);
 
         // Checking If The Device Is Connected To The Internet
         connectionManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -204,25 +212,34 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
                     // Define the "results" JsonArray as a JSONArray
                     JSONArray jsonArray = responseJsonObject.getJSONArray("results");
 
-                    // Now we need to get the individual Company JsonObjects from the companyJsonArray
-                    // using a for loop
-                    for (int i = 0; i < jsonArray.length(); i++) {
+                    // if the JsonArray within "results" is NOT 0, it has data, else it is empty, so show the no data screen
+                    if (jsonArray.length() != 0) {
 
-                        int j = 0;
+                        // Now we need to get the individual Company JsonObjects from the companyJsonArray
+                        // using a for loop
+                        for (int i = 0; i < jsonArray.length(); i++) {
 
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                        Comment comment = new Comment(
-                                jsonObject.getInt("id"),
-                                jsonObject.getInt("author"),
-                                jsonObject.getString("creation_date"),
-                                jsonObject.getInt("company"),
-                                jsonObject.getString("content")
+                            Comment comment = new Comment(
+                                    jsonObject.getInt("id"),
+                                    jsonObject.getInt("author"),
+                                    jsonObject.getString("creation_date"),
+                                    jsonObject.getInt("company"),
+                                    jsonObject.getString("content")
 
-                        );
+                            );
 
-                        mComments.add(comment);
-                        Log.d(TAG, "Comments List: " + comment);
+                            mComments.add(comment);
+                            Log.d(TAG, "Comments List: " + comment);
+
+                        }
+
+                    } else {
+
+                        mRecyclerView.setVisibility(View.GONE);
+                        tvNoDataTitle.setVisibility(View.VISIBLE);
+                        tvNoDataBody.setVisibility(View.VISIBLE);
 
                     }
 
@@ -326,6 +343,14 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
 
                     // After POST, clear the current mComments list before a new one is downloaded
                     mComments.clear();
+
+                    if (mRecyclerView.getVisibility() == View.GONE) {
+
+                        mRecyclerView.setVisibility(View.VISIBLE);
+                        tvNoDataTitle.setVisibility(View.GONE);
+                        tvNoDataBody.setVisibility(View.GONE);
+
+                    }
 
                     // Refresh the Database the moment a Post has been made
                     // Original: http://10.0.2.2:8000/rest-api/comments/?company=31
