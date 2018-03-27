@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -226,7 +227,8 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
                                     jsonObject.getInt("author"),
                                     jsonObject.getString("creation_date"),
                                     jsonObject.getInt("company"),
-                                    jsonObject.getString("content")
+                                    jsonObject.getString("content"),
+                                    jsonObject.getString("author_full_name")
 
                             );
 

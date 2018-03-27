@@ -50,7 +50,9 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:layout_margin="8dp"
-        android:orientation="horizontal">
+        android:layout_weight="0"
+        android:orientation="horizontal"
+        >
 
         <EditText
             android:id="@+id/comment_editText"

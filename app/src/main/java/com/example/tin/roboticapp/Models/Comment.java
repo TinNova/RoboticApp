@@ -14,14 +14,16 @@ public class Comment implements Parcelable {
     private String creation_date;
     private int company;
     private String content;
+    private String author_full_name;
 
     // The Constructor
-    public Comment(int id, int author, String creation_date, int company, String content) {
+    public Comment(int id, int author, String creation_date, int company, String content, String author_full_name) {
         this.id = id;
         this.author = author;
         this.creation_date = creation_date;
         this.company = company;
         this.content = content;
+        this.author_full_name = author_full_name;
     }
 
     /** Parcelable Code */
@@ -31,6 +33,7 @@ public class Comment implements Parcelable {
         creation_date = in.readString();
         company = in.readInt();
         content = in.readString();
+        author_full_name = in.readString();
     }
 
     public static final Creator<Comment> CREATOR = new Creator<Comment>() {
@@ -58,6 +61,7 @@ public class Comment implements Parcelable {
         parcel.writeString(creation_date);
         parcel.writeInt(company);
         parcel.writeString(content);
+        parcel.writeString(author_full_name);
     }
 
     /** Getters */
@@ -80,4 +84,11 @@ public class Comment implements Parcelable {
     public String getContent() {
         return content;
     }
+
+    public String getAuthor_full_name() {
+
+        return author_full_name;
+
+    }
+
 }

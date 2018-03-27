@@ -2,6 +2,7 @@ package com.example.tin.roboticapp.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,11 @@ import android.widget.TextView;
 import com.example.tin.roboticapp.Models.Comment;
 import com.example.tin.roboticapp.R;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Tin on 30/01/2018.
@@ -18,13 +23,14 @@ import java.util.ArrayList;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHolder> {
 
+    private String TAG = "CommentAdapter";
     private final ArrayList<Comment> mComments;
     private final Context context;
 
     private final CommentAdapter.ListItemClickListener mOnClickListener;
 
     public interface ListItemClickListener {
-        void onListItemClick (int clickedItemIndex);
+        void onListItemClick(int clickedItemIndex);
     }
 
 
@@ -54,18 +60,37 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
      * OnBindViewHolder is called by the RecyclerView to display the data at the specified
      * position.
      *
-     * @param viewHolder   The ViewHolder which should be updated to represent the
-     *                 contents of the item at the given position in the data set.
-     * @param position The position of the item within the adapter's data set.
+     * @param viewHolder The ViewHolder which should be updated to represent the
+     *                   contents of the item at the given position in the data set.
+     * @param position   The position of the item within the adapter's data set.
      */
     @Override
     public void onBindViewHolder(CommentAdapter.ViewHolder viewHolder, int position) {
 
         Comment theComment = mComments.get(position);
 
+        /** Converting Date Format */
+        String oldDate = theComment.getCreation_date();
+
+        SimpleDateFormat formatter, FORMATTER;
+        formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+        Date date = null;
+        try {
+            date = formatter.parse(oldDate.substring(0, 24));
+
+            FORMATTER = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss.SSS");
+
+            viewHolder.tvCreationDate.setText(FORMATTER.format(date));
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
         viewHolder.tvContent.setText(theComment.getContent());
-        viewHolder.tvAuthor.setText(String.valueOf(theComment.getAuthor()));
-        viewHolder.tvCreationDate.setText(theComment.getCreation_date());
+        viewHolder.tvAuthor.setText(String.valueOf(theComment.getAuthor_full_name()));
+
 
     }
 
@@ -98,9 +123,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         public ViewHolder(View itemView) {
             super(itemView);
 
-            tvContent = (TextView) itemView.findViewById(R.id.tv_content);
+            tvContent = (TextView) itemView.findViewById(R.id.tv_comment_content);
             tvAuthor = (TextView) itemView.findViewById(R.id.tv_comment_author);
-            tvCreationDate = (TextView) itemView.findViewById(R.id.tv_creation_date);
+            tvCreationDate = (TextView) itemView.findViewById(R.id.tv_comment_creation_date);
             itemView.setOnClickListener(this);
 
         }
