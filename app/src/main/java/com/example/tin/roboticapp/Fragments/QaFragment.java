@@ -1,7 +1,10 @@
 package com.example.tin.roboticapp.Fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -100,12 +103,19 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
     private Bundle parsedABundle;
     private Bundle parsedQBundle;
 
+    // Used to check if the device has internet connection
+    private ConnectivityManager connectionManager;
+    private NetworkInfo networkInfo;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_qa, container, false);
 
         Log.d(TAG, "OnCreateView");
+
+        // Checking If The Device Is Connected To The Internet
+        connectionManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
 
         mQuestions = new ArrayList<>();
         mAnswers = new ArrayList<>();
@@ -140,27 +150,42 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
                 // Else LIST_TYPE == 1, the Argument DO contain SQL data
             } else {
 
-                mCompany_id = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY__ID);
+                // if phone is connected to internet, then download data
+                if (connectionManager != null)
+                    networkInfo = connectionManager.getActiveNetworkInfo();
+                if (networkInfo != null && networkInfo.isConnected()) {
 
-                // Here we are building up the uri using the row_id in order to tell the ContentResolver
-                // to delete the item
-                String stringRowId = Integer.toString(mCompany_id);
-                mUri = mUri.buildUpon().appendPath(stringRowId).build();
+                    mCompanyId = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY_ID);
+                    Log.d(TAG, "mCompanyId in SQL if Internet: " + mCompanyId);
+                    // Creating a Request Queue for the Volley Network Connection
+                    mRequestQueue = Volley.newRequestQueue(getActivity());
+                    // Original: http://10.0.2.2:8000/rest-api/questions
+                    RequestQuestionsFeed("https://robotic-site.herokuapp.com/rest-api/questions");
 
-                Log.d(TAG, "mCompany_id: " + mCompany_id);
-                Log.d(TAG, "stringRowId: " + stringRowId);
-                Log.d(TAG, "mUri: " + mUri);
+                    // only if user navigated here from the saved list and there is no data can we show the SQL data
+                } else {
 
-                // Check if there is already an open instance of a Loader
-                if (loaderCreated == 1) {
+                    mCompany_id = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY__ID);
 
-                    getLoaderManager().restartLoader(FUNDAMENTALS_LOADER_ID, null, this);
+                    // Here we are building up the uri using the row_id in order to tell the ContentResolver
+                    // to delete the item
+                    String stringRowId = Integer.toString(mCompany_id);
+                    mUri = mUri.buildUpon().appendPath(stringRowId).build();
 
+                    Log.d(TAG, "mCompany_id: " + mCompany_id);
+                    Log.d(TAG, "stringRowId: " + stringRowId);
+                    Log.d(TAG, "mUri: " + mUri);
+
+                    // Check if there is already an open instance of a Loader
+                    if (loaderCreated == 1) {
+
+                        getLoaderManager().restartLoader(FUNDAMENTALS_LOADER_ID, null, this);
+
+                    }
+
+                    // Start the SQL Loader
+                    getLoaderManager().initLoader(FUNDAMENTALS_LOADER_ID, null, this);
                 }
-
-                // Start the SQL Loader
-                getLoaderManager().initLoader(FUNDAMENTALS_LOADER_ID, null, this);
-
             }
 
         } else {
@@ -175,6 +200,7 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
     /**
      * Request on Articles Json w/Cookie attached to request
      */
+
     public void RequestQuestionsFeed(String url) {
 
         Log.d(TAG, "RequestQuestionsFeed");
@@ -338,7 +364,9 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
 
     }
 
-    /** This unpacks the Answers & Questions that were saved in Bundles after being downloaded */
+    /**
+     * This unpacks the Answers & Questions that were saved in Bundles after being downloaded
+     */
     public void unpackBundles() {
 
         Log.d(TAG, "Size of mQaCombined BEFORE PARSE: " + mQaCombined.size());

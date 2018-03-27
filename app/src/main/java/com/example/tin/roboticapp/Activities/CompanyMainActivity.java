@@ -347,6 +347,8 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
                 companyListBundle.putInt(CURRENT_COMPANY__ID, mTheCompanies.get(clickedItemIndex).getCompany_id());
             }
 
+            Log.d(TAG, "mCompanyId onClick: " + mCompanyId);
+
             intent.putExtras(companyListBundle);
 
             startActivity(intent);

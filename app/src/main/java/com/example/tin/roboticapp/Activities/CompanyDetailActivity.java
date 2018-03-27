@@ -291,6 +291,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
         saveSqlIntentBundle.putString(SQL_COMPANY_TICKER, mCompanyTicker);
         saveSqlIntentBundle.putString(SQL_COMPANY_NAME, mCompanyName);
         saveSqlIntentBundle.putInt(SQL_COMPANY_SECTOR, mCompanySector);
+        saveSqlIntentBundle.putInt(SQL_COMPANY_ID, mCompanyId);
 
 
         saveSqlIntent.putExtras(saveSqlIntentBundle);
