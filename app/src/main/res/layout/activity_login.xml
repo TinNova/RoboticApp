@@ -35,14 +35,13 @@
     <TextView
         android:id="@+id/tv_status"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TEST" />
+        android:layout_height="wrap_content"/>
 
     <Button
         android:id="@+id/sign_out"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign Out" />
+        android:text="@string/activity_login_sign_out" />
 
     <!--<LinearLayout-->
     <!--android:id="@+id/email_login_form"-->

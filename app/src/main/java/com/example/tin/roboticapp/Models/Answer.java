@@ -23,7 +23,7 @@ public class Answer implements Parcelable {
     }
 
 
-    protected Answer(Parcel in) {
+    private Answer(Parcel in) {
         id = in.readInt();
         question = in.readInt();
         company = in.readInt();

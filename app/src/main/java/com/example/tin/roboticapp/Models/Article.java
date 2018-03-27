@@ -24,7 +24,7 @@ public class Article implements Parcelable {
         this.sourceUrl = sourceUrl;
     }
 
-    protected Article (Parcel in) {
+    private Article(Parcel in) {
         articleId = in.readInt();
         publishDate = in.readString();
         headline = in.readString();

@@ -2,7 +2,6 @@ package com.example.tin.roboticapp.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import com.example.tin.roboticapp.Models.Article;
 import com.example.tin.roboticapp.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Tin on 23/01/2018.

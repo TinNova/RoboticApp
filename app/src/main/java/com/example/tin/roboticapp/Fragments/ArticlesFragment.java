@@ -1,6 +1,5 @@
 package com.example.tin.roboticapp.Fragments;
 
-import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,7 +14,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -34,7 +32,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tin.roboticapp.Adapters.ArticleAdapter;
 import com.example.tin.roboticapp.Activities.CompanyMainActivity;
-import com.example.tin.roboticapp.Adapters.QaCombinedAdapter;
 import com.example.tin.roboticapp.Models.Article;
 import com.example.tin.roboticapp.R;
 import com.example.tin.roboticapp.SQLite.FavouriteContract;
@@ -58,7 +55,7 @@ import java.util.Map;
 public class ArticlesFragment extends Fragment implements ArticleAdapter.ListItemClickListener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
-    public static final String[] FUNDAMENTAL_PROJECTION = {
+    private static final String[] FUNDAMENTAL_PROJECTION = {
             FavouriteContract.FavouriteEntry.COLUMN_COMPANY_ARTICLES_LIST
     };
 
@@ -81,9 +78,9 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
     // Public because it is used in CompanyDetailActivity to addToDatabase
     public ArrayList<Article> mArticles = new ArrayList<>();
 
-    String mCompanyTicker;
-    int mCompany_id;
-    Uri mUri = FavouriteContract.FavouriteEntry.CONTENT_URI;
+    private String mCompanyTicker;
+    private int mCompany_id;
+    private Uri mUri = FavouriteContract.FavouriteEntry.CONTENT_URI;
     // Constant to save state of the loader
     private static final String ROTATION_TAG = "rotation_tag";
     // Constant for logging and referring to a unique loader
@@ -204,7 +201,7 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
         return view;
     }
 
-    public void requestFeed(String CompanyTicker) {
+    private void requestFeed(String CompanyTicker) {
 
         // Creating a Request Queue for the Volley Network Connection
         mRequestQueue = Volley.newRequestQueue(getActivity());
@@ -242,7 +239,7 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
     /**
      * Request on Articles Json w/Cookie attached to request
      */
-    public void RequestArticlesFeed(String url) {
+    private void RequestArticlesFeed(String url) {
 
         Log.i(TAG, "RequestArticlesFeed");
         // Handler for the JSON response when server returns ok

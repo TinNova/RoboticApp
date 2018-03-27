@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="156dp"
-        android:text="Comments"
+        android:text="@string/fragment_comments_no_data_title"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp"
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:layout_marginTop="8dp"
-        android:text="Be the first to leave a comment!"
+        android:text="@string/fragment_articles_comments_no_data_body"
         android:textAlignment="center"
         android:textColor="@color/colorPrimary"
         android:textSize="15sp"
@@ -50,7 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="156dp"
-        android:text="Comments"
+        android:text="@string/fragment_comments_no_data_title"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp"
@@ -65,7 +65,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:layout_marginTop="8dp"
-        android:text="Comments are not available from the saved companies list"
+        android:text="@string/fragment_comments_offline_body"
         android:textAlignment="center"
         android:textColor="@color/colorPrimary"
         android:textSize="15sp"
@@ -90,13 +90,14 @@
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:maxLines="5"
-            android:hint="Type a comment" />
+            android:hint="@string/fragment_comments_et_hint" />
 
         <ImageView
             android:id="@+id/comment_send_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_send_black_24dp" />
+            android:src="@drawable/ic_send_black_24dp"
+            android:contentDescription="@string/fragment_comments_send_button"/>
 
     </LinearLayout>
 

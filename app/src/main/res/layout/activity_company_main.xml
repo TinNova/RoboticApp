@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="66dp"
         ads:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="List of companies" />
+        android:contentDescription="@string/activity_company_main_recycler_view" />
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"

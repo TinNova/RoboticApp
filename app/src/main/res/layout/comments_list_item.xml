@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Tin Novakovic"
+        tools:text="Tin Novakovic"
         android:textColor="@color/colorPrimary"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,7 +24,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
-        android:text="EasyJet in general is doing great, I'm attaching a link to an article
+        tools:text="EasyJet in general is doing great, I'm attaching a link to an article
         I found which I think is a great read."
         android:textAlignment="viewStart"
         android:textAllCaps="false"
@@ -48,7 +48,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_comment_content" />
 
     <View
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="4dp"
         android:background="@color/light_grey"

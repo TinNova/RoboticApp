@@ -1,8 +1,6 @@
 package com.example.tin.roboticapp.Activities;
 
 import android.app.ActionBar;
-import android.content.ClipData;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.TabLayout;
@@ -27,14 +25,7 @@ import com.example.tin.roboticapp.Models.Article;
 import com.example.tin.roboticapp.Models.QACombined;
 import com.example.tin.roboticapp.R;
 import com.example.tin.roboticapp.SQLite.FavouriteContract;
-import com.google.gson.Gson;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.List;
 
 public class CompanyDetailActivity extends AppCompatActivity {
 
@@ -88,7 +79,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
     private String mArticles;
     private String mPrice;
 
-    int mFragmentToLoad = 0;
+    private int mFragmentToLoad = 0;
 
     // This Is For The Favourite Icon In The Menu Item
     public static MenuItem favouriteMenu;

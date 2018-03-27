@@ -27,7 +27,7 @@ public class Comment implements Parcelable {
     }
 
     /** Parcelable Code */
-    protected Comment(Parcel in) {
+    private Comment(Parcel in) {
         id = in.readInt();
         author = in.readInt();
         creation_date = in.readString();

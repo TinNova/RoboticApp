@@ -54,6 +54,22 @@
     <string name="qa_list_item_pen_icon_cd">A pen icon</string>
     <string name="main_activity_FTSE_list">Press to view a list of FTSE 350 companies</string>
     <string name="main_activity_saved_list">Press to view a list of your saved companies</string>
+    <string name="fragment_comments_send_button">Send Button</string>
+    <string name="activity_company_main_recycler_view">List of companies</string>
+    <string name="activity_login_sign_out">Sign out</string>
+
+
+    <!-- Fragments -->
+    <string name="fragment_articles_no_data_title">Articles</string>
+    <string name="fragment_comments_no_data_title">Comments</string>
+    <string name="fragment_price_no_data_title">Price</string>
+    <string name="fragment_articles_comments_no_data_body">Not currently available for this company.</string>
+    <string name="fragment_comments_offline_body">Comments are not available from the saved companies list.</string>
+    <string name="fragment_comments_et_hint">Type a comment</string>
+
+
+
+
 
     <!-- SnackBar Messages -->
     <string name="check_connection">Network cannot be found, please try again.</string>

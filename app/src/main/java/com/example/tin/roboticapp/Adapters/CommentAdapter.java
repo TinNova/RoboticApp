@@ -2,7 +2,6 @@ package com.example.tin.roboticapp.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +10,7 @@ import android.widget.TextView;
 import com.example.tin.roboticapp.Models.Comment;
 import com.example.tin.roboticapp.R;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by Tin on 30/01/2018.

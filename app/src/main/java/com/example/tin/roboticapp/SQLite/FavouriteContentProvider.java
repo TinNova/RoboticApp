@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import static com.example.tin.roboticapp.SQLite.FavouriteContract.FavouriteEntry.COLUMN_COMPANY_ID;
 import static com.example.tin.roboticapp.SQLite.FavouriteContract.FavouriteEntry.TABLE_NAME;
 
 /**

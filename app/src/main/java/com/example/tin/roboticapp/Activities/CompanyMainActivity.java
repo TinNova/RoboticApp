@@ -34,7 +34,6 @@ import com.android.volley.toolbox.Volley;
 import com.example.tin.roboticapp.AdModUtils.ToastAdListener;
 import com.example.tin.roboticapp.Adapters.CompanyAdapter;
 import com.example.tin.roboticapp.Models.TheCompany;
-import com.example.tin.roboticapp.Notifications.SnackBarUtils;
 import com.example.tin.roboticapp.R;
 import com.example.tin.roboticapp.SQLite.FavouriteContract;
 import com.google.android.gms.ads.AdRequest;
@@ -97,7 +96,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
 
 
     // This Is For The Save Button In The Menu Item
-    public static MenuItem savedMenu;
+    private static MenuItem savedMenu;
 
     // int to hold companyId of the company the user clicked on from the RecyclerView
     private int mCompanyId;
@@ -617,7 +616,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
 
     }
 
-    public void snackBarTryAgain(final View view, String message, int duration) {
+    private void snackBarTryAgain(final View view, String message, int duration) {
 
         // Else if the connManager and networkInfo IS null, show a snakeBar informing the user
         final Snackbar snackbar = Snackbar.make(view, message, duration);

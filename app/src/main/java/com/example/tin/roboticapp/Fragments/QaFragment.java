@@ -31,7 +31,6 @@ import com.example.tin.roboticapp.Activities.CompanyMainActivity;
 import com.example.tin.roboticapp.Activities.QaDetailActivity;
 import com.example.tin.roboticapp.Adapters.QaCombinedAdapter;
 import com.example.tin.roboticapp.Models.Answer;
-import com.example.tin.roboticapp.Models.Article;
 import com.example.tin.roboticapp.Models.QACombined;
 import com.example.tin.roboticapp.Models.Question;
 import com.example.tin.roboticapp.R;

@@ -14,7 +14,7 @@
         android:layout_marginBottom="12dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:text="Price"
+        android:text="@string/fragment_price_no_data_title"
         android:textAlignment="center"
         android:textColor="@color/colorPrimary"
         app:layout_constraintBottom_toTopOf="@+id/tv_price"
@@ -26,14 +26,17 @@
         android:layout_width="match_parent"
         android:layout_height="32dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.39"
-        tools:layout_editor_absoluteX="0dp"
         tools:text="100.12" />
 
     <TextView
@@ -53,28 +56,34 @@
         android:id="@+id/tv_fund_no_data_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="156dp"
-        android:text="Fundamentals"
+        android:text="@string/fragment_price_no_data_title"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp"
         android:textStyle="bold"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_fund_no_data_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Not currently available for this company."
+        android:text="@string/fragment_articles_comments_no_data_body"
         android:textAlignment="center"
         android:textColor="@color/colorPrimary"
         android:textSize="15sp"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/tv_fund_no_data_title"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_fund_no_data_title" />
 
 </android.support.constraint.ConstraintLayout>

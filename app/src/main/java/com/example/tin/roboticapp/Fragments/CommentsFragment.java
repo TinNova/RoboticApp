@@ -12,14 +12,10 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +38,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -80,7 +75,7 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
      * Needed to save the state of the Fragment when Fragment enter onDestroyView
      * onSavedInstate state is not good enough as it only saves state when the Activty's View is Destroyed
      */
-    Bundle fragSavedInstanceState;
+    private Bundle fragSavedInstanceState;
 
     // TextViews for when Json results array is empty
     private TextView tvNoDataTitle;
@@ -231,7 +226,7 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
      * Request on Articles Json w/Cookie attached to request
      */
 
-    public void RequestFeed(String url) {
+    private void RequestFeed(String url) {
 
         Log.d(TAG, "RequestFeed");
         // Handler for the JSON response when server returns ok
