@@ -278,10 +278,16 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
         Bundle saveSqlIntentBundle = new Bundle();
 
-        saveSqlIntentBundle.putParcelableArrayList(SQL_QA_LIST, mQaFragment.mQaCombined);
-        saveSqlIntentBundle.putParcelableArrayList(SQL_ARTICLES_LIST, mArticleFrag.mArticles);
-        saveSqlIntentBundle.putString(SQL_FUND, mFundFrag.mPrice);
-        saveSqlIntentBundle.putInt(SQL_COMPANY_ID, mCompanyId);
+        if (mQaFragment.mQaCombined != null) {
+            saveSqlIntentBundle.putParcelableArrayList(SQL_QA_LIST, mQaFragment.mQaCombined);
+        }
+        if (mArticleFrag.mArticles != null) {
+            saveSqlIntentBundle.putParcelableArrayList(SQL_ARTICLES_LIST, mArticleFrag.mArticles);
+        }
+        if (mFundFrag.mPrice != null) {
+            saveSqlIntentBundle.putString(SQL_FUND, mFundFrag.mPrice);
+        }
+
         saveSqlIntentBundle.putString(SQL_COMPANY_TICKER, mCompanyTicker);
         saveSqlIntentBundle.putString(SQL_COMPANY_NAME, mCompanyName);
         saveSqlIntentBundle.putInt(SQL_COMPANY_SECTOR, mCompanySector);
