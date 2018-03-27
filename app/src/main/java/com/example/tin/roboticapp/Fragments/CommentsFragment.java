@@ -148,7 +148,6 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
 
                     mCompanyId = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY_ID);
 
-
                     // Creating a Request Queue for the Volley Network Connection
                     mRequestQueue = Volley.newRequestQueue(getActivity());
                     // Original: http://10.0.2.2:8000/rest-api/comments/?company=31
@@ -158,13 +157,28 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
                     // In which case show a message "Comments not available from Saved List"
                 } else {
 
-                    mRecyclerView.setVisibility(View.GONE);
-                    mCommentEditText.setVisibility(View.GONE);
-                    sendIcon.setVisibility(View.GONE);
-                    tvSqlTitle.setVisibility(View.VISIBLE);
-                    tvSqlBody.setVisibility(View.VISIBLE);
+                    // if phone is connected to internet, then download data
+                    if (connectionManager != null)
+                        networkInfo = connectionManager.getActiveNetworkInfo();
+                    if (networkInfo != null && networkInfo.isConnected()) {
 
+                        mCompanyId = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY_ID);
 
+                        // Creating a Request Queue for the Volley Network Connection
+                        mRequestQueue = Volley.newRequestQueue(getActivity());
+                        // Original: http://10.0.2.2:8000/rest-api/comments/?company=31
+                        RequestFeed("https://robotic-site.herokuapp.com/rest-api/comments/?company=" + mCompanyId);
+
+                        // only if user navigated here from the saved list and there is no data can we show the SQL data
+                    } else {
+
+                        mRecyclerView.setVisibility(View.GONE);
+                        mCommentEditText.setVisibility(View.GONE);
+                        sendIcon.setVisibility(View.GONE);
+                        tvSqlTitle.setVisibility(View.VISIBLE);
+                        tvSqlBody.setVisibility(View.VISIBLE);
+
+                    }
                 }
             }
 
