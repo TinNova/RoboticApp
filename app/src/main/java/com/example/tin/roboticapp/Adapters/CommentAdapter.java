@@ -69,31 +69,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
         Comment theComment = mComments.get(position);
 
-        /** Converting Date Format */
-        String oldDate = theComment.getCreation_date();
-
-        SimpleDateFormat formatter, FORMATTER;
-        formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-
-        Date date = null;
-        try {
-            date = formatter.parse(oldDate.substring(0, 24));
-
-            FORMATTER = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss.SSS");
-
-            viewHolder.tvCreationDate.setText(FORMATTER.format(date));
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-
         viewHolder.tvContent.setText(theComment.getContent());
         viewHolder.tvAuthor.setText(String.valueOf(theComment.getAuthor_full_name()));
-
+        viewHolder.tvCreationDate.setText(theComment.getCreation_date());
 
     }
-
 
     // Returns the number of items in the listItems List
     @Override
