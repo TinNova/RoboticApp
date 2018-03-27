@@ -3,6 +3,7 @@
     <!-- Robotic Colours -->
     <color name="colorPrimary">#24255D</color>
     <color name="colorPrimaryDark">#000033</color>
+    <color name="colorPrimaryLight">#524d8b</color>
     <color name="colorAccent">#BF935B</color>
 
     <color name="white">#FFF</color>

@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -105,6 +106,8 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
     // Used to check if the device has internet connection
     private ConnectivityManager connectionManager;
     private NetworkInfo networkInfo;
+
+    private int MY_SOCKET_TIMEOUT_MS = 5000;
 
 
     @Override
@@ -213,6 +216,11 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
 
         };
 
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                MY_SOCKET_TIMEOUT_MS,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
         Log.d(TAG, "request login(): " + request);
         mRequestQueue.add(request);
     }
@@ -247,7 +255,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
                                 companyJsonObject.getInt("id"),
                                 companyJsonObject.getString("ticker"),
                                 companyJsonObject.getString("name"),
-                                companyJsonObject.getInt("sector")
+                                companyJsonObject.optInt("sector")
                         );
 
                         mTheCompanies.add(theCompany);
@@ -290,7 +298,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
 
         // This is the body of the Request
         //  - The Request has been named "request"
-        StringRequest request = new StringRequest(Request.Method.GET, "https://robotic-site.herokuapp.com/rest-api/companies/?limit=276/", responseListener, errorListener) {
+        StringRequest request = new StringRequest(Request.Method.GET, "https://robotic-site.herokuapp.com/rest-api/companies/?limit=500", responseListener, errorListener) {
             // Headers for the POST request (Instead of Parameters as done in the Login Request,
             // here we are are adding adding headers to the request
             @Override
