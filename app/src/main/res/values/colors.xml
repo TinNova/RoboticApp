@@ -8,4 +8,7 @@
 
     <color name="white">#FFF</color>
 
+    <color name="light_grey">#EEEEEE</color>
+    <color name="grey">#E0E0E0</color>
+
 </resources>
