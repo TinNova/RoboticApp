@@ -1,6 +1,9 @@
 package com.example.tin.roboticapp.Fragments;
 
+import android.content.Context;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -81,6 +84,9 @@ public class FundamentalsFragment extends Fragment implements LoaderManager.Load
     // before running it again
     private int loaderCreated = 0;
 
+    // Used to check if the device has internet connection
+    private ConnectivityManager connectionManager;
+    private NetworkInfo networkInfo;
 
     /**
      * Needed to save the state of the Fragment when Fragment enter onDestroyView
@@ -101,6 +107,8 @@ public class FundamentalsFragment extends Fragment implements LoaderManager.Load
         tvNoDataTitle = view.findViewById(R.id.tv_fund_no_data_title);
         tvNoDataBody = view.findViewById(R.id.tv_fund_no_data_body);
 
+        // Checking If The Device Is Connected To The Internet
+        connectionManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
 
         if (fragSavedInstanceState != null) {
 
@@ -126,24 +134,36 @@ public class FundamentalsFragment extends Fragment implements LoaderManager.Load
                     // Else LIST_TYPE == 1, the Argument DO contain SQL data, therefore user navigated here via Saved list
                 } else {
 
-                    mCompany_id = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY__ID);
+                    // if phone is connected to internet, then download data
+                    if (connectionManager != null)
+                        networkInfo = connectionManager.getActiveNetworkInfo();
+                    if (networkInfo != null && networkInfo.isConnected()) {
 
-                    // Here we are building up the uri using the row_id in order to tell the ContentResolver
-                    // to delete the item
-                    String stringRowId = Integer.toString(mCompany_id);
-                    mUri = mUri.buildUpon().appendPath(stringRowId).build();
+                        mCompanyId = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY_ID);
+                        requestFeed(mCompanyId);
 
-                    Log.d(TAG, "mCompany_id: " + mCompany_id);
-                    Log.d(TAG, "mUri: " + mUri);
-                    // Check if there is already an open instance of a Loader
-                    if (loaderCreated == 1) {
+                        // only if user navigated here from the saved list and there is no data can we show the SQL data
+                    } else {
 
-                        getLoaderManager().restartLoader(FUNDAMENTALS_LOADER_ID, null, this);
+                        mCompany_id = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY__ID);
+
+                        // Here we are building up the uri using the row_id in order to tell the ContentResolver
+                        // to delete the item
+                        String stringRowId = Integer.toString(mCompany_id);
+                        mUri = mUri.buildUpon().appendPath(stringRowId).build();
+
+                        Log.d(TAG, "mCompany_id: " + mCompany_id);
+                        Log.d(TAG, "mUri: " + mUri);
+                        // Check if there is already an open instance of a Loader
+                        if (loaderCreated == 1) {
+
+                            getLoaderManager().restartLoader(FUNDAMENTALS_LOADER_ID, null, this);
+                        }
+
+                        // Start the SQL Loader
+                        getLoaderManager().initLoader(FUNDAMENTALS_LOADER_ID, null, this);
+
                     }
-
-                    // Start the SQL Loader
-                    getLoaderManager().initLoader(FUNDAMENTALS_LOADER_ID, null, this);
-
                 }
 
             } else {
@@ -316,7 +336,6 @@ public class FundamentalsFragment extends Fragment implements LoaderManager.Load
             }
 
             loaderCreated = 1;
-
 
 
         } else {
