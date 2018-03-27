@@ -123,7 +123,7 @@ public class FundamentalsFragment extends Fragment implements LoaderManager.Load
                     mCompanyId = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY_ID);
                     requestFeed(mCompanyId);
 
-                    // Else LIST_TYPE == 1, the Argument DO contain SQL data
+                    // Else LIST_TYPE == 1, the Argument DO contain SQL data, therefore user navigated here via Saved list
                 } else {
 
                     mCompany_id = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY__ID);
@@ -299,10 +299,24 @@ public class FundamentalsFragment extends Fragment implements LoaderManager.Load
         if (data != null && data.getCount() > 0) {
             data.moveToFirst();
             mCompanyPrice = data.getInt(0);
-            tvPrice.setText(null);
-            tvPrice.setText(String.valueOf(mCompanyPrice));
+
+            if (mCompanyPrice != 0) {
+                tvPrice.setText(null);
+                tvPrice.setText(String.valueOf(mCompanyPrice));
+
+            } else {
+
+                tvTitle.setVisibility(View.GONE);
+                tvPriceDate.setVisibility(View.GONE);
+                tvPrice.setVisibility(View.GONE);
+
+                tvNoDataTitle.setVisibility(View.VISIBLE);
+                tvNoDataBody.setVisibility(View.VISIBLE);
+
+            }
 
             loaderCreated = 1;
+
 
 
         } else {
