@@ -151,7 +151,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
 
         } else {
 
-            snackBarOnCreate(findViewById(R.id.main_activity), getString(R.string.check_connection), Snackbar.LENGTH_INDEFINITE);
+            snackBarTryAgain(findViewById(R.id.main_activity), getString(R.string.check_connection), Snackbar.LENGTH_INDEFINITE);
 
         }
 
@@ -322,43 +322,79 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
     @Override
     public void onListItemClick(int clickedItemIndex) {
 
-        // if phone is connected to internet, start the intent
-        if (connectionManager != null)
-            networkInfo = connectionManager.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
+        if (listType == 1) {
 
-            Intent intent = new Intent(this, CompanyDetailActivity.class);
+            intentToDetailSaved(clickedItemIndex);
 
-            // The company ID is not part of the recycler view, so we have to pass it through slightly differently
-            mCompanyId = mTheCompanies.get(clickedItemIndex).getCompanyId();
-            mCompanySector = mTheCompanies.get(clickedItemIndex).getCompanySector();
-
-            // Company Name is needed for the Title of the Activity
-            // Ticker is needed for Articles Feed and Title of The Activity
-            Bundle companyListBundle = new Bundle();
-            companyListBundle.putString(CURRENT_COMPANY_NAME, mTheCompanies.get(clickedItemIndex).getCompanyName());
-            companyListBundle.putString(CURRENT_COMPANY_TICKER, mTheCompanies.get(clickedItemIndex).getCompanyticker());
-            companyListBundle.putInt(CURRENT_COMPANY_ID, mCompanyId);
-            companyListBundle.putInt(CURRENT_COMPANY_SECTOR, mCompanySector);
-            companyListBundle.putInt(LIST_TYPE, listType);
-
-            if (listType == 1) {
-
-                companyListBundle.putInt(CURRENT_COMPANY__ID, mTheCompanies.get(clickedItemIndex).getCompany_id());
-            }
-
-            Log.d(TAG, "mCompanyId onClick: " + mCompanyId);
-
-            intent.putExtras(companyListBundle);
-
-            startActivity(intent);
-
-            // else if not connected to internet, show SnackBar
         } else {
+            // if phone is connected to internet, start the intent
+            if (connectionManager != null)
+                networkInfo = connectionManager.getActiveNetworkInfo();
+            if (networkInfo != null && networkInfo.isConnected()) {
 
-            SnackBarUtils.snackBar(findViewById(R.id.main_activity), getString(R.string.check_connection), Snackbar.LENGTH_INDEFINITE);
+                intentToDetailFTSE(clickedItemIndex);
 
+                // else if not connected to internet, show SnackBar
+            } else {
+
+                snackBarTryAgain(findViewById(R.id.main_activity), getString(R.string.check_connection), Snackbar.LENGTH_INDEFINITE);
+
+            }
         }
+    }
+
+
+    private void intentToDetailSaved(int clickedItemIndex) {
+
+        Intent intent = new Intent(this, CompanyDetailActivity.class);
+
+        // The company ID is not part of the recycler view, so we have to pass it through slightly differently
+        mCompanyId = mTheCompanies.get(clickedItemIndex).getCompanyId();
+        mCompanySector = mTheCompanies.get(clickedItemIndex).getCompanySector();
+
+        // Company Name is needed for the Title of the Activity
+        // Ticker is needed for Articles Feed and Title of The Activity
+        Bundle companyListBundle = new Bundle();
+        companyListBundle.putString(CURRENT_COMPANY_NAME, mTheCompanies.get(clickedItemIndex).getCompanyName());
+        companyListBundle.putString(CURRENT_COMPANY_TICKER, mTheCompanies.get(clickedItemIndex).getCompanyticker());
+        companyListBundle.putInt(CURRENT_COMPANY_ID, mCompanyId);
+        companyListBundle.putInt(CURRENT_COMPANY_SECTOR, mCompanySector);
+        companyListBundle.putInt(LIST_TYPE, listType);
+        companyListBundle.putInt(CURRENT_COMPANY__ID, mTheCompanies.get(clickedItemIndex).getCompany_id());
+
+
+        Log.d(TAG, "mCompanyId onClick: " + mCompanyId);
+
+        intent.putExtras(companyListBundle);
+
+        startActivity(intent);
+
+    }
+
+    private void intentToDetailFTSE(int clickedItemIndex) {
+
+        Intent intent = new Intent(this, CompanyDetailActivity.class);
+
+        // The company ID is not part of the recycler view, so we have to pass it through slightly differently
+        mCompanyId = mTheCompanies.get(clickedItemIndex).getCompanyId();
+        mCompanySector = mTheCompanies.get(clickedItemIndex).getCompanySector();
+
+        // Company Name is needed for the Title of the Activity
+        // Ticker is needed for Articles Feed and Title of The Activity
+        Bundle companyListBundle = new Bundle();
+        companyListBundle.putString(CURRENT_COMPANY_NAME, mTheCompanies.get(clickedItemIndex).getCompanyName());
+        companyListBundle.putString(CURRENT_COMPANY_TICKER, mTheCompanies.get(clickedItemIndex).getCompanyticker());
+        companyListBundle.putInt(CURRENT_COMPANY_ID, mCompanyId);
+        companyListBundle.putInt(CURRENT_COMPANY_SECTOR, mCompanySector);
+        companyListBundle.putInt(LIST_TYPE, listType);
+        companyListBundle.putInt(CURRENT_COMPANY__ID, mTheCompanies.get(clickedItemIndex).getCompany_id());
+
+
+        Log.d(TAG, "mCompanyId onClick: " + mCompanyId);
+
+        intent.putExtras(companyListBundle);
+
+        startActivity(intent);
 
     }
 
@@ -392,7 +428,7 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
                      * 4. It will update the adapter with the new list
                      * 5. It will turn the menu from Saved to Entire, so it can revert to the Entire list */
 
-                    // Clear the list of companies
+
                     mTheCompanies.clear();
 
                     if (loaderCreated == 1) {
@@ -527,8 +563,17 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
                 data.moveToNext();
             }
 
-            // Update the adapter with the new list
-            adapter.notifyDataSetChanged();
+            // This is to prevent a NullPointerException
+            if (adapter != null) {
+
+                // Update the adapter with the new list
+                adapter.notifyDataSetChanged();
+
+            } else {
+
+                adapter = new CompanyAdapter(mTheCompanies, getApplicationContext(), CompanyMainActivity.this);
+
+            }
 
             loaderCreated = 1;
 
@@ -566,13 +611,13 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
 
         } else {
 
-            snackBarOnCreate(findViewById(R.id.main_activity), getString(R.string.check_connection), Snackbar.LENGTH_INDEFINITE);
+            snackBarTryAgain(findViewById(R.id.main_activity), getString(R.string.check_connection), Snackbar.LENGTH_INDEFINITE);
 
         }
 
     }
 
-    public void snackBarOnCreate(final View view, String message, int duration) {
+    public void snackBarTryAgain(final View view, String message, int duration) {
 
         // Else if the connManager and networkInfo IS null, show a snakeBar informing the user
         final Snackbar snackbar = Snackbar.make(view, message, duration);
