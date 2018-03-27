@@ -139,14 +139,14 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
 
             if (getArguments() != null) {
 
-                // If LIST_TYPE == 0, the Arguments DO NOT contain SQL data
+                // If LIST_TYPE == 0, the Arguments DO NOT contain SQL data, aka the user navigated here via the FTSE 350 list
                 if (getArguments().getInt(CompanyMainActivity.LIST_TYPE) == 0) {
 
                     mCompanyTicker = getArguments().getString(CompanyMainActivity.CURRENT_COMPANY_TICKER);
                     requestFeed(mCompanyTicker);
                     Log.d(TAG, "mCompanyTicker" + mCompanyTicker);
 
-                    // Else LIST_TYPE == 1, the Argument DO contain SQL data
+                    // Else LIST_TYPE == 1, the Argument DO contain SQL data, aka the user navigated here via the saved list
                 } else {
 
                     mCompany_id = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY__ID);
@@ -342,20 +342,31 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
             data.moveToFirst();
 
             String stringOfArticles = data.getString(0);
-            Log.d(TAG, "stringOfArticles: " + stringOfArticles);
 
-            Gson gson = new Gson();
+            // if the SQL Articles row contains data, show it, otherwise show the "no data" text
+            if (stringOfArticles.length() >= 3) { // 3 because the String contains "[]" as a minimum, therefore 1 or 2 means it's empty
+                Log.d(TAG, "stringOfArticles: " + stringOfArticles);
 
-            Type type = new TypeToken<ArrayList<Article>>() {
-            }.getType();
+                Gson gson = new Gson();
 
-            Log.d(TAG, "mArticles ArrayList Before Gson: " + mArticles);
-            mArticles = gson.fromJson(stringOfArticles, type);
-            Log.d(TAG, "mArticles ArrayList After Gson: " + mArticles);
+                Type type = new TypeToken<ArrayList<Article>>() {
+                }.getType();
 
-            mRecyclerView.setAdapter((new ArticleAdapter(mArticles, getContext(), ArticlesFragment.this)));
+                Log.d(TAG, "mArticles ArrayList Before Gson: " + mArticles);
+                mArticles = gson.fromJson(stringOfArticles, type);
+                Log.d(TAG, "mArticles ArrayList After Gson: " + mArticles);
 
-            adapter.notifyDataSetChanged();
+                mRecyclerView.setAdapter((new ArticleAdapter(mArticles, getContext(), ArticlesFragment.this)));
+
+                adapter.notifyDataSetChanged();
+
+            } else {
+
+                mRecyclerView.setVisibility(View.GONE);
+                tvNoDataTitle.setVisibility(View.VISIBLE);
+                tvNoDataBody.setVisibility(View.VISIBLE);
+
+            }
 
             loaderCreated = 1;
 

@@ -85,6 +85,8 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
     // TextViews for when Json results array is empty
     private TextView tvNoDataTitle;
     private TextView tvNoDataBody;
+    private TextView tvSqlTitle;
+    private TextView tvSqlBody;
 
     // Used to check if the device has internet connection
     private ConnectivityManager connectionManager;
@@ -97,6 +99,9 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
 
         tvNoDataTitle = view.findViewById(R.id.tv_comments_no_data_title);
         tvNoDataBody = view.findViewById(R.id.tv_comments_no_data_body);
+        tvSqlTitle = view.findViewById(R.id.tv_comments_sql_title);
+        tvSqlBody = view.findViewById(R.id.tv_comments_sql_body);
+
 
         // Checking If The Device Is Connected To The Internet
         connectionManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -138,14 +143,30 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
 
             if (getArguments() != null) {
 
-                mCompanyId = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY_ID);
+                // If LIST_TYPE == 0, the Arguments DO NOT contain SQL data, aka the user navigated here via the FTSE 350 list
+                if (getArguments().getInt(CompanyMainActivity.LIST_TYPE) == 0) {
 
+                    mCompanyId = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY_ID);
+
+
+                    // Creating a Request Queue for the Volley Network Connection
+                    mRequestQueue = Volley.newRequestQueue(getActivity());
+                    // Original: http://10.0.2.2:8000/rest-api/comments/?company=31
+                    RequestFeed("https://robotic-site.herokuapp.com/rest-api/comments/?company=" + mCompanyId);
+
+                    // Else LIST_TYPE == 1, the Argument DO contain SQL data, aka the user navigated here via the saved list
+                    // In which case show a message "Comments not available from Saved List"
+                } else {
+
+                    mRecyclerView.setVisibility(View.GONE);
+                    mCommentEditText.setVisibility(View.GONE);
+                    sendIcon.setVisibility(View.GONE);
+                    tvSqlTitle.setVisibility(View.VISIBLE);
+                    tvSqlBody.setVisibility(View.VISIBLE);
+
+
+                }
             }
-
-            // Creating a Request Queue for the Volley Network Connection
-            mRequestQueue = Volley.newRequestQueue(getActivity());
-            // Original: http://10.0.2.2:8000/rest-api/comments/?company=31
-            RequestFeed("https://robotic-site.herokuapp.com/rest-api/comments/?company=" + mCompanyId);
 
         }
 
@@ -195,6 +216,7 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
     /**
      * Request on Articles Json w/Cookie attached to request
      */
+
     public void RequestFeed(String url) {
 
         Log.d(TAG, "RequestFeed");
