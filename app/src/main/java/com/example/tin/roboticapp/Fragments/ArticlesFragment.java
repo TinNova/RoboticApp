@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -94,6 +96,10 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
     private TextView tvNoDataTitle;
     private TextView tvNoDataBody;
 
+    // Used to check if the device has internet connection
+    private ConnectivityManager connectionManager;
+    private NetworkInfo networkInfo;
+
     /**
      * Needed to save the state of the Fragment when Fragment enter onDestroyView
      * onSavedInstate state is not good enough as it only saves state when the Activty's View is Destroyed
@@ -106,6 +112,9 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
         View view = inflater.inflate(R.layout.fragment_articles, container, false);
 
         Log.d(TAG, ">>>>>>>>>>>>>>>>ON CREATE VIEW<<<<<<<<<<<<<<<<");
+
+        // Checking If The Device Is Connected To The Internet
+        connectionManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
 
         tvNoDataTitle = view.findViewById(R.id.tv_articles_no_data_title);
         tvNoDataBody = view.findViewById(R.id.tv_articles_no_data_body);
@@ -149,26 +158,39 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
                     // Else LIST_TYPE == 1, the Argument DO contain SQL data, aka the user navigated here via the saved list
                 } else {
 
-                    mCompany_id = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY__ID);
+                    // if phone is connected to internet, then download data
+                    if (connectionManager != null)
+                        networkInfo = connectionManager.getActiveNetworkInfo();
+                    if (networkInfo != null && networkInfo.isConnected()) {
 
-                    // Here we are building up the uri using the row_id in order to tell the ContentResolver
-                    // to delete the item
-                    String stringRowId = Integer.toString(mCompany_id);
-                    mUri = mUri.buildUpon().appendPath(stringRowId).build();
+                        mCompanyTicker = getArguments().getString(CompanyMainActivity.CURRENT_COMPANY_TICKER);
+                        requestFeed(mCompanyTicker);
+                        Log.d(TAG, "mCompanyTicker" + mCompanyTicker);
 
-                    Log.d(TAG, "mCompany_id: " + mCompany_id);
-                    Log.d(TAG, "stringRowId: " + stringRowId);
-                    Log.d(TAG, "mUri: " + mUri);
-                    // Check if there is already an open instance of a Loader
-                    if (loaderCreated == 1) {
+                        // only if user navigated here from the saved list and there is no data can we show the SQL data
+                    } else {
 
-                        getLoaderManager().restartLoader(FUNDAMENTALS_LOADER_ID, null, this);
+                        mCompany_id = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY__ID);
+
+                        // Here we are building up the uri using the row_id in order to tell the ContentResolver
+                        // to delete the item
+                        String stringRowId = Integer.toString(mCompany_id);
+                        mUri = mUri.buildUpon().appendPath(stringRowId).build();
+
+                        Log.d(TAG, "mCompany_id: " + mCompany_id);
+                        Log.d(TAG, "stringRowId: " + stringRowId);
+                        Log.d(TAG, "mUri: " + mUri);
+                        // Check if there is already an open instance of a Loader
+                        if (loaderCreated == 1) {
+
+                            getLoaderManager().restartLoader(FUNDAMENTALS_LOADER_ID, null, this);
+
+                        }
+
+                        // Start the SQL Loader
+                        getLoaderManager().initLoader(FUNDAMENTALS_LOADER_ID, null, this);
 
                     }
-
-                    // Start the SQL Loader
-                    getLoaderManager().initLoader(FUNDAMENTALS_LOADER_ID, null, this);
-
                 }
 
             } else {
