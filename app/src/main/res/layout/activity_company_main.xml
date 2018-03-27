@@ -12,8 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="66dp"
-        ads:layout_constraintBottom_toBottomOf="parent"
-        ads:layout_constraintTop_toTopOf="parent" />
+        ads:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="List of companies" />
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"

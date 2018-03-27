@@ -103,7 +103,6 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate");
 
-
         /** Extracting Data From Intent */
         Intent intent = getIntent();
         if (intent.getExtras() != null) {
@@ -114,6 +113,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
             mCompanyId = intent.getIntExtra(CompanyMainActivity.CURRENT_COMPANY_ID, 0);
             mCompanySector = intent.getIntExtra(CompanyMainActivity.CURRENT_COMPANY_SECTOR, 0);
             mListType = intent.getIntExtra(CompanyMainActivity.LIST_TYPE,0);
+
 
             // if Intent was triggered from the SQL list, we in addition should take the _id
             if (intent.getIntExtra(CompanyMainActivity.LIST_TYPE,0) != 0) {
