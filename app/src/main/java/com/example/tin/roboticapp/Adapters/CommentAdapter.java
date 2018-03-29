@@ -70,7 +70,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
         viewHolder.tvContent.setText(theComment.getContent());
         viewHolder.tvAuthor.setText(String.valueOf(theComment.getAuthor_full_name()));
-        viewHolder.tvCreationDate.setText(theComment.getCreation_date());
+        //viewHolder.tvCreationDate.setText(theComment.getCreation_date());
 
     }
 
@@ -88,7 +88,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
         final TextView tvContent;
         final TextView tvAuthor;
-        final TextView tvCreationDate;
+        //final TextView tvCreationDate;
 
 
         @Override
@@ -104,7 +104,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
             tvContent = (TextView) itemView.findViewById(R.id.tv_comment_content);
             tvAuthor = (TextView) itemView.findViewById(R.id.tv_comment_author);
-            tvCreationDate = (TextView) itemView.findViewById(R.id.tv_comment_creation_date);
+            //tvCreationDate = (TextView) itemView.findViewById(R.id.tv_comment_creation_date);
             itemView.setOnClickListener(this);
 
         }
