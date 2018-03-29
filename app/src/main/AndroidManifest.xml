@@ -31,7 +31,8 @@
             android:name=".Activities.CompanyDetailActivity"
             android:label="@string/title_activity_company_detail"
             android:parentActivityName=".Activities.CompanyMainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.tin.roboticapp.Activities.CompanyMainActivity" />

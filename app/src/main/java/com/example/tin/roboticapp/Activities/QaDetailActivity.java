@@ -40,11 +40,17 @@ public class QaDetailActivity extends AppCompatActivity {
     public static String FRAGMENT_POSITION = "fragment_position";
     public static String INTENT_FROM_QA_DETAIL_ACTIVITY = "intent_from_qa_detail_activity";
     public static String COMPANY_ID = "company_id";
+    public static String COMPANY_TICKER = "company_ticker";
+    public static String COMPANY_NAME = "company_name";
+    public static String COMPANY_SECTOR = "company_sector";
 
     public static String REFRESH_QA = "refresh_qa";
     public static String FRAGMENT_QA = "fragment_qa";
 
     private int mCompanyId;
+    private String mCompanyTicker;
+    private String mCompanyName;
+    private int mCompanySector;
     private String mQuestion;
     private String mAnswer;
     private int mAnswerId;
@@ -77,11 +83,15 @@ public class QaDetailActivity extends AppCompatActivity {
         if (intentFromQaFrag.getExtras() != null) {
 
             mCompanyId = intentFromQaFrag.getIntExtra(QaFragment.COMPANY_ID, -1);
+            mCompanyTicker = intentFromQaFrag.getStringExtra(QaFragment.COMPANY_TICKER);
+            mCompanyName = intentFromQaFrag.getStringExtra(QaFragment.COMPANY_NAME);
+            mCompanySector = intentFromQaFrag.getIntExtra(QaFragment.COMPANY_SECTOR, -1);
             mQuestion = intentFromQaFrag.getStringExtra(QaFragment.QUESTION);
             mQuestionTv.setText(mQuestion);
             mQId = intentFromQaFrag.getIntExtra(QaFragment.QUESTION_ID, 0);
             mAnswer = "";
             Log.d(TAG, "The ID of the Question/Answer is: " + mQId);
+            Log.d(TAG, "mCompanyTicker: " + mCompanyTicker);
 
             // if the answer is not null then extract it, then put the answer within the EditText
             // and mark the newAnswer as 1
@@ -91,7 +101,6 @@ public class QaDetailActivity extends AppCompatActivity {
                 mAnswerId = intentFromQaFrag.getIntExtra(QaFragment.ANSWER_ID, -1);
                 mAnswerEt.setText(mAnswer);
                 newAnswer = 1;
-
 
             }
 
@@ -339,6 +348,9 @@ public class QaDetailActivity extends AppCompatActivity {
         intent.putExtra(FRAGMENT_POSITION, 1);
         intent.putExtra(INTENT_FROM_QA_DETAIL_ACTIVITY, "From QaDetailActivity");
         intent.putExtra(COMPANY_ID, mCompanyId);
+        intent.putExtra(COMPANY_TICKER, mCompanyTicker);
+        intent.putExtra(COMPANY_NAME, mCompanyName);
+        intent.putExtra(COMPANY_SECTOR, mCompanySector);
         startActivity(intent);
 
     }

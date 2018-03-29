@@ -27,6 +27,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.tin.roboticapp.Activities.CompanyDetailActivity;
 import com.example.tin.roboticapp.Activities.CompanyMainActivity;
 import com.example.tin.roboticapp.Activities.QaDetailActivity;
 import com.example.tin.roboticapp.Adapters.QaCombinedAdapter;
@@ -65,6 +66,9 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
     public static final String QUESTION_ID = "question_id";
     public static final String ANSWER = "answer";
     public static final String ANSWER_ID = "answer_id";
+    public static final String COMPANY_TICKER = "company_ticker";
+    public static final String COMPANY_NAME = "company_name";
+    public static final String COMPANY_SECTOR = "company_sector";
 
     /**
      * Needed for Volley Network Connection
@@ -93,6 +97,9 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
     public ArrayList<QACombined> mQaCombined;
 
     private int mCompanyId;
+    private String mCompanyTicker;
+    private String mCompanyName;
+    private int mCompanySector;
 
     private RecyclerView mRecyclerView;
     private QaCombinedAdapter adapter;
@@ -140,6 +147,10 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
             if (getArguments().getInt(CompanyMainActivity.LIST_TYPE) == 0) {
 
                 mCompanyId = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY_ID);
+                mCompanyTicker = getArguments().getString(CompanyMainActivity.CURRENT_COMPANY_TICKER);
+                mCompanyName = getArguments().getString(CompanyMainActivity.CURRENT_COMPANY_NAME);
+                mCompanySector = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY_SECTOR);
+                Log.d(TAG, "mCompanyTicker: " + mCompanyTicker);
 
                 // Creating a Request Queue for the Volley Network Connection
                 mRequestQueue = Volley.newRequestQueue(getActivity());
@@ -165,6 +176,9 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
                 } else {
 
                     mCompany_id = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY__ID);
+                    mCompanyTicker = getArguments().getString(CompanyMainActivity.CURRENT_COMPANY_TICKER);
+                    mCompanyName = getArguments().getString(CompanyMainActivity.CURRENT_COMPANY_NAME);
+                    mCompanySector = getArguments().getInt(CompanyMainActivity.CURRENT_COMPANY_SECTOR);
 
                     // Here we are building up the uri using the row_id in order to tell the ContentResolver
                     // to delete the item
@@ -499,6 +513,11 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
         onClickBundle.putString(QUESTION, mQaCombined.get(clickedItemIndex).getQuestion());
         onClickBundle.putInt(QUESTION_ID, mQaCombined.get(clickedItemIndex).getqId());
         onClickBundle.putInt(COMPANY_ID, mCompanyId);
+        // Ticker is required as when user saves an answer it needs to be passed to DetailActivity where it's required if user saves to SQL
+        onClickBundle.putString(COMPANY_TICKER, mCompanyTicker);
+        onClickBundle.putString(COMPANY_NAME, mCompanyName);
+        onClickBundle.putInt(COMPANY_SECTOR, mCompanySector);
+        Log.d(TAG, "mCompanyTicker intent: " + mCompanyTicker);
 
         if (mQaCombined.get(clickedItemIndex).getContent() != "") {
 

@@ -71,14 +71,6 @@ public class CompanyDetailActivity extends AppCompatActivity {
     private int m_id;
     private int isSaved;
 
-
-    // Used to Insert Data into SQLite Database
-    private String mQaCombine;
-    private ArrayList<QACombined> mQaInputArray;
-    private ArrayList<Article> mArticleInputArray;
-    private String mArticles;
-    private String mPrice;
-
     private int mFragmentToLoad = 0;
 
     // This Is For The Favourite Icon In The Menu Item
@@ -129,8 +121,12 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
             // The QAFragment position is passed from the QaDetailActivity
             mFragmentToLoad = intent.getIntExtra(QaDetailActivity.FRAGMENT_POSITION, 1);
+            mCompanyName = intent.getStringExtra(QaDetailActivity.COMPANY_NAME);
+            mCompanySector = intent.getIntExtra(QaDetailActivity.COMPANY_SECTOR, -1);
             mCompanyId = intent.getIntExtra(QaDetailActivity.COMPANY_ID, -1);
+            mCompanyTicker = intent.getStringExtra(QaDetailActivity.COMPANY_TICKER);
             Log.d(TAG, "Intent From QaDetailActivity");
+            Log.d(TAG, "mCompanyTicker: " + mCompanyTicker);
 
         }
 
@@ -175,6 +171,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
         argsForFrags.putString(CompanyMainActivity.CURRENT_COMPANY_NAME, mCompanyName);
         argsForFrags.putString(CompanyMainActivity.CURRENT_COMPANY_TICKER, mCompanyTicker);
         argsForFrags.putInt(CompanyMainActivity.CURRENT_COMPANY_ID, mCompanyId);
+        argsForFrags.putInt(CompanyMainActivity.CURRENT_COMPANY_SECTOR, mCompanySector);
         argsForFrags.putInt(CompanyMainActivity.LIST_TYPE, mListType);
 
         // if m_id exists, we need to pass that to Fragments as well, as the data will be loaded

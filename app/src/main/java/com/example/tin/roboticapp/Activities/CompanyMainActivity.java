@@ -106,7 +106,8 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
     private ConnectivityManager connectionManager;
     private NetworkInfo networkInfo;
 
-    private int MY_SOCKET_TIMEOUT_MS = 5000;
+    private int MY_SOCKET_TIMEOUT_MS = 8000;
+    private int MY_MAX_RETRIES = 3;
 
 
     @Override
@@ -217,10 +218,9 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
 
         request.setRetryPolicy(new DefaultRetryPolicy(
                 MY_SOCKET_TIMEOUT_MS,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                MY_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
-        Log.d(TAG, "request login(): " + request);
         mRequestQueue.add(request);
     }
 
