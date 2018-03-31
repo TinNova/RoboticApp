@@ -75,14 +75,11 @@ public class CompanyWidgetService extends RemoteViewsService {
 
         @Override
         public RemoteViews getViewAt(int i) {
-            RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.companies_list_item);
-            rv.setTextViewText(R.id.widget_articles_tv, String.valueOf(mArticles.get(i).getArticleId()));
+            RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_articles_item);
+            rv.setTextViewText(R.id.widget_articles_tv, String.valueOf(mArticles.get(i).getHeadline()));
 
-            Log.d(TAG, "getCount In Widget Service: comp " + String.valueOf(mArticles.get(i).getArticleId()));
+            Log.d(TAG, "getCount In Widget Service: comp " + String.valueOf(mArticles.get(i).getHeadline()));
 
-
-//            rv.setTextViewText(R.id.widget_measure_tv, String.valueOf(mTheIngredients.get(i).getMeasure()));
-//            rv.setTextViewText(R.id.widget_quantity_tv, String.valueOf(mTheIngredients.get(i).getQuantity()));
             return rv;
         }
 

@@ -4,4 +4,6 @@
     android:initialLayout="@layout/company_widget_provider"
     android:minHeight="110dp"
     android:minWidth="250dp"
-    android:previewImage="@drawable/bull"/>
+    android:resizeMode="horizontal|vertical"
+    android:previewImage="@drawable/bull"
+    android:widgetCategory="home_screen"/>

@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -92,6 +93,7 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
     // TextViews for when Price data is empty
     private TextView tvNoDataTitle;
     private TextView tvNoDataBody;
+    private TextView tvWidgetArticles;
 
     // Used to check if the device has internet connection
     private ConnectivityManager connectionManager;
@@ -115,6 +117,7 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
 
         tvNoDataTitle = view.findViewById(R.id.tv_articles_no_data_title);
         tvNoDataBody = view.findViewById(R.id.tv_articles_no_data_body);
+        tvWidgetArticles = view.findViewById(R.id.widget_articles_tv);
 
         /** Creating The RecyclerView */
         // This will be used to attach the RecyclerView to the MovieAdapter
@@ -287,8 +290,14 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
                     } else {
 
                         mRecyclerView.setVisibility(View.GONE);
+                        //tvWidgetArticles.setVisibility(View.GONE);
                         tvNoDataTitle.setVisibility(View.VISIBLE);
                         tvNoDataBody.setVisibility(View.VISIBLE);
+
+                        // Show an empty list in the Widget
+                        mArticles = null;
+                        makeWidgetData(mArticles);
+
 
                     }
 
