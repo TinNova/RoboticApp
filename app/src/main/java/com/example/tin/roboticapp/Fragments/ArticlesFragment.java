@@ -20,7 +20,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -195,7 +194,7 @@ public class ArticlesFragment extends Fragment implements ArticleAdapter.ListIte
 
             } else {
 
-                Toast.makeText(getActivity(), "Error Loading Data, Try Again", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getString(R.string.error_loading_msg), Toast.LENGTH_SHORT).show();
 
             }
 

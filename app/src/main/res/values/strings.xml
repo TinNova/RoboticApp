@@ -67,7 +67,14 @@
     <string name="fragment_comments_offline_body">Comments are not available from the saved companies list.</string>
     <string name="fragment_comments_et_hint">Type a comment</string>
 
-
+    <!-- Toast Messages -->
+    <string name="error_loading_msg">Error Loading Data, Try Again</string>
+    <string name="comment_sent">Comment Sent</string>
+    <string name="insert_comment">Insert A Comment!</string>
+    <string name="error_data_not_load">ERROR: Data did not load correctly</string>
+    <string name="post_not_saved_msg">Post cannot be saved, copy your entry and refresh the page</string>
+    <string name="answer_saved">Answer Saved</string>
+    <string name="added_favourites">Added To Favourites!</string>
 
 
 

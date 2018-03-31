@@ -42,11 +42,13 @@
             android:label="@string/app_name" />
         <activity
             android:name=".Activities.QaDetailActivity"
-            android:label="@string/app_name" />
+            android:label="@string/app_name"
             android:parentActivityName=".Activities.CompanyDetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.tin.roboticapp.Activities.CompanyDetailActivity" />
+        </activity>
+
 
 
         <provider

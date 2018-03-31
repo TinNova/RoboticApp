@@ -21,11 +21,8 @@ import com.example.tin.roboticapp.Fragments.FundamentalsFragment;
 import com.example.tin.roboticapp.Fragments.QaFragment;
 import com.example.tin.roboticapp.Adapters.SectionsPagerAdapter;
 import com.example.tin.roboticapp.IntentServices.SqlIntentService;
-import com.example.tin.roboticapp.Models.Article;
-import com.example.tin.roboticapp.Models.QACombined;
 import com.example.tin.roboticapp.R;
 import com.example.tin.roboticapp.SQLite.FavouriteContract;
-import java.util.ArrayList;
 
 public class CompanyDetailActivity extends AppCompatActivity {
 
@@ -97,6 +94,8 @@ public class CompanyDetailActivity extends AppCompatActivity {
             mCompanySector = intent.getIntExtra(CompanyMainActivity.CURRENT_COMPANY_SECTOR, 0);
             mListType = intent.getIntExtra(CompanyMainActivity.LIST_TYPE,0);
 
+            setTitle(mCompanyName);
+
 
             // if Intent was triggered from the SQL list, we in addition should take the _id
             if (intent.getIntExtra(CompanyMainActivity.LIST_TYPE,0) != 0) {
@@ -111,7 +110,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
         } else {
 
-            Toast.makeText(this, "ERROR: Data didn't load correctly", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.error_loading_msg), Toast.LENGTH_SHORT).show();
 
         }
 
@@ -243,7 +242,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
                     // Method which adds Movie to SQL
                     startSqlIntentService();
-                    Toast.makeText(this, "Added To Favourites!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.added_favourites), Toast.LENGTH_SHORT).show();
 
                 } else {
 

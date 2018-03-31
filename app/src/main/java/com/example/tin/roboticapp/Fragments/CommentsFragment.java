@@ -202,11 +202,11 @@ public class CommentsFragment extends Fragment implements CommentAdapter.ListIte
                         // Removes text from EditText
                         mCommentEditText.getText().clear();
 
-                        Toast.makeText(getActivity(), "Comment Sent", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getString(R.string.comment_sent), Toast.LENGTH_SHORT).show();
 
                     } else {
 
-                        Toast.makeText(getActivity(), "Insert A Comment!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getString(R.string.insert_comment), Toast.LENGTH_SHORT).show();
                     }
 
                 } else {

@@ -93,6 +93,8 @@ public class QaDetailActivity extends AppCompatActivity {
             Log.d(TAG, "The ID of the Question/Answer is: " + mQId);
             Log.d(TAG, "mCompanyTicker: " + mCompanyTicker);
 
+            setTitle(mCompanyName);
+
             // if the answer is not null then extract it, then put the answer within the EditText
             // and mark the newAnswer as 1
             if (intentFromQaFrag.getStringExtra(QaFragment.ANSWER) != null) {
@@ -106,7 +108,7 @@ public class QaDetailActivity extends AppCompatActivity {
 
         } else {
 
-            Toast.makeText(this, "ERROR: Data didn't load correctly", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.error_data_not_load), Toast.LENGTH_SHORT).show();
 
         }
 
@@ -161,7 +163,7 @@ public class QaDetailActivity extends AppCompatActivity {
 
                             if (mAnswerId == -1) {
 
-                                Toast.makeText(this, "Post cannot be saved, copy your entry and refresh the page", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, getString(R.string.post_not_saved_msg), Toast.LENGTH_SHORT).show();
 
                                 Log.d(TAG, "editAnswer cannot launch as mAnswerId == -1, (the default value in the intent");
 
@@ -339,7 +341,7 @@ public class QaDetailActivity extends AppCompatActivity {
 
     private void onSuccessfulPostPut() {
 
-        Toast.makeText(this, "Answer Saved.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.answer_saved), Toast.LENGTH_SHORT).show();
 
         // Intent to launch the QAFragment
         Intent intent = new Intent(QaDetailActivity.this, CompanyDetailActivity.class);

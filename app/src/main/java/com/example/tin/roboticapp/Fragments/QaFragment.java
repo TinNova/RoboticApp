@@ -27,7 +27,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.tin.roboticapp.Activities.CompanyDetailActivity;
 import com.example.tin.roboticapp.Activities.CompanyMainActivity;
 import com.example.tin.roboticapp.Activities.QaDetailActivity;
 import com.example.tin.roboticapp.Adapters.QaCombinedAdapter;
@@ -203,7 +202,7 @@ public class QaFragment extends Fragment implements QaCombinedAdapter.ListItemCl
 
         } else {
 
-            Toast.makeText(getActivity(), "Error Loading Data, Try Again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getString(R.string.error_loading_msg), Toast.LENGTH_SHORT).show();
 
         }
         return view;

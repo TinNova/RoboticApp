@@ -1,7 +1,7 @@
 package com.example.tin.roboticapp.AdModUtils;
 
 import android.content.Context;
-import android.widget.Toast;
+import android.util.Log;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -12,6 +12,8 @@ import com.google.android.gms.ads.AdRequest;
 
 public class ToastAdListener extends AdListener {
 
+    String TAG = "ToastAdListener";
+
     private Context mContext;
     private String mErrorReason;
 
@@ -21,32 +23,29 @@ public class ToastAdListener extends AdListener {
 
     @Override
     public void onAdLoaded() {
-        Toast.makeText(mContext, "onAdLoaded()",
-                Toast.LENGTH_SHORT).show();
+
+        Log.d(TAG, mContext + "onAdLoaded()");
     }
 
     @Override
     public void onAdOpened() {
         super.onAdOpened();
 
-        Toast.makeText(mContext, "onAdOpened()",
-                Toast.LENGTH_SHORT).show();
+        Log.d(TAG, mContext + "onAdOpened()");
     }
 
     @Override
     public void onAdClosed() {
         super.onAdClosed();
 
-        Toast.makeText(mContext, "onAdClosed()",
-                Toast.LENGTH_SHORT).show();
+        Log.d(TAG, mContext + "onAdClosed()");
     }
 
     @Override
     public void onAdLeftApplication() {
         super.onAdLeftApplication();
 
-        Toast.makeText(mContext, "onAdLeftApplication()",
-                Toast.LENGTH_SHORT).show();
+        Log.d(TAG, mContext + "onAdLeftApplication()");
     }
 
     @Override
@@ -69,9 +68,7 @@ public class ToastAdListener extends AdListener {
                 break;
         }
 
-        Toast.makeText(mContext,
-                String.format("onAdFailedToLoad(%s)", mErrorReason),
-                Toast.LENGTH_SHORT).show();
+        Log.d(TAG, mContext + "onAdFailedToLoad(): " + mErrorReason);
     }
 
     public String getErrorReason() {

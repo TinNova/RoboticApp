@@ -168,7 +168,7 @@ public class FundamentalsFragment extends Fragment implements LoaderManager.Load
 
             } else {
 
-                Toast.makeText(getActivity(), "Error Loading Data, Try Again", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getString(R.string.error_loading_msg), Toast.LENGTH_SHORT).show();
 
             }
 
