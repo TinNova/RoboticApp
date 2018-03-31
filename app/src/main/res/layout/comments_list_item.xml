@@ -34,25 +34,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_comment_author" />
 
-    <!--<TextView-->
-        <!--android:id="@+id/tv_comment_creation_date"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginEnd="16dp"-->
-        <!--android:layout_marginTop="4dp"-->
-        <!--android:layout_marginBottom="4dp"-->
-        <!--android:textSize="12sp"-->
-        <!--tools:text="20/04/2018"-->
-        <!--android:textColor="@color/colorPrimary"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/tv_comment_content" />-->
-
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="6dp"
         android:background="@color/light_grey"
-        app:layout_constraintTop_toBottomOf="@+id/tv_comment_content"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_comment_content" />
 
 </android.support.constraint.ConstraintLayout>

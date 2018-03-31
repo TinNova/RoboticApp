@@ -152,7 +152,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
         if (result.isSuccess()) {
             // Sign in successful, show authenticated on UI
             GoogleSignInAccount acct = result.getSignInAccount();
-            statusTexView.setText("Hello, " + acct.getDisplayName());
+            statusTexView.setText(getString(R.string.hello) + acct.getDisplayName());
 
 
             Intent intent = new Intent(getBaseContext(), CompanyMainActivity.class);
@@ -167,7 +167,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
             @Override
             public void onResult(@NonNull Status status) {
-                statusTexView.setText("Signed Out");
+                statusTexView.setText(getString(R.string.log_out));
             }
         });
     }

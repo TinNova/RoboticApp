@@ -76,6 +76,11 @@
     <string name="answer_saved">Answer Saved</string>
     <string name="added_favourites">Added To Favourites!</string>
 
+    <!-- LoginActivity -->
+    <string name="hello">Hello </string>
+    <string name="log_out">Log Out</string>
+
+
 
 
     <!-- SnackBar Messages -->
