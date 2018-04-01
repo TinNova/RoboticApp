@@ -30,14 +30,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_headline" />
 
-    <TextView
-        android:id="@+id/tv_Source_Url"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        tools:text="20/04/2018"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="6dp"
+        android:background="@color/light_grey"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_summary" />
 
 </android.support.constraint.ConstraintLayout>

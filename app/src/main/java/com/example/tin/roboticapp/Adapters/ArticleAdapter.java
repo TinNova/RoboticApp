@@ -2,6 +2,7 @@ package com.example.tin.roboticapp.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,9 +64,19 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
         Article theArticle = mArticles.get(position);
 
-        viewHolder.tvHeadline.setText(theArticle.getHeadline());
-        viewHolder.tvSummary.setText(theArticle.getSummary());
-        viewHolder.tvSourceUrl.setText(theArticle.getSourceUrl());
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+
+            viewHolder.tvSummary.setText(Html.fromHtml(theArticle.getSummary(), Html.FROM_HTML_MODE_LEGACY));
+            viewHolder.tvHeadline.setText(Html.fromHtml(theArticle.getHeadline(), Html.FROM_HTML_MODE_LEGACY));
+
+        } else {
+
+            viewHolder.tvSummary.setText(Html.fromHtml(theArticle.getSummary()));
+            viewHolder.tvHeadline.setText(Html.fromHtml(theArticle.getHeadline()));
+
+        }
+
+
 
     }
 
@@ -84,7 +95,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
         final TextView tvHeadline;
         final TextView tvSummary;
-        final TextView tvSourceUrl;
 
 
         @Override
@@ -100,7 +110,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
             tvHeadline = (TextView) itemView.findViewById(R.id.tv_headline);
             tvSummary = (TextView) itemView.findViewById(R.id.tv_summary);
-            tvSourceUrl = (TextView) itemView.findViewById(R.id.tv_Source_Url);
             itemView.setOnClickListener(this);
 
         }
