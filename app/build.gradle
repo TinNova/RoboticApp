@@ -36,7 +36,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     //OkHttp Dependency
-    compile 'com.squareup.okhttp3:okhttp:3.9.0'
+    compile 'com.squareup.okhttp3:okhttp:3.9.1'
     //Volley For Login & Cookie Authorisation
     implementation 'com.android.volley:volley:1.0.0'
     //RecyclerView Dependency
@@ -46,13 +46,13 @@ dependencies {
     //Gson Dependency
     compile 'com.google.code.gson:gson:2.8.2'
     // Required dependency for AdMobs
-    compile 'com.google.android.gms:play-services-ads:12.0.0'
+    compile 'com.google.android.gms:play-services-ads:12.0.1'
     // Required for Firebase Analytics
-    compile 'com.google.firebase:firebase-core:12.0.0'
+    compile 'com.google.firebase:firebase-core:12.0.1'
     // Required for Firebase authentication
-    compile 'com.google.firebase:firebase-auth:12.0.0'
+    compile 'com.google.firebase:firebase-auth:12.0.1'
     // Required for Firebase Google authentication
-    compile 'com.google.android.gms:play-services-auth:12.0.0'
+    compile 'com.google.android.gms:play-services-auth:12.0.1'
 }
 
 // Add to the bottom of the file
