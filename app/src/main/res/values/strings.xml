@@ -81,23 +81,12 @@
     <string name="log_out">Log Out</string>
 
 
-
-
     <!-- SnackBar Messages -->
     <string name="check_connection">Network cannot be found, please try again.</string>
     <string name="check_connection_02">No Network Connection. Answer cannot be posted, please try again.</string>
     <!-- QA Detail Activity -->
     <string name="answer_missing">Enter An Answer.</string>
     <string name="answer_not_edited">Answer Wasn\'t Edited, Nothing To Save.</string>
-
-
-
-
-
-
-
-
-
 
 
 </resources>

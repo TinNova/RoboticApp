@@ -33,6 +33,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tin.roboticapp.AdModUtils.ToastAdListener;
 import com.example.tin.roboticapp.Adapters.CompanyAdapter;
+import com.example.tin.roboticapp.BuildConfig;
 import com.example.tin.roboticapp.Models.TheCompany;
 import com.example.tin.roboticapp.R;
 import com.example.tin.roboticapp.SQLite.FavouriteContract;
@@ -55,6 +56,10 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
      * Needed for AdMod
      */
     private AdView mAdView;
+
+    // Client Secret & Id
+    String ClientId = BuildConfig.ROBOTIC_CLIENT_ID;
+    String ClientSecret = BuildConfig.ROBOTIC_CLIENT_SECRET;
 
     /**
      * Needed for Intent
@@ -205,11 +210,11 @@ public class CompanyMainActivity extends AppCompatActivity implements CompanyAda
             // Parameters for the POST Request.
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
+                Map<String, String> params = new HashMap<>(); // Commented out credentials are for the Local Site (ID & Secret are in Gradle.Properties in /Users/Tin/.gradle
                 params.put("username", "tinnovamail"); // TinNova
                 params.put("password", "roboticauth"); // RoboTinNovLogin
-                params.put("client_id", "deMOvj2c5MNn2mqD1v6ShOHx9mqYktvFhWsAwNLs"); // wsytCUq3OF9aK8eEANZXBTJB6RnQq5cQMmZyDAPF
-                params.put("client_secret", "w04Ci7zfTLPSjzYUY7Bnku93LlVpcu1IgPy0SOmtDotCYPC0V35iYsCuOCAArmtShEdMRCM5FwOi2cVE4SgwtOZW68fW20nJbpgm2Y5GnpyvsxPrALq9DVN6uyhq8Lvs"); // gHdvqyNYjZZ4R5nmOExkI4tEcKHRq82qKyQNmaMYnln9YE4stvh70ZNKWEXoNG6B99tep4IBFF0TgsJZ9IvcnDiP3bKFL6HRnge7yVFkvqf4p5Y75FQNNEMqU6RgT1XZ
+                params.put("client_id", ClientId);
+                params.put("client_secret", ClientSecret);
                 params.put("grant_type", "password");
                 return params;
             }
